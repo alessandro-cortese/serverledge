@@ -1,5 +1,11 @@
 package config
 
+// the machine tag used to associate the node with the correct ring
+const MACHINE_TAG = "node.machine_tag"
+
+// used to specify the type of architecture on which to run
+const FUNCTION_TAG_PATTERN = "function.tag_pattern"
+
 // Etcd server hostname
 const ETCD_ADDRESS = "etcd.address"
 

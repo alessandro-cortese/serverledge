@@ -26,6 +26,7 @@ type Function struct {
 	CustomImage     string   // used if custom runtime is chosen
 	SupportedArchs  []string // list of supported architectures by the runtime
 	Signature       *Signature
+	TegPattern      string // specifies the architecture required for execution
 }
 
 func (f *Function) getEtcdKey() string {

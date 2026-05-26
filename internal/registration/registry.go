@@ -41,12 +41,35 @@ var SelfRegistration *NodeRegistration
 var etcdClient *clientv3.Client = nil
 var etcdLease clientv3.LeaseID
 
-func (r *NodeRegistration) toEtcdKey() (key string) {
-	if r.IsLoadBalancer {
-		return fmt.Sprintf("%s/%s/%s/%s/%s", registryBaseDirectory, r.Area, registryLoadBalancerDirectory, r.NodeID.Arch, r.Key)
-	} else {
-		return fmt.Sprintf("%s/%s/%s/%s", registryBaseDirectory, r.Area, r.NodeID.Arch, r.Key)
+func (r *NodeRegistration) routingTag() string {
+	if r.NodeID.MachineTag != "" {
+		return r.NodeID.MachineTag
 	}
+	return r.NodeID.Arch
+}
+
+// I think I have to modify this
+func (r *NodeRegistration) toEtcdKey() (key string) {
+	tag := r.routingTag()
+
+	if r.IsLoadBalancer {
+		return fmt.Sprintf(
+			"%s/%s/%s/%s/%s",
+			registryBaseDirectory,
+			r.Area,
+			registryLoadBalancerDirectory,
+			tag,
+			r.Key,
+		)
+	}
+
+	return fmt.Sprintf(
+		"%s/%s/%s/%s",
+		registryBaseDirectory,
+		r.Area,
+		tag,
+		r.Key,
+	)
 }
 
 func (r *NodeRegistration) APIUrl() (url string) {
@@ -57,6 +80,7 @@ func areaEtcdKey(area string) string {
 	return fmt.Sprintf("%s/%s/", registryBaseDirectory, area)
 }
 
+// I think that I have to modify this
 // RegisterNode make a registration to the local Area
 func registerToEtcd(asLoadBalancer bool) error {
 	log.Printf("Registration for node: %s\n", node.LocalNode)
@@ -84,11 +108,38 @@ func registerToEtcd(asLoadBalancer bool) error {
 	registeredLocalIP := config.GetString(config.API_IP, defaultAddressStr)
 	apiPort := config.GetInt(config.API_PORT, 1323)
 	udpPort := config.GetInt(config.LISTEN_UDP_PORT, 9876)
-	arch := runtime.GOARCH
+	arch := node.LocalNode.Arch
+	if arch == "" {
+		arch = runtime.GOARCH
+	}
 
-	payload := fmt.Sprintf("%s;%d;%d;%s", registeredLocalIP, apiPort, udpPort, arch)
+	machineTag := node.LocalNode.MachineTag
+	if machineTag == "" {
+		machineTag = config.GetString(config.MACHINE_TAG, arch)
+	}
+	if machineTag == "" {
+		machineTag = arch
+	}
 
-	SelfRegistration = &NodeRegistration{NodeID: node.LocalNode, IPAddress: registeredLocalIP, APIPort: apiPort, UDPPort: udpPort, IsLoadBalancer: asLoadBalancer}
+	node.LocalNode.Arch = arch
+	node.LocalNode.MachineTag = machineTag
+
+	payload := fmt.Sprintf(
+		"%s;%d;%d;%s;%s",
+		registeredLocalIP,
+		apiPort,
+		udpPort,
+		arch,
+		machineTag,
+	)
+
+	SelfRegistration = &NodeRegistration{
+		NodeID:         node.LocalNode,
+		IPAddress:      registeredLocalIP,
+		APIPort:        apiPort,
+		UDPPort:        udpPort,
+		IsLoadBalancer: asLoadBalancer,
+	}
 
 	// save couple (id, hostport) to the correct Area-dir on etcd
 	etcdKey := SelfRegistration.toEtcdKey()
@@ -128,6 +179,7 @@ func keepAliveLease() {
 	}
 }
 
+// I think that have to modify this
 func parseEtcdRegisteredNode(area string, key string, payload []byte) (NodeRegistration, error) {
 	payloadStr := string(payload)
 	split := strings.Split(payloadStr, ";")
@@ -148,8 +200,24 @@ func parseEtcdRegisteredNode(area string, key string, payload []byte) (NodeRegis
 	}
 
 	arch := split[3]
+	// Compatibility in cases where nodes have not set the `machine_tag` field;
+	// in this case, I reuse the value of the `arch` field
+	machineTag := arch
+	if len(split) > 4 && split[4] != "" {
+		machineTag = split[4]
+	}
 
-	return NodeRegistration{NodeID: node.NodeID{Area: area, Key: key, Arch: arch}, IPAddress: ipAddress, APIPort: apiPort, UDPPort: udpPort}, nil
+	return NodeRegistration{
+		NodeID: node.NodeID{
+			Area:       area,
+			Key:        key,
+			Arch:       arch,
+			MachineTag: machineTag,
+		},
+		IPAddress: ipAddress,
+		APIPort:   apiPort,
+		UDPPort:   udpPort,
+	}, nil
 }
 
 // GetNodesInArea is used to obtain the list of  other server's addresses under a specific local Area

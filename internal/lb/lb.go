@@ -27,10 +27,8 @@ func newBalancer(targets []*middleware.ProxyTarget) (middleware.ProxyBalancer, b
 	isArchAware := config.GetBool(config.Arch_AWARENESS, false)
 
 	if isArchAware {
-		return NewArchitectureAwareBalancer(targets), true
-
+		return NewGeneralLoadBalancer(targets), true
 	}
-
 	return NewArchitectureUnawareBalancer(targets), false
 }
 
@@ -78,12 +76,14 @@ func StartReverseProxy(e *echo.Echo, region string) {
 			nodeArch := res.Header.Get("Serverledge-Node-Arch")
 			reqPath := res.Request.URL.Path
 			reqID := res.Request.Header.Get("Serverledge-MAB-Request-ID")
+			machineTag := res.Header.Get("Serverledge-Node-Tag")
 
 			go func(data []byte, path string, arch string, reqID string) {
 				if !isAware {
 					return // if we're using the unaware LB no need for bandit update (there isn't one)
 				}
-				err := mab.UpdateBandit(data, path, arch, reqID)
+				// UpdateBandit update reward with the machineTag
+				err := mab.UpdateBandit(data, path, machineTag, reqID)
 				if err != nil {
 					log.Printf("Failed to update bandit: %v", err)
 				}
@@ -113,6 +113,7 @@ func StartReverseProxy(e *echo.Echo, region string) {
 			res.Header.Del("Serverledge-Free-Mem")
 			res.Header.Del("Serverledge-Free-CPU")
 			res.Header.Del("Serverledge-MAB-Request-ID")
+			res.Header.Del("Serverledge-Node-Tag")
 
 			// for experiments: we need to know which node ran the function
 			res.Header.Set("Serverledge-Node-Arch", nodeArch)
@@ -144,8 +145,21 @@ func getTargets(region string) ([]*middleware.ProxyTarget, error) {
 		if err != nil {
 			return nil, err
 		}
-		archMap := echo.Map{"arch": target.Arch}
-		targets = append(targets, &middleware.ProxyTarget{Name: target.Key, URL: parsedUrl, Meta: archMap})
+		machineTag := target.MachineTag
+		if machineTag == "" {
+			machineTag = target.Arch
+		}
+
+		targetMeta := echo.Map{
+			"arch":        target.Arch,
+			"machine_tag": machineTag,
+		}
+
+		targets = append(targets, &middleware.ProxyTarget{
+			Name: target.Key,
+			URL:  parsedUrl,
+			Meta: targetMeta},
+		)
 	}
 
 	log.Printf("Found %d targets\n", len(targets))

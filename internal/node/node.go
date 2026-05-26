@@ -15,26 +15,28 @@ import (
 var OutOfResourcesErr = errors.New("not enough resources for function execution")
 
 type NodeID struct {
-	Area string
-	Key  string
-	Arch string
+	Area       string
+	Key        string
+	Arch       string
+	MachineTag string
 }
 
 var LocalNode NodeID
 
 func (n NodeID) String() string {
-	return fmt.Sprintf("(%s)%s", n.Area, n.Key)
+	return fmt.Sprintf("(%s)%s - %s", n.Area, n.Key, n.MachineTag)
 }
 
 func NewRandomIdentifier(area string) NodeID {
 	id := shortuuid.New() + strconv.FormatInt(time.Now().UnixNano(), 10)
 	arch := runtime.GOARCH
-	return NodeID{Area: area, Key: id, Arch: arch}
+	tag := config.GetString(config.MACHINE_TAG, arch) // default = arch
+	return NodeID{Area: area, Key: id, Arch: arch, MachineTag: tag}
 }
 
-func NewIdentifier(id, area string) NodeID {
+func NewIdentifier(id, area, tag string) NodeID {
 	arch := runtime.GOARCH
-	return NodeID{Area: area, Key: id, Arch: arch}
+	return NodeID{Area: area, Key: id, Arch: arch, MachineTag: tag}
 }
 
 type Resources struct {

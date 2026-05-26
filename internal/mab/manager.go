@@ -9,8 +9,9 @@ import (
 
 // BanditManager contains all the existing bandits (one for each known function)
 type BanditManager struct {
-	bandits map[string]Policy // Nota: ora è map[string]Policy, non *UCB1Bandit
-	mu      sync.RWMutex
+	bandits   map[string]Policy // Nota: ora è map[string]Policy, non *UCB1Bandit
+	mu        sync.RWMutex
+	knownArms []string // This contains all founded architectures
 }
 
 var GlobalBanditManager *BanditManager
@@ -22,7 +23,18 @@ func InitBanditManager() {
 	}
 }
 
-// GetBandit returns (or creates) the bandit for a given function
+// AddArmToAll once the system discover a new architecture, he has to add it to the available options
+func (bm *BanditManager) AddArmToAll(arm string) {
+	bm.mu.Lock()
+	defer bm.mu.Unlock()
+
+	bm.knownArms = append(bm.knownArms, arm)
+	for _, bandit := range bm.bandits {
+		bandit.InitArm(arm)
+	}
+}
+
+// GetBandit returns (or creates) the bandit for a given function for all known architectures
 func (bm *BanditManager) GetBandit(functionName string) Policy {
 	bm.mu.Lock()
 	defer bm.mu.Unlock()
@@ -50,9 +62,10 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 			log.Printf("Initialized UCB1 bandit for %s", functionName)
 		}
 
-		// Ideally, this list is not hardcoded, but comes from the LB or Discovery or the config
-		newBandit.InitArm("amd64")
-		newBandit.InitArm("arm64")
+		// Init arm of all known architectures
+		for _, arm := range bm.knownArms {
+			newBandit.InitArm(arm)
+		}
 
 		bm.bandits[functionName] = newBandit
 	}

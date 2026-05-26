@@ -1,0 +1,6 @@
+etcd.address: "127.0.0.1:2379"
+api.port: 1323
+registry.area: ROME
+registry.udp.port: 9876
+node.machine_tag: arm
+container.pool.memory: 512

@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/serverledge-faas/serverledge/internal/container"
 	"github.com/serverledge-faas/serverledge/internal/function"
 	"github.com/serverledge-faas/serverledge/internal/mab"
 )
@@ -25,10 +24,12 @@ type DefaultMemoryChecker struct{}
 
 func (m *DefaultMemoryChecker) HasEnoughMemory(candidate *middleware.ProxyTarget, fun *function.Function) bool {
 	freeMemoryMB := NodeMetrics.GetFreeMemory(candidate.Name)
-	freeCpu := NodeMetrics.metrics[candidate.Name].FreeCPU
+	metric, ok := NodeMetrics.GetMetric(candidate.Name)
+	if !ok {
+		return true
+	}
 	log.Printf("Candidate has: %d MB free memory. Function needs: %d MB", freeMemoryMB, fun.MemoryMB)
-	return freeMemoryMB >= fun.MemoryMB && freeCpu >= fun.CPUDemand
-
+	return freeMemoryMB >= fun.MemoryMB && metric.FreeCPU >= fun.CPUDemand
 }
 
 var NodeMetrics = &NodeMetricCache{
@@ -51,6 +52,14 @@ type NodeMetric struct {
 type NodeMetricCache struct {
 	mu      sync.RWMutex
 	metrics map[string]NodeMetric
+}
+
+func (c *NodeMetricCache) GetMetric(nodeName string) (NodeMetric, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	metric, ok := c.metrics[nodeName]
+	return metric, ok
 }
 
 type ArchitectureCacheEntry struct {
@@ -100,6 +109,7 @@ func (c *NodeMetricCache) GetFreeMemory(nodeName string) int64 {
 	return val.FreeMemoryMB
 }
 
+/* Old implementation
 // Calculate the avg utilization of each architecture
 func (b *ArchitectureAwareBalancer) calculateSystemContext() *mab.Context {
 
@@ -140,6 +150,56 @@ func (b *ArchitectureAwareBalancer) calculateSystemContext() *mab.Context {
 		used := float64(totalCap - totalFree)
 		usageMap[arch] = used / float64(totalCap) // % utilization (0.0 - 1.0) fort this specific architecture
 
+	}
+
+	return &mab.Context{ArchMemUsage: usageMap}
+}
+*/
+
+// Calculate the avg utilization of each architecture
+func (b *GeneralLoadBalancer) calculateSystemContext() *mab.Context {
+	usageMap := make(map[string]float64)
+
+	for _, arch := range b.architectures {
+		ring, ok := b.rings[arch]
+		if !ok {
+			usageMap[arch] = 100.0
+			continue
+		}
+
+		var totalFree int64 = 0
+		var totalCap int64 = 0
+
+		var nodes []*middleware.ProxyTarget
+		nodes = ring.GetAllTargets()
+
+		if len(nodes) == 0 {
+			usageMap[arch] = 100.0 // If no node let's assume it's full. This architecture will not be used anyway.
+			continue
+		}
+
+		for _, node := range nodes {
+
+			metric, ok := NodeMetrics.GetMetric(node.Name)
+
+			if ok && metric.TotalMemoryMB > 0 {
+				totalFree += metric.FreeMemoryMB
+				totalCap += metric.TotalMemoryMB
+			} else {
+				// TODO: I think I have to eliminate this panic invocation, the node is added now and not yet monitored, assumed 0 load
+				log.Printf("[LB] Node %s not yet in metrics cache, assuming full availability\n", node.Name)
+				continue
+				// panic(0) // it should never happen
+			}
+
+		}
+		if totalCap == 0 {
+			usageMap[arch] = 1.0
+			continue
+		}
+
+		used := float64(totalCap - totalFree)
+		usageMap[arch] = used / float64(totalCap) // % utilization (0.0 - 1.0) fort this specific architecture
 	}
 
 	return &mab.Context{ArchMemUsage: usageMap}

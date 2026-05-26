@@ -9,7 +9,8 @@ import (
 	"github.com/serverledge-faas/serverledge/internal/function"
 )
 
-func UpdateBandit(body []byte, reqPath string, arch string, reqID string) error { // Read the body
+func UpdateBandit(body []byte, reqPath string, tag string, reqID string) error { // Read the body
+	// Modified function to use machineTag parameter instead of ach
 	// Parse the body to a Response object
 	var response function.Response
 	if err := json.Unmarshal(body, &response); err != nil {
@@ -25,8 +26,8 @@ func UpdateBandit(body []byte, reqPath string, arch string, reqID string) error 
 	bandit := GlobalBanditManager.GetBandit(functionName)
 	ctx := GlobalContextStorage.RetrieveAndDelete(reqID)
 
-	if arch == "" {
-		log.Println("Serverledge-Node-Arch header missing")
+	if tag == "" {
+		log.Println("Serverledge-Node-Tag header missing")
 		panic(0) // should never happen
 	}
 
@@ -40,7 +41,7 @@ func UpdateBandit(body []byte, reqPath string, arch string, reqID string) error 
 	durationMs := response.ExecutionReport.Duration * 1000.0 // s to ms
 
 	// finally update the reward for the bandit. This is thread safe since internally it has a mutex
-	bandit.UpdateReward(arch, ctx, response.IsWarmStart, durationMs)
+	bandit.UpdateReward(tag, ctx, response.IsWarmStart, durationMs)
 
 	return nil
 }

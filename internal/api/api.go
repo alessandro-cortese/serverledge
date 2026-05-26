@@ -97,6 +97,10 @@ func InvokeFunction(c echo.Context) error {
 		if reqID := c.Request().Header.Get("Serverledge-MAB-Request-ID"); reqID != "" {
 			c.Response().Header().Set("Serverledge-MAB-Request-ID", reqID)
 		}
+		c.Response().Header().Set("Serverledge-Node-Tag", node.LocalNode.MachineTag)
+		if reqID := c.Request().Header.Get("Serverledge-MAB-Request-ID"); reqID != "" {
+			c.Response().Header().Set("Serverledge-MAB-Request-ID", reqID)
+		}
 
 	}
 

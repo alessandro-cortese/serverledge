@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -36,7 +37,11 @@ func main() {
 	if myId == "" {
 		node.LocalNode = node.NewRandomIdentifier(myArea)
 	} else {
-		node.LocalNode = node.NewIdentifier(myId, myArea)
+		node.LocalNode = node.NewIdentifier(
+			myId,
+			myArea,
+			config.GetString(config.MACHINE_TAG, runtime.GOARCH),
+		)
 	}
 	log.Printf("Local node id: %s (arch: %v)", node.LocalNode.String(), node.LocalNode.Arch)
 

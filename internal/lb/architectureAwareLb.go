@@ -4,17 +4,13 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"strings"
 	"sync"
 	"time"
 
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/lithammer/shortuuid"
 	"github.com/serverledge-faas/serverledge/internal/config"
 	"github.com/serverledge-faas/serverledge/internal/container"
 	"github.com/serverledge-faas/serverledge/internal/function"
-	"github.com/serverledge-faas/serverledge/internal/mab"
 )
 
 type ArchitectureAwareBalancer struct {
@@ -63,6 +59,7 @@ func NewArchitectureAwareBalancer(targets []*middleware.ProxyTarget) *Architectu
 	return b
 }
 
+/*
 // Next Used by Echo Proxy middleware to select the next target dynamically
 func (b *ArchitectureAwareBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	b.mu.Lock()
@@ -144,7 +141,9 @@ func (b *ArchitectureAwareBalancer) Next(c echo.Context) *middleware.ProxyTarget
 	}
 	return candidate
 }
+*/
 
+/*
 // extractFunctionName retrieves the function's name by parsing the request's URL.
 func extractFunctionName(c echo.Context) string {
 	path := c.Request().URL.Path
@@ -156,6 +155,7 @@ func extractFunctionName(c echo.Context) string {
 
 	return path[len(prefix):]
 }
+*/
 
 // Deprecated
 // This should only be used for tests or as a baseline in experiments.
