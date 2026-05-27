@@ -8,7 +8,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"regexp"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -160,6 +162,15 @@ func CreateOrUpdateFunction(c echo.Context) error {
 	if err != nil && err != io.EOF {
 		log.Printf("Could not parse request: %v\n", err)
 		return err
+	}
+
+	pattern := getFunctionTagPatternForAPI(&f)
+	if pattern != "" {
+		normalizedPattern := normalizeTagPatternForAPI(pattern)
+		if _, err := regexp.Compile(normalizedPattern); err != nil {
+			log.Printf("Invalid tag_pattern '%s': %v\n", pattern, err)
+			return c.String(http.StatusBadRequest, "Invalid tag_pattern")
+		}
 	}
 
 	var isUpdate bool
@@ -353,4 +364,34 @@ func PrewarmFunction(c echo.Context) error {
 	}
 	response := struct{ Prewarmed int64 }{count}
 	return c.JSON(http.StatusOK, response)
+}
+
+func getFunctionTagPatternForAPI(f *function.Function) string {
+	if f == nil {
+		return ""
+	}
+
+	if f.TagPattern != "" {
+		return f.TagPattern
+	}
+
+	return ""
+}
+
+func normalizeTagPatternForAPI(pattern string) string {
+	if pattern == "" {
+		return ""
+	}
+
+	// If it already looks like a regex, keep it.
+	if strings.HasPrefix(pattern, "^") ||
+		strings.HasSuffix(pattern, "$") ||
+		strings.Contains(pattern, ".*") {
+		return pattern
+	}
+
+	escaped := regexp.QuoteMeta(pattern)
+	escaped = strings.ReplaceAll(escaped, `\*`, ".*")
+
+	return "^" + escaped + "$"
 }

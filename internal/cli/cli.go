@@ -111,6 +111,7 @@ var update bool
 var maxConcurrency int16
 var prewarmCount int64
 var forcePull bool
+var tagPattern string
 
 func Init() {
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
@@ -138,7 +139,7 @@ func Init() {
 	createCmd.Flags().StringVarP(&customImage, "custom_image", "", "", "custom container image (only if runtime == 'custom')")
 	createCmd.Flags().StringSliceVarP(&inputs, "input", "i", nil, "Input parameter: <name>:<type>")
 	createCmd.Flags().StringSliceVarP(&outputs, "output", "o", nil, "Output specification: <name>:<type>")
-
+	createCmd.Flags().StringVar(&tagPattern, "tag_pattern", "", "machine tag pattern required by the function, e.g. '*/gpu/nvidia'")
 	rootCmd.AddCommand(prewarmCmd)
 	prewarmCmd.Flags().StringVarP(&funcName, "function", "f", "", "name of the function")
 	prewarmCmd.Flags().Int64VarP(&prewarmCount, "count", "c", 1, "num of instances to launch")
@@ -379,6 +380,7 @@ func create(cmd *cobra.Command, args []string) {
 		TarFunctionCode: encoded,
 		CustomImage:     customImage,
 		Signature:       sig,
+		TagPattern:      tagPattern,
 	}
 	requestBody, err := json.Marshal(request)
 	if err != nil {
