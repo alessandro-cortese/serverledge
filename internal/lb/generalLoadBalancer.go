@@ -204,11 +204,14 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 		return nil
 	}
 
-	freeMemoryMB := NodeMetrics.GetFreeMemory(candidate.Name) - fun.MemoryMB
 	// Remove the memory that this function will use.
 	// This will then be updated again once the function is executed and the node
 	// reports its real free memory through response headers.
-	freeCpu := NodeMetrics.metrics[candidate.Name].FreeCPU - fun.CPUDemand
+	freeMemoryMB := NodeMetrics.GetFreeMemory(candidate.Name) - fun.MemoryMB
+	freeCpu := 0.0
+	if metric, ok := NodeMetrics.GetMetric(candidate.Name); ok {
+		freeCpu = metric.FreeCPU - fun.CPUDemand
+	}
 	NodeMetrics.Update(candidate.Name, freeMemoryMB, 0, time.Now().Unix(), freeCpu)
 
 	candidateTag := ""
@@ -243,20 +246,23 @@ func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Fun
 
 	switch b.mode {
 	case MAB:
-		// If multiple tags are compatible, then use the MAB to select one.
 		bandit := mab.GlobalBanditManager.GetBandit(funcName)
 		selectedTag := bandit.SelectArm(ctx)
 
 		if containsString(compatibleTags, selectedTag) {
+			// Update archRRIndex to maintain consistency if the mode changes
+			for i, tag := range b.architectures {
+				if tag == selectedTag {
+					b.archRRIndex = (i + 1) % len(b.architectures)
+					break
+				}
+			}
 			return selectedTag
 		}
 
-		// Safety fallback: the MAB might return a tag that is not currently compatible
-		// or not currently available. In that case, use the deterministic RR baseline.
 		log.Printf(
 			"[LB] MAB selected incompatible or unavailable tag '%s' for function '%s'. Falling back to RR\n",
-			selectedTag,
-			funcName,
+			selectedTag, funcName,
 		)
 		return b.selectArchitectureRRFrom(compatibleTags)
 
@@ -320,20 +326,10 @@ func (b *GeneralLoadBalancer) compatibleTagsForFunction(fun *function.Function) 
 
 		compatibleTags = append(compatibleTags, tag)
 
-		supportsArch := fun.SupportsArch(arch)
-		matchesTagPattern := matchesPattern(tag, pattern)
-
 		log.Printf(
-			"[LB] Compatibility check: function=%s tag=%s arch=%s supports_arch=%v pattern=%q pattern_match=%v ring_size=%d\n",
-			fun.Name,
-			tag,
-			arch,
-			supportsArch,
-			pattern,
-			matchesTagPattern,
-			ring.Size(),
+			"[LB] Compatible tag found: function=%s tag=%s arch=%s pattern=%q ring_size=%d\n",
+			fun.Name, tag, arch, pattern, ring.Size(),
 		)
-
 	}
 
 	log.Printf("[LB] Compatible tags for function '%s': %v\n", fun.Name, compatibleTags)

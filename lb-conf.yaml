@@ -1,4 +1,4 @@
-etcd.address: "127.0.0.1:2379"
+etcd.address: 127.0.0.1:2379
 api.port: 8080
 registry.area: ROME
 lb.arch_awareness: true

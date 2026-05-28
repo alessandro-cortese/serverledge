@@ -1,6 +1,6 @@
-etcd.address: "127.0.0.1:2379"
+etcd.address: 127.0.0.1:2379
 api.port: 1325
 registry.area: ROME
-registry.udp.port: 9900
-node.machine_tag: x86
+registry.udp.port: 9878
+node.machine_tag: x86/gpu/nvidia
 container.pool.memory: 512
