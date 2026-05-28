@@ -78,16 +78,15 @@ func StartReverseProxy(e *echo.Echo, region string) {
 			reqID := res.Request.Header.Get("Serverledge-MAB-Request-ID")
 			machineTag := res.Header.Get("Serverledge-Node-Tag")
 
-			go func(data []byte, path string, arch string, reqID string) {
+			go func(data []byte, path string, tag string, reqID string) {
 				if !isAware {
-					return // if we're using the unaware LB no need for bandit update (there isn't one)
+					return
 				}
-				// UpdateBandit update reward with the machineTag
-				err := mab.UpdateBandit(data, path, machineTag, reqID)
+				err := mab.UpdateBandit(data, path, tag, reqID)
 				if err != nil {
 					log.Printf("Failed to update bandit: %v", err)
 				}
-			}(bodyBytes, reqPath, nodeArch, reqID)
+			}(bodyBytes, reqPath, machineTag, reqID)
 
 			nodeName := res.Header.Get("Serverledge-Node-Name")
 			freeMemStr := res.Header.Get("Serverledge-Free-Mem")
@@ -122,6 +121,7 @@ func StartReverseProxy(e *echo.Echo, region string) {
 		},
 	}
 
+	e.Use(proxyErrorMiddleware)
 	e.Use(middleware.ProxyWithConfig(proxyConfig))
 	go updateTargets(balancer, region)
 

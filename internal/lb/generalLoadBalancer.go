@@ -181,12 +181,14 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	compatibleTags := b.compatibleTagsForFunction(fun)
 	if len(compatibleTags) == 0 {
 		log.Printf("[LB] No compatible machine tag available for function '%s'\n", funcName)
+		setHardwareNotSupported(c, funcName)
 		return nil
 	}
 
 	targetTag := b.selectTargetTag(funcName, fun, compatibleTags, ctx)
 	if targetTag == "" {
 		log.Printf("[LB] Unable to select a compatible tag for function '%s'\n", funcName)
+		setHardwareNotSupported(c, funcName)
 		return nil
 	}
 
@@ -201,6 +203,7 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 
 	if candidate == nil {
 		log.Printf("[LB] No candidate available for function '%s' after fallback\n", funcName)
+		setHardwareNotSupported(c, funcName)
 		return nil
 	}
 
@@ -323,7 +326,6 @@ func (b *GeneralLoadBalancer) compatibleTagsForFunction(fun *function.Function) 
 		if !matchesPattern(tag, pattern) {
 			continue
 		}
-
 		compatibleTags = append(compatibleTags, tag)
 
 		log.Printf(
