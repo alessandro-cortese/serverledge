@@ -1,6 +1,6 @@
 etcd.address: 127.0.0.1:2379
-api.port: 1328
+api.port: 1327
 registry.area: ROME
-registry.udp.port: 9881
-node.machine_tag: x86
+registry.udp.port: 9880
+node.machine_tag: arm/gpu/amd
 container.pool.memory: 512

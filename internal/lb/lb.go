@@ -121,6 +121,8 @@ func StartReverseProxy(e *echo.Echo, region string) {
 		},
 	}
 
+	// This is where the custom proxy is configured, so that when no supported architectures are found,
+	// the system does not panic but instead returns an HTTP response with status code 429 – Too Many Requests
 	e.Use(proxyErrorMiddleware)
 	e.Use(middleware.ProxyWithConfig(proxyConfig))
 	go updateTargets(balancer, region)

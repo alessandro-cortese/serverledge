@@ -122,8 +122,7 @@ func NewGeneralLoadBalancer(targets []*middleware.ProxyTarget) *GeneralLoadBalan
 	- Function compatibility is still checked through the physical architecture
 	  associated with each tag, stored in b.tagToArch.
 */
-// TODO: later, modify the proxy/caller path to return HTTP 429 when no compatible hardware is available.
-// For now, this method returns nil in that case.
+
 func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	b.mu.Lock()
 	defer b.mu.Unlock()
