@@ -1,3 +1,12 @@
+//go:build legacy
+
+package lb
+
+import (
+	"github.com/serverledge-faas/serverledge/internal/container"
+	"github.com/serverledge-faas/serverledge/internal/function"
+)
+
 package lb
 
 import (

@@ -460,6 +460,7 @@ func (b *GeneralLoadBalancer) AddTarget(t *middleware.ProxyTarget) bool {
 		b.rrIndexes[tag] = 0
 
 		// Update MAB arms dynamically when a new tag appears.
+		log.Printf("[LB] New machine_tag discovered: %s. Creating ring and adding MAB arm.\n", tag)
 		mab.GlobalBanditManager.AddArmToAll(tag)
 	}
 

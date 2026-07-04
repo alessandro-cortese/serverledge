@@ -1,0 +1,20 @@
+2026/06/17 17:37:40 Local node id: (ROME)iHCUiheWj7iR4vFHtettz91781710660290093898 - x86 (arch: amd64)
+2026/06/17 17:37:40 Registration for node: (ROME)iHCUiheWj7iR4vFHtettz91781710660290093898 - x86
+2026/06/17 17:37:40 Connecting to etcd
+2026/06/17 17:37:40 Connected to etcd
+2026/06/17 17:37:40 etcd connection state: TRANSIENT_FAILURE
+2026/06/17 17:37:40 etcd: transient failure, triggering reconnect
+2026/06/17 17:37:41 etcd connection state: READY
+2026/06/17 17:37:41 etcd: connected and ready
+2026/06/17 17:37:41 Registering to etcd: registry/ROME/x86/iHCUiheWj7iR4vFHtettz91781710660290093898
+2026/06/17 17:37:41 Configured scheduling policy: default
+2026/06/17 17:37:41 Configured offloading policy: disable
+2026/06/17 17:37:41 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/06/17 17:37:41 Scheduler started.
+2026/06/17 17:37:41 No remote area is configured; vertical offloading disabled
+2026/06/17 17:37:41 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/06/17 17:37:50 New request: creation of mab_dynamic_1781710654
+2026/06/17 17:38:01 Periodic nearby Monitoring
+2026/06/17 17:38:01 Requesting status information for 192.168.0.46:9881
+2026/06/17 17:38:11 No remote area is configured; vertical offloading disabled
