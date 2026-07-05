@@ -1,0 +1,88 @@
+2026/07/05 16:12:09 Local node id: (ROME)VZwHpZzt8UyUuGVuiXtpw71783260729385586971 - x86 (arch: amd64)
+2026/07/05 16:12:09 Registration for node: (ROME)VZwHpZzt8UyUuGVuiXtpw71783260729385586971 - x86
+2026/07/05 16:12:09 Connecting to etcd
+2026/07/05 16:12:09 Connected to etcd
+2026/07/05 16:12:09 etcd connection state: READY
+2026/07/05 16:12:09 etcd: connected and ready
+2026/07/05 16:12:10 Registering to etcd: registry/ROME/x86/VZwHpZzt8UyUuGVuiXtpw71783260729385586971
+2026/07/05 16:12:10 Configured scheduling policy: default
+2026/07/05 16:12:10 Configured offloading policy: disable
+2026/07/05 16:12:10 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/05 16:12:10 Scheduler started.
+2026/07/05 16:12:10 No remote area is configured; vertical offloading disabled
+2026/07/05 16:12:10 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/07/05 16:12:19 New request: creation of mab_dynamic_1783260728
+2026/07/05 16:12:19 Container 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 has name /awesome_bohr
+2026/07/05 16:12:19 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:20 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:20 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:20 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:20 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:20 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:20 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:20 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:20 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:21 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:21 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:21 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:21 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:21 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:21 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:21 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:21 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:21 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:21 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:22 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:22 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:22 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:22 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:22 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:22 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:22 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:22 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:23 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:23 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:30 Periodic nearby Monitoring
+2026/07/05 16:12:30 Requesting status information for 192.168.0.46:9881
+2026/07/05 16:12:33 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:33 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:33 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:33 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:33 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:33 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:34 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:34 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:34 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:34 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:34 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:34 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:35 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:35 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:35 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:35 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:36 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:36 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:36 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:36 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:36 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:36 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:37 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:37 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:38 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:38 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:38 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:38 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:38 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:38 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:39 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:39 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:39 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:39 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:39 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:39 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:40 No remote area is configured; vertical offloading disabled
+2026/07/05 16:12:42 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:42 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66
+2026/07/05 16:12:42 Using warm 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66 for mab_dynamic_1783260728. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 16:12:42 [mab_dynamic_1783260728] Executing on container: 6ab5507042062ed162eafac31c0aa9fc894f5f12f7ed76dafe58949885fd7e66

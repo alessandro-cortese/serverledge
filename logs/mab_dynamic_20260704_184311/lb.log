@@ -1,0 +1,752 @@
+2026/07/04 18:43:17 Registration for node: (ROME)oZ6wXGFFTWnWkLKUqjwABg1783183397966310970 - amd64
+2026/07/04 18:43:17 Connecting to etcd
+2026/07/04 18:43:17 Connected to etcd
+2026/07/04 18:43:17 etcd connection state: READY
+2026/07/04 18:43:17 etcd: connected and ready
+2026/07/04 18:43:17 Registering to etcd: registry/ROME/__lb/amd64/oZ6wXGFFTWnWkLKUqjwABg1783183397966310970
+2026/07/04 18:43:17 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:17 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:17 Found 2 targets
+2026/07/04 18:43:17 Initializing with 2 targets.
+2026/07/04 18:43:17 Running ArchitectureAwareLB with 128 replicas per node in the hash rings
+2026/07/04 18:43:17 LB mode set to MAB
+2026/07/04 18:43:17 [LB][MAB] event=new_machine_tag_discovered tag=x86 arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/04 18:43:17 [LB] Adding target x86
+2026/07/04 18:43:17 [LB] Adding target x86
+⇨ http server started on [::]:8080
+2026/07/04 18:43:20 [LB]: Periodic targets update
+2026/07/04 18:43:20 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:20 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:20 Found 2 targets
+2026/07/04 18:43:23 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:23 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:23 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:23 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:23 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:23 BanditManager GetBandit: policy type: UCB1
+2026/07/04 18:43:23 Initialized UCB1 bandit for mab_dynamic_1783183391
+2026/07/04 18:43:23 [MAB] event=arm_added ts=1783183403501 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 arms=[x86]
+2026/07/04 18:43:23 [MAB] event=skip_cold_start ts=1783183403501 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=6.937730 reason=cold_start
+2026/07/04 18:43:23 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:23 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:23 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:23 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:23 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:23 [MAB] event=update_reward ts=1783183403727 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.428490 warm_start=true reward=-1.232120 count=1 avg_reward=-1.232120 total_counts=1
+2026/07/04 18:43:23 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:23 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:23 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:23 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:23 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:23 [MAB] event=update_reward ts=1783183403961 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.493278 warm_start=true reward=-1.502583 count=2 avg_reward=-1.367351 total_counts=2
+2026/07/04 18:43:23 [LB]: Periodic targets update
+2026/07/04 18:43:23 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:23 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:23 Found 2 targets
+2026/07/04 18:43:24 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:24 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:24 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:24 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:24 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:24 [MAB] event=update_reward ts=1783183404191 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.679778 warm_start=true reward=-1.302852 count=3 avg_reward=-1.345852 total_counts=3
+2026/07/04 18:43:24 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:24 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:24 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:24 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:24 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:24 [MAB] event=update_reward ts=1783183404417 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.227176 warm_start=true reward=-1.171607 count=4 avg_reward=-1.302291 total_counts=4
+2026/07/04 18:43:24 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:24 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:24 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:24 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:24 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:24 [MAB] event=update_reward ts=1783183404649 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.282556 warm_start=true reward=-1.454550 count=5 avg_reward=-1.332742 total_counts=5
+2026/07/04 18:43:24 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:24 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:24 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:24 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:24 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:24 [MAB] event=update_reward ts=1783183404881 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.878608 warm_start=true reward=-1.355476 count=6 avg_reward=-1.336531 total_counts=6
+2026/07/04 18:43:25 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:25 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:25 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:25 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:25 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:25 [MAB] event=update_reward ts=1783183405100 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.308765 warm_start=true reward=-0.836713 count=7 avg_reward=-1.265129 total_counts=7
+2026/07/04 18:43:25 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:25 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:25 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:25 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:25 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:25 [MAB] event=update_reward ts=1783183405325 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.609787 warm_start=true reward=-1.283649 count=8 avg_reward=-1.267444 total_counts=8
+2026/07/04 18:43:25 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:25 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:25 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:25 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:25 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:25 [MAB] event=update_reward ts=1783183405560 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.432462 warm_start=true reward=-1.488955 count=9 avg_reward=-1.292056 total_counts=9
+2026/07/04 18:43:25 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:25 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:25 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:25 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:25 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:25 [MAB] event=update_reward ts=1783183405794 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.917109 warm_start=true reward=-1.365354 count=10 avg_reward=-1.299386 total_counts=10
+2026/07/04 18:43:26 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:26 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:26 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:26 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:26 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:26 [MAB] event=update_reward ts=1783183406021 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.257256 warm_start=true reward=-1.180885 count=11 avg_reward=-1.288613 total_counts=11
+2026/07/04 18:43:26 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:26 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:26 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:26 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:26 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:26 [MAB] event=update_reward ts=1783183406254 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.149159 warm_start=true reward=-1.147135 count=12 avg_reward=-1.276823 total_counts=12
+2026/07/04 18:43:26 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:26 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:26 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:26 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:26 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:26 [MAB] event=update_reward ts=1783183406474 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.404099 warm_start=true reward=-0.877175 count=13 avg_reward=-1.246081 total_counts=13
+2026/07/04 18:43:26 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:26 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86]
+2026/07/04 18:43:26 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:26 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:26 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:26 [MAB] event=update_reward ts=1783183406697 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.571411 warm_start=true reward=-1.272961 count=14 avg_reward=-1.248001 total_counts=14
+2026/07/04 18:43:26 [LB]: Periodic targets update
+2026/07/04 18:43:26 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:26 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:26 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:26 Found 3 targets
+2026/07/04 18:43:26 Adding AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:26 [LB][MAB] event=new_machine_tag_discovered tag=arm arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/04 18:43:26 [MAB] event=arm_added ts=1783183406990 policy=UCB1 function=mab_dynamic_1783183391 arm=arm arms=[arm,x86]
+2026/07/04 18:43:26 [LB] Adding target arm
+2026/07/04 18:43:29 [LB]: Periodic targets update
+2026/07/04 18:43:29 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:29 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:29 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:29 Found 3 targets
+2026/07/04 18:43:32 [LB]: Periodic targets update
+2026/07/04 18:43:33 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:33 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:33 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:33 Found 3 targets
+2026/07/04 18:43:34 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:34 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:34 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:34 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:34 [MAB] event=select_arm ts=1783183414925 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=least_tried score=0.000000 total_counts=14 arms=[arm,x86]
+2026/07/04 18:43:34 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:34 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:34 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:35 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:35 [MAB] event=skip_cold_start ts=1783183415453 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=8.326326 reason=cold_start
+2026/07/04 18:43:35 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:35 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:35 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:35 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:35 [MAB] event=select_arm ts=1783183415685 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=least_tried score=0.000000 total_counts=14 arms=[arm,x86]
+2026/07/04 18:43:35 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:35 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:35 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:35 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:35 [MAB] event=update_reward ts=1783183415690 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.770842 warm_start=true reward=-1.327298 count=1 avg_reward=-1.327298 total_counts=15
+2026/07/04 18:43:35 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:35 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:35 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:35 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:35 [MAB] event=arm_score ts=1783183415911 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.896154 count=14 avg_reward=-1.248001 total_counts=15
+2026/07/04 18:43:35 [MAB] event=arm_score ts=1783183415911 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.010806 count=1 avg_reward=-1.327298 total_counts=15
+2026/07/04 18:43:35 [MAB] event=select_arm ts=1783183415911 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.010806 total_counts=15 arms=[arm,x86]
+2026/07/04 18:43:35 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:35 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:35 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:35 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:35 [MAB] event=update_reward ts=1783183415914 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.727658 warm_start=true reward=-1.003443 count=2 avg_reward=-1.165371 total_counts=16
+2026/07/04 18:43:36 [LB]: Periodic targets update
+2026/07/04 18:43:36 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:36 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:36 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:36 Found 3 targets
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:36 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:36 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416138 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.891986 count=14 avg_reward=-1.248001 total_counts=16
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416138 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.223443 count=2 avg_reward=-1.165371 total_counts=16
+2026/07/04 18:43:36 [MAB] event=select_arm ts=1783183416138 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.223443 total_counts=16 arms=[arm,x86]
+2026/07/04 18:43:36 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:36 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:36 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:36 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:36 [MAB] event=update_reward ts=1783183416142 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.384059 warm_start=true reward=-1.219076 count=3 avg_reward=-1.183273 total_counts=17
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:36 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:36 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416366 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.888115 count=14 avg_reward=-1.248001 total_counts=17
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416366 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.405829 count=3 avg_reward=-1.183273 total_counts=17
+2026/07/04 18:43:36 [MAB] event=select_arm ts=1783183416366 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.405829 total_counts=17 arms=[arm,x86]
+2026/07/04 18:43:36 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:36 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:36 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:36 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:36 [MAB] event=update_reward ts=1783183416369 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.622241 warm_start=true reward=-0.964029 count=4 avg_reward=-1.128462 total_counts=18
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:36 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:36 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416596 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.884502 count=14 avg_reward=-1.248001 total_counts=18
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416596 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.448418 count=4 avg_reward=-1.128462 total_counts=18
+2026/07/04 18:43:36 [MAB] event=select_arm ts=1783183416596 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.448418 total_counts=18 arms=[arm,x86]
+2026/07/04 18:43:36 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:36 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:36 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:36 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:36 [MAB] event=update_reward ts=1783183416601 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.446910 warm_start=true reward=-1.237478 count=5 avg_reward=-1.150265 total_counts=19
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:36 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:36 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:36 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416825 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.881118 count=14 avg_reward=-1.248001 total_counts=19
+2026/07/04 18:43:36 [MAB] event=arm_score ts=1783183416825 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.536353 count=5 avg_reward=-1.150265 total_counts=19
+2026/07/04 18:43:36 [MAB] event=select_arm ts=1783183416825 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.536353 total_counts=19 arms=[arm,x86]
+2026/07/04 18:43:36 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:36 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:36 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:36 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:36 [MAB] event=update_reward ts=1783183416830 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.442517 warm_start=true reward=-1.236203 count=6 avg_reward=-1.164588 total_counts=20
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:37 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:37 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417049 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.877937 count=14 avg_reward=-1.248001 total_counts=20
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417049 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.599305 count=6 avg_reward=-1.164588 total_counts=20
+2026/07/04 18:43:37 [MAB] event=select_arm ts=1783183417049 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.599305 total_counts=20 arms=[arm,x86]
+2026/07/04 18:43:37 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:37 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:37 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:37 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:37 [MAB] event=update_reward ts=1783183417053 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.013173 warm_start=true reward=-1.102994 count=7 avg_reward=-1.155789 total_counts=21
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:37 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:37 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417278 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.874935 count=14 avg_reward=-1.248001 total_counts=21
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417278 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.628194 count=7 avg_reward=-1.155789 total_counts=21
+2026/07/04 18:43:37 [MAB] event=select_arm ts=1783183417278 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.628194 total_counts=21 arms=[arm,x86]
+2026/07/04 18:43:37 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:37 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:37 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:37 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:37 [MAB] event=update_reward ts=1783183417283 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.560713 warm_start=true reward=-1.269961 count=8 avg_reward=-1.170060 total_counts=22
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:37 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:37 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417502 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.872096 count=14 avg_reward=-1.248001 total_counts=22
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417502 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.672784 count=8 avg_reward=-1.170060 total_counts=22
+2026/07/04 18:43:37 [MAB] event=select_arm ts=1783183417502 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.672784 total_counts=22 arms=[arm,x86]
+2026/07/04 18:43:37 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:37 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:37 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:37 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:37 [MAB] event=update_reward ts=1783183417506 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.942451 warm_start=true reward=-1.079243 count=9 avg_reward=-1.159969 total_counts=23
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:37 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:37 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417728 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.869403 count=14 avg_reward=-1.248001 total_counts=23
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417728 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.687774 count=9 avg_reward=-1.159969 total_counts=23
+2026/07/04 18:43:37 [MAB] event=select_arm ts=1783183417728 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.687774 total_counts=23 arms=[arm,x86]
+2026/07/04 18:43:37 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:37 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:37 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:37 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:37 [MAB] event=update_reward ts=1783183417732 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.276284 warm_start=true reward=-1.186710 count=10 avg_reward=-1.162644 total_counts=24
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:37 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:37 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:37 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417959 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.866842 count=14 avg_reward=-1.248001 total_counts=24
+2026/07/04 18:43:37 [MAB] event=arm_score ts=1783183417959 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.711650 count=10 avg_reward=-1.162644 total_counts=24
+2026/07/04 18:43:37 [MAB] event=select_arm ts=1783183417959 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.711650 total_counts=24 arms=[arm,x86]
+2026/07/04 18:43:37 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:37 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:37 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:37 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:37 [MAB] event=update_reward ts=1783183417963 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.084581 warm_start=true reward=-1.126416 count=11 avg_reward=-1.159350 total_counts=25
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:38 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:38 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418185 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.726591 count=11 avg_reward=-1.159350 total_counts=25
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418185 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.864402 count=14 avg_reward=-1.248001 total_counts=25
+2026/07/04 18:43:38 [MAB] event=select_arm ts=1783183418185 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.726591 total_counts=25 arms=[arm,x86]
+2026/07/04 18:43:38 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:38 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:38 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:38 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:38 [MAB] event=update_reward ts=1783183418189 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.377032 warm_start=true reward=-1.216997 count=12 avg_reward=-1.164154 total_counts=26
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:38 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:38 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418421 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.862072 count=14 avg_reward=-1.248001 total_counts=26
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418421 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.747303 count=12 avg_reward=-1.164154 total_counts=26
+2026/07/04 18:43:38 [MAB] event=select_arm ts=1783183418421 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.747303 total_counts=26 arms=[arm,x86]
+2026/07/04 18:43:38 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:38 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:38 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:38 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:38 [MAB] event=update_reward ts=1783183418426 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.518200 warm_start=true reward=-1.508114 count=13 avg_reward=-1.190612 total_counts=27
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:38 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:38 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418655 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.859843 count=14 avg_reward=-1.248001 total_counts=27
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418655 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.787802 count=13 avg_reward=-1.190612 total_counts=27
+2026/07/04 18:43:38 [MAB] event=select_arm ts=1783183418655 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.787802 total_counts=27 arms=[arm,x86]
+2026/07/04 18:43:38 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:38 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:38 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:38 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:38 [MAB] event=update_reward ts=1783183418661 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.224812 warm_start=true reward=-1.440975 count=14 avg_reward=-1.208495 total_counts=28
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:38 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:38 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:38 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418886 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.857707 count=14 avg_reward=-1.248001 total_counts=28
+2026/07/04 18:43:38 [MAB] event=arm_score ts=1783183418886 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.818202 count=14 avg_reward=-1.208495 total_counts=28
+2026/07/04 18:43:38 [MAB] event=select_arm ts=1783183418886 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.818202 total_counts=28 arms=[arm,x86]
+2026/07/04 18:43:38 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:38 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:38 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:38 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:38 [MAB] event=update_reward ts=1783183418891 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.518954 warm_start=true reward=-1.258164 count=15 avg_reward=-1.211807 total_counts=29
+2026/07/04 18:43:39 [LB]: Periodic targets update
+2026/07/04 18:43:39 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:39 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:39 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:39 Found 3 targets
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:39 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:39 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419116 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.855657 count=14 avg_reward=-1.248001 total_counts=29
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419116 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.832767 count=15 avg_reward=-1.211807 total_counts=29
+2026/07/04 18:43:39 [MAB] event=select_arm ts=1783183419116 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.832767 total_counts=29 arms=[arm,x86]
+2026/07/04 18:43:39 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:39 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:39 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:39 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:39 [MAB] event=update_reward ts=1783183419119 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.524042 warm_start=true reward=-0.925862 count=16 avg_reward=-1.193935 total_counts=30
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:39 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:39 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419348 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.825088 count=16 avg_reward=-1.193935 total_counts=30
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419348 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.853687 count=14 avg_reward=-1.248001 total_counts=30
+2026/07/04 18:43:39 [MAB] event=select_arm ts=1783183419348 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.825088 total_counts=30 arms=[arm,x86]
+2026/07/04 18:43:39 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:39 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:39 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:39 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:39 [MAB] event=update_reward ts=1783183419354 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.592505 warm_start=true reward=-1.524426 count=17 avg_reward=-1.213376 total_counts=31
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:39 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:39 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419582 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.853821 count=17 avg_reward=-1.213376 total_counts=31
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419582 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.851791 count=14 avg_reward=-1.248001 total_counts=31
+2026/07/04 18:43:39 [MAB] event=select_arm ts=1783183419582 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.851791 total_counts=31 arms=[arm,x86]
+2026/07/04 18:43:39 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:39 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:39 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:39 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:39 [MAB] event=update_reward ts=1783183419585 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.342314 warm_start=true reward=-0.851139 count=15 avg_reward=-1.221544 total_counts=32
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:39 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:39 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:39 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419806 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.852163 count=17 avg_reward=-1.213376 total_counts=32
+2026/07/04 18:43:39 [MAB] event=arm_score ts=1783183419806 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.837003 count=15 avg_reward=-1.221544 total_counts=32
+2026/07/04 18:43:39 [MAB] event=select_arm ts=1783183419806 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.837003 total_counts=32 arms=[arm,x86]
+2026/07/04 18:43:39 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:39 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:39 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:39 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:39 [MAB] event=update_reward ts=1783183419810 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.150554 warm_start=true reward=-1.147578 count=16 avg_reward=-1.216921 total_counts=33
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:40 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:40 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420027 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.842942 count=16 avg_reward=-1.216921 total_counts=33
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420027 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.850563 count=17 avg_reward=-1.213376 total_counts=33
+2026/07/04 18:43:40 [MAB] event=select_arm ts=1783183420027 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.842942 total_counts=33 arms=[arm,x86]
+2026/07/04 18:43:40 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:40 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:40 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:40 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:40 [MAB] event=update_reward ts=1783183420029 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.194501 warm_start=true reward=-0.785955 count=17 avg_reward=-1.191570 total_counts=34
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:40 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:40 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420248 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.827211 count=17 avg_reward=-1.191570 total_counts=34
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420248 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.849017 count=17 avg_reward=-1.213376 total_counts=34
+2026/07/04 18:43:40 [MAB] event=select_arm ts=1783183420248 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.827211 total_counts=34 arms=[arm,x86]
+2026/07/04 18:43:40 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:40 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:40 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:40 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:40 [MAB] event=update_reward ts=1783183420252 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.271615 warm_start=true reward=-1.185284 count=18 avg_reward=-1.191221 total_counts=35
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:40 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:40 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420483 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.847523 count=17 avg_reward=-1.213376 total_counts=35
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420483 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.835675 count=18 avg_reward=-1.191221 total_counts=35
+2026/07/04 18:43:40 [MAB] event=select_arm ts=1783183420483 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.835675 total_counts=35 arms=[arm,x86]
+2026/07/04 18:43:40 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:40 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:40 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:40 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:40 [MAB] event=update_reward ts=1783183420488 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.959416 warm_start=true reward=-1.376097 count=19 avg_reward=-1.200951 total_counts=36
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:40 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:40 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420708 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.846076 count=17 avg_reward=-1.213376 total_counts=36
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420708 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.853520 count=19 avg_reward=-1.200951 total_counts=36
+2026/07/04 18:43:40 [MAB] event=select_arm ts=1783183420708 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.846076 total_counts=36 arms=[arm,x86]
+2026/07/04 18:43:40 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:40 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:40 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:40 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:40 [MAB] event=update_reward ts=1783183420713 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.284298 warm_start=true reward=-1.454957 count=18 avg_reward=-1.226797 total_counts=37
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:40 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:40 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:40 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420933 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.852195 count=19 avg_reward=-1.200951 total_counts=37
+2026/07/04 18:43:40 [MAB] event=arm_score ts=1783183420933 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.868484 count=18 avg_reward=-1.226797 total_counts=37
+2026/07/04 18:43:40 [MAB] event=select_arm ts=1783183420933 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.852195 total_counts=37 arms=[arm,x86]
+2026/07/04 18:43:40 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:40 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:40 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:40 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:40 [MAB] event=update_reward ts=1783183420936 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.420144 warm_start=true reward=-0.883827 count=20 avg_reward=-1.185095 total_counts=38
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:41 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:41 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421156 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.843916 count=20 avg_reward=-1.185095 total_counts=38
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421156 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.867163 count=18 avg_reward=-1.226797 total_counts=38
+2026/07/04 18:43:41 [MAB] event=select_arm ts=1783183421156 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.843916 total_counts=38 arms=[arm,x86]
+2026/07/04 18:43:41 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:41 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:41 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:41 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:41 [MAB] event=update_reward ts=1783183421162 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.028038 warm_start=true reward=-1.393279 count=21 avg_reward=-1.195008 total_counts=39
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:41 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:41 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421390 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.865881 count=18 avg_reward=-1.226797 total_counts=39
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421390 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.860866 count=21 avg_reward=-1.195008 total_counts=39
+2026/07/04 18:43:41 [MAB] event=select_arm ts=1783183421390 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.860866 total_counts=39 arms=[arm,x86]
+2026/07/04 18:43:41 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:41 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:41 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:41 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:41 [MAB] event=update_reward ts=1783183421395 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.237581 warm_start=true reward=-1.443993 count=22 avg_reward=-1.206326 total_counts=40
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:41 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:41 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421623 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.878739 count=22 avg_reward=-1.206326 total_counts=40
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421623 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.864637 count=18 avg_reward=-1.226797 total_counts=40
+2026/07/04 18:43:41 [MAB] event=select_arm ts=1783183421623 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.864637 total_counts=40 arms=[arm,x86]
+2026/07/04 18:43:41 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:41 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:41 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:41 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:41 [MAB] event=update_reward ts=1783183421629 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.351193 warm_start=true reward=-1.470450 count=19 avg_reward=-1.239621 total_counts=41
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:41 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:41 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:41 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421853 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.877645 count=22 avg_reward=-1.206326 total_counts=41
+2026/07/04 18:43:41 [MAB] event=arm_score ts=1783183421853 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.885942 count=19 avg_reward=-1.239621 total_counts=41
+2026/07/04 18:43:41 [MAB] event=select_arm ts=1783183421853 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.877645 total_counts=41 arms=[arm,x86]
+2026/07/04 18:43:41 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:41 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:41 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:41 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:41 [MAB] event=update_reward ts=1783183421858 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=4.133790 warm_start=true reward=-1.419195 count=23 avg_reward=-1.215581 total_counts=42
+2026/07/04 18:43:42 [LB]: Periodic targets update
+2026/07/04 18:43:42 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:42 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:42 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:42 Found 3 targets
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:42 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:42 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422083 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.893083 count=23 avg_reward=-1.215581 total_counts=42
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422083 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.884796 count=19 avg_reward=-1.239621 total_counts=42
+2026/07/04 18:43:42 [MAB] event=select_arm ts=1783183422083 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.884796 total_counts=42 arms=[arm,x86]
+2026/07/04 18:43:42 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:42 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:42 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:42 [MAB] event=update_reward ts=1783183422087 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.991000 warm_start=true reward=-1.095608 count=20 avg_reward=-1.232420 total_counts=43
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:42 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:42 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422308 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.885493 count=20 avg_reward=-1.232420 total_counts=43
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422308 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.892070 count=23 avg_reward=-1.215581 total_counts=43
+2026/07/04 18:43:42 [MAB] event=select_arm ts=1783183422308 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.885493 total_counts=43 arms=[arm,x86]
+2026/07/04 18:43:42 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:42 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:42 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:42 [MAB] event=update_reward ts=1783183422311 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.479025 warm_start=true reward=-0.907865 count=21 avg_reward=-1.216965 total_counts=44
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:42 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:42 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422526 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.891083 count=23 avg_reward=-1.215581 total_counts=44
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422526 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.877366 count=21 avg_reward=-1.216965 total_counts=44
+2026/07/04 18:43:42 [MAB] event=select_arm ts=1783183422526 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.877366 total_counts=44 arms=[arm,x86]
+2026/07/04 18:43:42 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:42 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:42 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:42 [MAB] event=update_reward ts=1783183422530 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.439081 warm_start=true reward=-0.891621 count=22 avg_reward=-1.202177 total_counts=45
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:42 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:42 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422756 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.890120 count=23 avg_reward=-1.215581 total_counts=45
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422756 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.869402 count=22 avg_reward=-1.202177 total_counts=45
+2026/07/04 18:43:42 [MAB] event=select_arm ts=1783183422756 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.869402 total_counts=45 arms=[arm,x86]
+2026/07/04 18:43:42 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:42 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:42 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:42 [MAB] event=update_reward ts=1783183422761 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.884999 warm_start=true reward=-1.357123 count=23 avg_reward=-1.208914 total_counts=46
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:42 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:42 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:42 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422978 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.889182 count=23 avg_reward=-1.215581 total_counts=46
+2026/07/04 18:43:42 [MAB] event=arm_score ts=1783183422978 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.882515 count=23 avg_reward=-1.208914 total_counts=46
+2026/07/04 18:43:42 [MAB] event=select_arm ts=1783183422978 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.882515 total_counts=46 arms=[arm,x86]
+2026/07/04 18:43:42 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:42 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:42 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:42 [MAB] event=update_reward ts=1783183422982 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=3.048153 warm_start=true reward=-1.114536 count=24 avg_reward=-1.204981 total_counts=47
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:43 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:43 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423205 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.888267 count=23 avg_reward=-1.215581 total_counts=47
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423205 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.884559 count=24 avg_reward=-1.204981 total_counts=47
+2026/07/04 18:43:43 [MAB] event=select_arm ts=1783183423205 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.884559 total_counts=47 arms=[arm,x86]
+2026/07/04 18:43:43 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:43 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:43 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:43 [MAB] event=update_reward ts=1783183423209 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=2.953193 warm_start=true reward=-1.082887 count=25 avg_reward=-1.200097 total_counts=48
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:43 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:43 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423432 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.887373 count=23 avg_reward=-1.215581 total_counts=48
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423432 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.885291 count=25 avg_reward=-1.200097 total_counts=48
+2026/07/04 18:43:43 [MAB] event=select_arm ts=1783183423432 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=arm reason=ucb_score score=-0.885291 total_counts=48 arms=[arm,x86]
+2026/07/04 18:43:43 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/04 18:43:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:43 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=arm candidate=AeEVFJeFpUcbPzPUXEi6b81783183406924160355 candidate_tag=arm
+2026/07/04 18:43:43 [LB-Update] Node AeEVFJeFpUcbPzPUXEi6b81783183406924160355 reported 512 MB free
+2026/07/04 18:43:43 [MAB] event=update_reward ts=1783183423437 policy=UCB1 function=mab_dynamic_1783183391 arm=arm duration_ms=4.444095 warm_start=true reward=-1.491576 count=26 avg_reward=-1.211308 total_counts=49
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:43 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:43 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423653 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.901795 count=26 avg_reward=-1.211308 total_counts=49
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423653 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.886500 count=23 avg_reward=-1.215581 total_counts=49
+2026/07/04 18:43:43 [MAB] event=select_arm ts=1783183423653 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.886500 total_counts=49 arms=[arm,x86]
+2026/07/04 18:43:43 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:43 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:43 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:43 [MAB] event=update_reward ts=1783183423656 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.370108 warm_start=true reward=-0.862936 count=24 avg_reward=-1.200887 total_counts=50
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:43 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:43 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:43 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423877 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.877900 count=24 avg_reward=-1.200887 total_counts=50
+2026/07/04 18:43:43 [MAB] event=arm_score ts=1783183423877 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.900992 count=26 avg_reward=-1.211308 total_counts=50
+2026/07/04 18:43:43 [MAB] event=select_arm ts=1783183423877 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.877900 total_counts=50 arms=[arm,x86]
+2026/07/04 18:43:43 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:43 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:43 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:43 [MAB] event=update_reward ts=1783183423881 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.623905 warm_start=true reward=-0.964664 count=25 avg_reward=-1.191438 total_counts=51
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:44 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:44 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424103 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.874177 count=25 avg_reward=-1.191438 total_counts=51
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424103 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.900208 count=26 avg_reward=-1.211308 total_counts=51
+2026/07/04 18:43:44 [MAB] event=select_arm ts=1783183424103 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.874177 total_counts=51 arms=[arm,x86]
+2026/07/04 18:43:44 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:44 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:44 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:44 [MAB] event=update_reward ts=1783183424107 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.425803 warm_start=true reward=-1.231336 count=26 avg_reward=-1.192973 total_counts=52
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:44 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:44 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424325 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.881105 count=26 avg_reward=-1.192973 total_counts=52
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424326 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.899441 count=26 avg_reward=-1.211308 total_counts=52
+2026/07/04 18:43:44 [MAB] event=select_arm ts=1783183424326 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.881105 total_counts=52 arms=[arm,x86]
+2026/07/04 18:43:44 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:44 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:44 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:44 [MAB] event=update_reward ts=1783183424329 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.784410 warm_start=true reward=-1.024036 count=27 avg_reward=-1.186716 total_counts=53
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:44 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:44 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424542 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.879941 count=27 avg_reward=-1.186716 total_counts=53
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424542 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.898690 count=26 avg_reward=-1.211308 total_counts=53
+2026/07/04 18:43:44 [MAB] event=select_arm ts=1783183424542 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.879941 total_counts=53 arms=[arm,x86]
+2026/07/04 18:43:44 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:44 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:44 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:44 [MAB] event=update_reward ts=1783183424544 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=1.839579 warm_start=true reward=-0.609537 count=28 avg_reward=-1.166102 total_counts=54
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:44 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:44 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424755 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.864148 count=28 avg_reward=-1.166102 total_counts=54
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424755 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.897955 count=26 avg_reward=-1.211308 total_counts=54
+2026/07/04 18:43:44 [MAB] event=select_arm ts=1783183424755 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.864148 total_counts=54 arms=[arm,x86]
+2026/07/04 18:43:44 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:44 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:44 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:44 [MAB] event=update_reward ts=1783183424757 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=1.810253 warm_start=true reward=-0.593467 count=29 avg_reward=-1.146356 total_counts=55
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:44 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:44 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:44 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424970 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.848972 count=29 avg_reward=-1.146356 total_counts=55
+2026/07/04 18:43:44 [MAB] event=arm_score ts=1783183424970 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.897235 count=26 avg_reward=-1.211308 total_counts=55
+2026/07/04 18:43:44 [MAB] event=select_arm ts=1783183424970 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.848972 total_counts=55 arms=[arm,x86]
+2026/07/04 18:43:44 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:44 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:44 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:44 [MAB] event=update_reward ts=1783183424974 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.708309 warm_start=true reward=-0.996324 count=30 avg_reward=-1.141355 total_counts=56
+2026/07/04 18:43:45 [LB]: Periodic targets update
+2026/07/04 18:43:45 Found target: AeEVFJeFpUcbPzPUXEi6b81783183406924160355
+2026/07/04 18:43:45 Found target: JPSvxyRs3tnWs5gniKAy61783183392964657713
+2026/07/04 18:43:45 Found target: gqZ66fNcfZCr6YoaMNshSc1783183392965483491
+2026/07/04 18:43:45 Found 3 targets
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:45 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:45 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425194 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.848312 count=30 avg_reward=-1.141355 total_counts=56
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425194 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.896529 count=26 avg_reward=-1.211308 total_counts=56
+2026/07/04 18:43:45 [MAB] event=select_arm ts=1783183425194 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.848312 total_counts=56 arms=[arm,x86]
+2026/07/04 18:43:45 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:45 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:45 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:45 [MAB] event=update_reward ts=1783183425198 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.861911 warm_start=true reward=-1.051490 count=31 avg_reward=-1.138456 total_counts=57
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:45 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:45 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425419 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.849546 count=31 avg_reward=-1.138456 total_counts=57
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425419 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.895838 count=26 avg_reward=-1.211308 total_counts=57
+2026/07/04 18:43:45 [MAB] event=select_arm ts=1783183425419 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.849546 total_counts=57 arms=[arm,x86]
+2026/07/04 18:43:45 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:45 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:45 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:45 [MAB] event=update_reward ts=1783183425423 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.261085 warm_start=true reward=-1.182060 count=32 avg_reward=-1.139819 total_counts=58
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:45 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:45 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425644 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.854847 count=32 avg_reward=-1.139819 total_counts=58
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425644 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.895160 count=26 avg_reward=-1.211308 total_counts=58
+2026/07/04 18:43:45 [MAB] event=select_arm ts=1783183425644 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.854847 total_counts=58 arms=[arm,x86]
+2026/07/04 18:43:45 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:45 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:45 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:45 [MAB] event=update_reward ts=1783183425648 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.224374 warm_start=true reward=-1.170739 count=33 avg_reward=-1.140756 total_counts=59
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:45 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:45 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:45 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425868 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.859545 count=33 avg_reward=-1.140756 total_counts=59
+2026/07/04 18:43:45 [MAB] event=arm_score ts=1783183425868 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.894496 count=26 avg_reward=-1.211308 total_counts=59
+2026/07/04 18:43:45 [MAB] event=select_arm ts=1783183425868 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.859545 total_counts=59 arms=[arm,x86]
+2026/07/04 18:43:45 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:45 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:45 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:45 [MAB] event=update_reward ts=1783183425871 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.482735 warm_start=true reward=-0.909361 count=34 avg_reward=-1.133950 total_counts=60
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:46 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:46 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426091 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.856335 count=34 avg_reward=-1.133950 total_counts=60
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426091 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.893843 count=26 avg_reward=-1.211308 total_counts=60
+2026/07/04 18:43:46 [MAB] event=select_arm ts=1783183426091 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.856335 total_counts=60 arms=[arm,x86]
+2026/07/04 18:43:46 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:46 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:46 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:46 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:46 [MAB] event=update_reward ts=1783183426095 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.664459 warm_start=true reward=-0.980001 count=35 avg_reward=-1.129552 total_counts=61
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:46 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:46 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426314 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.893203 count=26 avg_reward=-1.211308 total_counts=61
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426314 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.855380 count=35 avg_reward=-1.129552 total_counts=61
+2026/07/04 18:43:46 [MAB] event=select_arm ts=1783183426314 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.855380 total_counts=61 arms=[arm,x86]
+2026/07/04 18:43:46 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:46 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:46 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:46 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:46 [MAB] event=update_reward ts=1783183426318 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=2.999268 warm_start=true reward=-1.098368 count=36 avg_reward=-1.128686 total_counts=62
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/04 18:43:46 [LB] Compatible tag found: function=mab_dynamic_1783183391 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/04 18:43:46 [LB] Compatible tags for function 'mab_dynamic_1783183391': [x86 arm]
+2026/07/04 18:43:46 [LB][MAB] event=before_select function=mab_dynamic_1783183391 compatible_tags=[x86 arm] has_context=true
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426541 policy=UCB1 function=mab_dynamic_1783183391 arm=arm score=-0.892575 count=26 avg_reward=-1.211308 total_counts=62
+2026/07/04 18:43:46 [MAB] event=arm_score ts=1783183426541 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 score=-0.857814 count=36 avg_reward=-1.128686 total_counts=62
+2026/07/04 18:43:46 [MAB] event=select_arm ts=1783183426541 policy=UCB1 function=mab_dynamic_1783183391 selected_arm=x86 reason=ucb_score score=-0.857814 total_counts=62 arms=[arm,x86]
+2026/07/04 18:43:46 [LB][MAB] event=after_select function=mab_dynamic_1783183391 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/04 18:43:46 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/04 18:43:46 [LB] Selected target for function 'mab_dynamic_1783183391': target_tag=x86 candidate=JPSvxyRs3tnWs5gniKAy61783183392964657713 candidate_tag=x86
+2026/07/04 18:43:46 [LB-Update] Node JPSvxyRs3tnWs5gniKAy61783183392964657713 reported 512 MB free
+2026/07/04 18:43:46 [MAB] event=update_reward ts=1783183426546 policy=UCB1 function=mab_dynamic_1783183391 arm=x86 duration_ms=3.401957 warm_start=true reward=-1.224351 count=37 avg_reward=-1.131271 total_counts=63

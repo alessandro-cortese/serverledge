@@ -248,8 +248,22 @@ func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Fun
 
 	switch b.mode {
 	case MAB:
+		log.Printf(
+			"[LB][MAB] event=before_select function=%s compatible_tags=%v has_context=%t\n",
+			funcName,
+			compatibleTags,
+			ctx != nil,
+		)
+
 		bandit := mab.GlobalBanditManager.GetBandit(funcName)
 		selectedTag := bandit.SelectArm(ctx)
+
+		log.Printf(
+			"[LB][MAB] event=after_select function=%s selected_tag=%s compatible_tags=%v\n",
+			funcName,
+			selectedTag,
+			compatibleTags,
+		)
 
 		if containsString(compatibleTags, selectedTag) {
 			// Update archRRIndex to maintain consistency if the mode changes
@@ -263,9 +277,12 @@ func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Fun
 		}
 
 		log.Printf(
-			"[LB] MAB selected incompatible or unavailable tag '%s' for function '%s'. Falling back to RR\n",
-			selectedTag, funcName,
+			"[LB][MAB] event=incompatible_selection function=%s selected_tag=%s compatible_tags=%v fallback=rr\n",
+			funcName,
+			selectedTag,
+			compatibleTags,
 		)
+
 		return b.selectArchitectureRRFrom(compatibleTags)
 
 	case RR:
@@ -460,7 +477,12 @@ func (b *GeneralLoadBalancer) AddTarget(t *middleware.ProxyTarget) bool {
 		b.rrIndexes[tag] = 0
 
 		// Update MAB arms dynamically when a new tag appears.
-		log.Printf("[LB] New machine_tag discovered: %s. Creating ring and adding MAB arm.\n", tag)
+		log.Printf(
+			"[LB][MAB] event=new_machine_tag_discovered tag=%s arch=%s action=create_ring_and_add_mab_arm\n",
+			tag,
+			arch,
+		)
+
 		mab.GlobalBanditManager.AddArmToAll(tag)
 	}
 

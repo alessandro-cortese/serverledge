@@ -1,0 +1,50 @@
+2026/07/05 17:01:31 Local node id: (ROME)CnVSQXCCciGLTt3byQBsX41783263691919055717 - x86 (arch: amd64)
+2026/07/05 17:01:31 Registration for node: (ROME)CnVSQXCCciGLTt3byQBsX41783263691919055717 - x86
+2026/07/05 17:01:31 Connecting to etcd
+2026/07/05 17:01:31 Connected to etcd
+2026/07/05 17:01:31 etcd connection state: TRANSIENT_FAILURE
+2026/07/05 17:01:31 etcd: transient failure, triggering reconnect
+2026/07/05 17:01:32 etcd connection state: READY
+2026/07/05 17:01:32 etcd: connected and ready
+2026/07/05 17:01:32 Registering to etcd: registry/ROME/x86/CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:32 Configured scheduling policy: default
+2026/07/05 17:01:32 Configured offloading policy: disable
+2026/07/05 17:01:32 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/05 17:01:32 Scheduler started.
+2026/07/05 17:01:32 No remote area is configured; vertical offloading disabled
+2026/07/05 17:01:32 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/07/05 17:01:41 New request: creation of mab_dynamic_linucb_1783263690
+2026/07/05 17:01:41 Container c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb has name /exciting_robinson
+2026/07/05 17:01:42 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:42 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:42 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:42 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:42 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:43 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:43 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:43 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:43 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:43 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:43 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:43 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:43 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:44 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:44 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:44 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:44 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:44 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:44 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:44 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:44 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:44 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:44 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:45 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:45 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:45 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:45 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:45 Using warm c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb for mab_dynamic_linucb_1783263690. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/05 17:01:45 [mab_dynamic_linucb_1783263690] Executing on container: c4d5743ca4ab0bae6686d16fb04e5e007b29bb9f61779848b56b1bb947bfd8fb
+2026/07/05 17:01:52 Periodic nearby Monitoring
+2026/07/05 17:01:52 Requesting status information for 192.168.0.46:9881
+2026/07/05 17:02:02 No remote area is configured; vertical offloading disabled

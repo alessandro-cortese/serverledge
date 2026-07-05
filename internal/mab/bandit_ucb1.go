@@ -17,10 +17,11 @@ type ArmStats struct {
 
 // UCB1Bandit is the bandit that handles decision for ONE function
 type UCB1Bandit struct {
-	TotalCounts int64                // number of total executions (t)
-	Arms        map[string]*ArmStats // Map "amd64" -> Stats, "arm64" -> Stats for each arm
-	mu          sync.RWMutex         // Mutex per thread-safety
-	c           float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
+	FunctionName string               // TODO: Ask if can do this
+	TotalCounts  int64                // number of total executions (t)
+	Arms         map[string]*ArmStats // Map "amd64" -> Stats, "arm64" -> Stats for each arm
+	mu           sync.RWMutex         // Mutex per thread-safety
+	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
 	// Higher values lead to more exploration. Lower values lead to more exploitation.
 }
 
@@ -31,6 +32,13 @@ func (b *UCB1Bandit) InitArm(arm string) {
 	if _, exists := b.Arms[arm]; !exists {
 		b.Arms[arm] = &ArmStats{Count: 0, SumRewards: 0, AvgReward: 0}
 	}
+
+	logMABArmAdded(
+		string(b.GetType()),
+		arm,
+		b.FunctionName,
+		formatArmsFromMap(b.Arms),
+	)
 }
 
 // SelectArm implements UCB-1 formulas
@@ -45,42 +53,68 @@ func (b *UCB1Bandit) SelectArm(ctx *Context) string {
 	currentMinSample := int64(math.MaxInt64)
 	leastTriedArch := ""
 
-	// 1. If an arm hasn't tried at least minSampleCount times, it has to be tried. If both haven't reached this threshold,
-	// we choose the one with fewer tries.
+	// If an arm hasn't tried at least minSampleCount times, it has to be tried
+	// If more than one arm hasn't reached this threshold, choose the least tried one
 	for arch, stats := range b.Arms {
 		if stats.Count < minSampleCount && stats.Count < currentMinSample {
 			currentMinSample = stats.Count
 			leastTriedArch = arch
 		}
 	}
+
 	if leastTriedArch != "" {
-		log.Printf("Using (forced) least tried arch: %s", leastTriedArch)
-		b.TotalCounts++
-		b.Arms[leastTriedArch].Count = b.Arms[leastTriedArch].Count + 1
+
+		logMABSelectArm(
+			string(b.GetType()),
+			b.FunctionName,
+			leastTriedArch,
+			"least_tried",
+			0.0,
+			b.TotalCounts,
+			formatArmsFromMap(b.Arms),
+		)
+
 		return leastTriedArch
 	}
 
-	bestScore := -math.MaxFloat64 // Initialize with a very low score
+	bestScore := -math.MaxFloat64
 	bestArch := ""
 
-	// 2. Calculate UCB1 score for each architecture
+	// Calculate UCB1 score for each architecture
 	for arch, stats := range b.Arms {
-		// Formula: Q(a) + c * sqrt( ln(t) / N(a) ) where Q(a) is AvgReward, t is TotalCounts, N(a) is stats.Count
 		explorationBonus := b.c * math.Sqrt(math.Log(float64(b.TotalCounts))/float64(stats.Count))
 		score := stats.AvgReward + explorationBonus
-		log.Printf("Score for %s: %f\n", arch, score)
+
+		logMABArmScore(
+			string(b.GetType()),
+			b.FunctionName,
+			arch,
+			score,
+			stats.Count,
+			stats.AvgReward,
+			b.TotalCounts,
+		)
 
 		if score > bestScore {
-			bestScore = score // Update best score
+			bestScore = score
 			bestArch = arch
 		}
 	}
+
 	if bestArch == "" {
 		log.Printf("Couldn't select any ARM. Panic\n")
 		panic(1)
 	}
-	b.TotalCounts++
-	b.Arms[bestArch].Count = b.Arms[bestArch].Count + 1
+
+	logMABSelectArm(
+		string(b.GetType()),
+		b.FunctionName,
+		bestArch,
+		"ucb_score",
+		bestScore,
+		b.TotalCounts,
+		formatArmsFromMap(b.Arms),
+	)
 
 	return bestArch
 }
@@ -92,26 +126,48 @@ func (b *UCB1Bandit) UpdateReward(arch string, ctx *Context, isWarmStart bool, d
 	defer b.mu.Unlock()
 
 	if ctx != nil {
-		ctx = nil // is not used here but will still be set in MAB mode, help garbage collection to get rid of this
-	}
-	if !isWarmStart { // redact this run if it was not a warm start. Likely to be an outlier.
-		b.TotalCounts--
-		b.Arms[arch].Count--
-		return
+		ctx = nil // is not used here but will still be set in MAB mode
 	}
 
 	if _, ok := b.Arms[arch]; !ok {
 		return // Should not happen
 	}
 
+	if !isWarmStart {
+		// Redact this run if it was not a warm start. Likely to be an outlier.
+		logMABSkipColdStart(
+			string(b.GetType()),
+			b.FunctionName,
+			arch,
+			durationMs,
+		)
+
+		return
+	}
+
 	stats := b.Arms[arch]
 
-	// reward calculation
-	reward := -math.Log(durationMs) // reward as negative Log to handle better very slow and very fast exec times
+	// Reward calculation.
+	reward := -math.Log(durationMs)
 
-	// Update average reward
+	stats.Count++
+	b.TotalCounts++
+
+	// Update average reward.
 	stats.SumRewards += reward
 	stats.AvgReward = stats.SumRewards / float64(stats.Count)
+
+	logMABUpdateReward(
+		string(b.GetType()),
+		b.FunctionName,
+		arch,
+		durationMs,
+		isWarmStart,
+		reward,
+		stats.Count,
+		stats.AvgReward,
+		b.TotalCounts,
+	)
 }
 
 func (b *UCB1Bandit) GetType() BanditType {

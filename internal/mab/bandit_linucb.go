@@ -12,7 +12,8 @@ import (
 // LinUCBDisjointPolicy implements the LinUCB algorithm with disjoint linear models.
 // Reference: Li et al., "A Contextual-Bandit Approach to Personalized News Article Recommendation", Algorithm 1.
 type LinUCBDisjointPolicy struct {
-	Alpha float64 // Exploration parameter
+	FunctionName string  // TODO: Ask if I can do this
+	Alpha        float64 // Exploration parameter
 
 	// Maps each arm to its features (A, b)
 	Arms map[string]*LinUCBArmState
@@ -32,11 +33,12 @@ type LinUCBArmState struct {
 }
 
 // NewLinUCBDisjointPolicy creates a new instance of the policy.
-func NewLinUCBDisjointPolicy(alpha float64) *LinUCBDisjointPolicy {
+func NewLinUCBDisjointPolicy(functionName string, alpha float64) *LinUCBDisjointPolicy {
 	return &LinUCBDisjointPolicy{
-		Alpha: alpha,
-		Arms:  make(map[string]*LinUCBArmState),
-		Dim:   2, // Currently: Bias + Memory Usage
+		FunctionName: functionName,
+		Alpha:        alpha,
+		Arms:         make(map[string]*LinUCBArmState),
+		Dim:          2, // Currently: Bias + Memory Usage
 	}
 }
 
@@ -62,6 +64,13 @@ func (p *LinUCBDisjointPolicy) InitArm(arm string) {
 		A: A,
 		b: b,
 	}
+
+	logMABArmAdded(
+		string(p.GetType()),
+		arm,
+		p.FunctionName,
+		formatArmsFromMap(p.Arms),
+	)
 }
 
 // SelectArm calculates the UCB score for each arm using the context and returns the best one.
@@ -107,7 +116,15 @@ func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
 		// Final UCB Score for this arm
 		score := expectedReward + confidence
 
-		log.Printf("[LinUCB] Arm: %s, Mem: %.2f, Exp: %.4f, Conf: %.4f, Score: %.4f", arm, memUsage, expectedReward, confidence, score)
+		logMABContextualArmScore(
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			score,
+			expectedReward,
+			confidence,
+			memUsage,
+		)
 
 		if score > bestScore {
 			bestScore = score
@@ -120,6 +137,15 @@ func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
 		panic(2) // should never happen if initialized correctly
 	}
 
+	logMABContextualSelectArm(
+		string(p.GetType()),
+		p.FunctionName,
+		bestArm,
+		"linucb_score",
+		bestScore,
+		formatArmsFromMap(p.Arms),
+	)
+
 	return bestArm
 }
 
@@ -130,6 +156,12 @@ func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStar
 	defer p.mu.Unlock()
 
 	if !isWarmStart {
+		logMABSkipColdStart(
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			durationMs,
+		)
 		return // likely an outlier, skip update
 	}
 
@@ -147,7 +179,9 @@ func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStar
 		log.Printf("[LinUCB] Warning: Context is nil for arm %s", arm)
 		panic(4) // should never happen
 	}
+
 	lambda := config.GetFloat(config.MAB_LINUCB_LAMBDA, 0.0)
+
 	// reward as negative Log to handle better very slow and very fast exec times plus eventual memory penalty
 	reward := -math.Log(durationMs) - (lambda * memPenalty(memUsage))
 	x := p.computeFeatures(memUsage)
@@ -161,6 +195,17 @@ func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStar
 	var scaledX mat.VecDense
 	scaledX.ScaleVec(reward, x)
 	state.b.AddVec(state.b, &scaledX)
+
+	logMABContextualUpdateReward(
+		string(p.GetType()),
+		p.FunctionName,
+		arm,
+		durationMs,
+		isWarmStart,
+		memUsage,
+		lambda,
+		reward,
+	)
 }
 
 func memPenalty(memUsage float64) float64 {

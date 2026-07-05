@@ -1,0 +1,361 @@
+2026/07/05 16:12:14 [LB][MAB] event=new_machine_tag_discovered tag=x86 arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/05 16:12:14 [LB] Adding target x86
+2026/07/05 16:12:14 [LB] Adding target x86
+2026/07/05 16:12:17 [LB]: Periodic targets update
+2026/07/05 16:12:19 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:19 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:19 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:19 BanditManager GetBandit: policy type: UCB1
+2026/07/05 16:12:20 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:20 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:20 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:20 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:20 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:20 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:20 [LB]: Periodic targets update
+2026/07/05 16:12:20 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:20 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:20 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:20 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:20 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:20 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:21 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:21 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:21 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:21 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:21 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:21 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:21 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:21 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:21 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:21 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:21 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:21 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:21 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:21 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:21 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:22 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:22 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:22 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:22 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:22 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:22 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:22 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:22 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:22 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:22 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:22 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:22 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:23 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:23 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86]
+2026/07/05 16:12:23 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:23 [LB]: Periodic targets update
+2026/07/05 16:12:23 Adding S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363
+2026/07/05 16:12:23 [LB][MAB] event=new_machine_tag_discovered tag=arm arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/05 16:12:23 [LB] Adding target arm
+2026/07/05 16:12:26 [LB]: Periodic targets update
+2026/07/05 16:12:29 [LB]: Periodic targets update
+2026/07/05 16:12:31 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:31 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:31 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:31 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:31 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:31 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:32 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:32 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:32 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:32 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:32 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:32 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:32 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:32 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:32 [LB]: Periodic targets update
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:32 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:32 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:32 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:32 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:32 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:32 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:32 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:32 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:32 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:32 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:32 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:32 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:32 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:33 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:33 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:33 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:33 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:33 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:33 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:33 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:33 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:33 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:33 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:33 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:33 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:33 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:33 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:33 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:33 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:33 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:34 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:34 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:34 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:34 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:34 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:34 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:34 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:34 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:34 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:34 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:34 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:34 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:34 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:34 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:34 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:34 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:34 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:35 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:35 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:35 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:35 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:35 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:35 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:35 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:35 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:35 [LB]: Periodic targets update
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:35 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:35 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:35 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:35 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:35 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:35 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:35 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:35 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:35 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:35 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:35 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:35 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:35 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:36 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:36 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:36 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:36 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:36 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:36 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:36 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:36 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:36 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:36 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:36 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:36 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:36 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:36 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:36 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:36 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:36 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:37 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:37 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:37 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:37 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:37 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:37 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:37 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:37 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:37 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:37 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:37 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:37 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:37 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:37 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:37 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:37 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:37 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:38 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:38 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:38 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:38 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:38 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:38 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:38 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:38 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:38 [LB]: Periodic targets update
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:38 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:38 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:38 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:38 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:38 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:38 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:38 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:38 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:38 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:39 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:39 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:39 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:39 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:39 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:39 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:39 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:39 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:39 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:39 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:39 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:39 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:39 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:39 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:39 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:39 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:39 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:39 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:39 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:39 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:39 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:40 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:40 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:40 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:40 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:40 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:40 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:40 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:40 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:40 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:40 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:40 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:40 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:40 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:40 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:40 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:40 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:40 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:41 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:41 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:41 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:41 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:41 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:41 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:41 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:41 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:41 [LB]: Periodic targets update
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:41 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:41 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:41 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:41 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:41 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:41 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:41 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:41 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:41 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:41 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:41 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:41 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:41 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:42 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:42 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:42 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:42 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:42 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:42 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:42 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=x86 compatible_tags=[x86 arm]
+2026/07/05 16:12:42 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=x86 candidate=VZwHpZzt8UyUuGVuiXtpw71783260729385586971 candidate_tag=x86
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:42 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:42 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:42 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:42 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:42 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:42 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:42 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:42 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:42 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm
+2026/07/05 16:12:43 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 16:12:43 [LB] Compatible tag found: function=mab_dynamic_1783260728 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 16:12:43 [LB] Compatible tags for function 'mab_dynamic_1783260728': [x86 arm]
+2026/07/05 16:12:43 [LB][MAB] event=before_select function=mab_dynamic_1783260728 compatible_tags=[x86 arm] has_context=true
+2026/07/05 16:12:43 [LB][MAB] event=after_select function=mab_dynamic_1783260728 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 16:12:43 [LB] Selected target for function 'mab_dynamic_1783260728': target_tag=arm candidate=S6nkJ7Pk9WvVuQEqbDNt3F1783260743367764363 candidate_tag=arm

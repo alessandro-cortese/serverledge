@@ -1,0 +1,225 @@
+[phase 1][1/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.50896115,
+	"IsWarmStart": false,
+	"InitTime": 0.500587378,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.008373294000000031,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][2/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.003737961,
+	"IsWarmStart": true,
+	"InitTime": 0.00013224,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003605483,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][3/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.003782516,
+	"IsWarmStart": true,
+	"InitTime": 0.000142942,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003639206,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][4/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.003098318,
+	"IsWarmStart": true,
+	"InitTime": 0.000093887,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003004129,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][5/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.002291932,
+	"IsWarmStart": true,
+	"InitTime": 0.000094233,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.002197547,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][6/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.004247538,
+	"IsWarmStart": true,
+	"InitTime": 0.000198036,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.004049252,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][7/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.005207943,
+	"IsWarmStart": true,
+	"InitTime": 0.000183931,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.005023608,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][8/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.002041097,
+	"IsWarmStart": true,
+	"InitTime": 0.000078093,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.001962859,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][9/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.003976175,
+	"IsWarmStart": true,
+	"InitTime": 0.00011344,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003862473,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][10/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.002748553,
+	"IsWarmStart": true,
+	"InitTime": 0.00008665,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.002661757,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][11/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.002504873,
+	"IsWarmStart": true,
+	"InitTime": 0.000059931,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.002444625,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][12/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.004180727,
+	"IsWarmStart": true,
+	"InitTime": 0.000160806,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.004019443,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][13/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.00327166,
+	"IsWarmStart": true,
+	"InitTime": 0.00010735,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003163694,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][14/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.004107069,
+	"IsWarmStart": true,
+	"InitTime": 0.000120254,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.003986616,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+
+[phase 1][15/15]
+{
+	"Success": true,
+	"Result": "\"Hello, Serverledge!\\nParams: {'name': 'World'}\"",
+	"ResponseTime": 0.002956226,
+	"IsWarmStart": true,
+	"InitTime": 0.000107881,
+	"QueueingTime": 0,
+	"OffloadLatency": 0,
+	"Duration": 0.002848095,
+	"Output": "Executing function....\n\n",
+	"ExecutionArea": "ROME",
+	"ExecutionNode": "VZwHpZzt8UyUuGVuiXtpw71783260729385586971"
+}
+

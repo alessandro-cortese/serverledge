@@ -50,14 +50,15 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 		case "LinUCB":
 			// Alpha param could also be in config
 			alpha := config.GetFloat(config.MAB_LINUCB_ALPHA, 0.1)
-			newBandit = NewLinUCBDisjointPolicy(alpha)
+			newBandit = NewLinUCBDisjointPolicy(functionName, alpha)
 			log.Printf("Initialized LinUCB bandit for %s", functionName)
 		default:
 			// Default to UCB1 (Legacy)
 			newBandit = &UCB1Bandit{
-				TotalCounts: 0,
-				Arms:        map[string]*ArmStats{},
-				c:           config.GetFloat(config.MAB_UCB1_C, 0.8),
+				FunctionName: functionName,
+				TotalCounts:  0,
+				Arms:         map[string]*ArmStats{},
+				c:            config.GetFloat(config.MAB_UCB1_C, 0.8),
 			}
 			log.Printf("Initialized UCB1 bandit for %s", functionName)
 		}

@@ -1,0 +1,756 @@
+2026/07/05 17:01:36 Registration for node: (ROME)SXFWykSmJkVpKiSqXMf4cP1783263696919711951 - amd64
+2026/07/05 17:01:36 Connecting to etcd
+2026/07/05 17:01:36 Connected to etcd
+2026/07/05 17:01:36 etcd connection state: READY
+2026/07/05 17:01:36 etcd: connected and ready
+2026/07/05 17:01:36 Registering to etcd: registry/ROME/__lb/amd64/SXFWykSmJkVpKiSqXMf4cP1783263696919711951
+2026/07/05 17:01:36 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:36 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:36 Found 2 targets
+2026/07/05 17:01:36 Initializing with 2 targets.
+2026/07/05 17:01:36 Running ArchitectureAwareLB with 128 replicas per node in the hash rings
+2026/07/05 17:01:36 LB mode set to MAB
+2026/07/05 17:01:36 [LB][MAB] event=new_machine_tag_discovered tag=x86 arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/05 17:01:36 [LB] Adding target x86
+2026/07/05 17:01:36 [LB] Adding target x86
+⇨ http server started on [::]:8080
+2026/07/05 17:01:39 [LB]: Periodic targets update
+2026/07/05 17:01:39 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:39 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:39 Found 2 targets
+2026/07/05 17:01:41 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:41 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:41 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:41 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:42 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:42 BanditManager GetBandit: policy type: LinUCB
+2026/07/05 17:01:42 Initialized LinUCB bandit for mab_dynamic_linucb_1783263690
+2026/07/05 17:01:42 [MAB] event=arm_added ts=1783263702461 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 arms=[x86]
+2026/07/05 17:01:42 [MAB] event=skip_cold_start ts=1783263702461 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=6.533984 reason=cold_start
+2026/07/05 17:01:42 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:42 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:42 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:42 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:42 [MAB] event=update_reward ts=1783263702689 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.452803 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.239186
+2026/07/05 17:01:42 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:42 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:42 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:42 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:42 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:42 [MAB] event=update_reward ts=1783263702916 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.012382 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.102731
+2026/07/05 17:01:42 [LB]: Periodic targets update
+2026/07/05 17:01:42 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:42 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:42 Found 2 targets
+2026/07/05 17:01:43 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:43 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:43 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:43 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:43 [MAB] event=update_reward ts=1783263703141 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.517124 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.257644
+2026/07/05 17:01:43 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:43 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:43 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:43 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:43 [MAB] event=update_reward ts=1783263703363 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=2.587524 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.950701
+2026/07/05 17:01:43 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:43 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:43 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:43 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:43 [MAB] event=update_reward ts=1783263703588 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=2.572147 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.944741
+2026/07/05 17:01:43 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:43 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:43 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:43 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:43 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:43 [MAB] event=update_reward ts=1783263703811 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.412268 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.227377
+2026/07/05 17:01:44 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:44 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:44 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:44 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:44 [MAB] event=update_reward ts=1783263704035 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.968826 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.378470
+2026/07/05 17:01:44 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:44 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:44 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:44 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:44 [MAB] event=update_reward ts=1783263704259 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=2.758912 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.014836
+2026/07/05 17:01:44 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:44 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:44 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:44 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:44 [MAB] event=update_reward ts=1783263704485 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.592796 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.278931
+2026/07/05 17:01:44 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:44 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:44 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:44 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:44 [MAB] event=update_reward ts=1783263704711 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.347443 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.208197
+2026/07/05 17:01:44 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:44 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:44 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:44 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:44 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:44 [MAB] event=update_reward ts=1783263704940 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.566368 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.271548
+2026/07/05 17:01:45 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:45 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:45 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:45 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:45 [MAB] event=update_reward ts=1783263705166 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.361159 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.212286
+2026/07/05 17:01:45 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:45 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:45 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:45 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:45 [MAB] event=update_reward ts=1783263705391 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=4.095853 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.409975
+2026/07/05 17:01:45 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:45 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86]
+2026/07/05 17:01:45 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:45 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=x86 candidate=CnVSQXCCciGLTt3byQBsX41783263691919055717 candidate_tag=x86
+2026/07/05 17:01:45 [LB-Update] Node CnVSQXCCciGLTt3byQBsX41783263691919055717 reported 512 MB free
+2026/07/05 17:01:45 [MAB] event=update_reward ts=1783263705618 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 duration_ms=3.576271 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.274321
+2026/07/05 17:01:45 [LB]: Periodic targets update
+2026/07/05 17:01:45 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:45 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:45 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:45 Found 3 targets
+2026/07/05 17:01:45 Adding BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:45 [LB][MAB] event=new_machine_tag_discovered tag=arm arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/05 17:01:45 [MAB] event=arm_added ts=1783263705946 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm arms=[arm,x86]
+2026/07/05 17:01:45 [LB] Adding target arm
+2026/07/05 17:01:48 [LB]: Periodic targets update
+2026/07/05 17:01:48 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:48 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:48 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:48 Found 3 targets
+2026/07/05 17:01:51 [LB]: Periodic targets update
+2026/07/05 17:01:51 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:51 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:51 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:51 Found 3 targets
+2026/07/05 17:01:53 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:53 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:53 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:53 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:53 [MAB] event=arm_score ts=1783263713849 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:53 [MAB] event=arm_score ts=1783263713849 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=0.000000 confidence=0.140723 mem_usage=0.140723
+2026/07/05 17:01:53 [MAB] event=select_arm ts=1783263713849 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=0.140723 arms=[arm,x86]
+2026/07/05 17:01:53 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:53 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:53 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:54 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:54 [MAB] event=skip_cold_start ts=1783263714334 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=5.512014 reason=cold_start
+2026/07/05 17:01:54 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:54 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:54 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:54 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:54 [MAB] event=arm_score ts=1783263714557 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:54 [MAB] event=arm_score ts=1783263714557 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=0.000000 confidence=0.140723 mem_usage=0.140723
+2026/07/05 17:01:54 [MAB] event=select_arm ts=1783263714557 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=0.140723 arms=[arm,x86]
+2026/07/05 17:01:54 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:54 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:54 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:54 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:54 [MAB] event=update_reward ts=1783263714561 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.080037 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.124942
+2026/07/05 17:01:54 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:54 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:54 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:54 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:54 [MAB] event=arm_score ts=1783263714784 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:54 [MAB] event=arm_score ts=1783263714784 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.747482 confidence=0.081515 mem_usage=-0.665967
+2026/07/05 17:01:54 [MAB] event=select_arm ts=1783263714784 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.665967 arms=[arm,x86]
+2026/07/05 17:01:54 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:54 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:54 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:54 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:54 [MAB] event=update_reward ts=1783263714788 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.870685 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.054551
+2026/07/05 17:01:54 [LB]: Periodic targets update
+2026/07/05 17:01:54 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:54 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:54 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:54 Found 3 targets
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:55 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:55 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715009 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715009 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.870065 confidence=0.063183 mem_usage=-0.806883
+2026/07/05 17:01:55 [MAB] event=select_arm ts=1783263715009 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.806883 arms=[arm,x86]
+2026/07/05 17:01:55 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:55 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:55 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:55 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:55 [MAB] event=update_reward ts=1783263715013 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.815061 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.034984
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:55 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:55 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715235 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.917118 confidence=0.053414 mem_usage=-0.863704
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715235 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:55 [MAB] event=select_arm ts=1783263715235 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.863704 arms=[arm,x86]
+2026/07/05 17:01:55 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:55 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:55 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:55 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:55 [MAB] event=update_reward ts=1783263715239 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.825981 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.038856
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:55 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:55 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715458 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715458 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.944141 confidence=0.047114 mem_usage=-0.897027
+2026/07/05 17:01:55 [MAB] event=select_arm ts=1783263715458 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.897027 arms=[arm,x86]
+2026/07/05 17:01:55 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:55 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:55 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:55 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:55 [MAB] event=update_reward ts=1783263715461 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.584577 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.949562
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:55 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:55 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715682 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715682 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.945126 confidence=0.042621 mem_usage=-0.902505
+2026/07/05 17:01:55 [MAB] event=select_arm ts=1783263715682 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.902505 arms=[arm,x86]
+2026/07/05 17:01:55 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:55 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:55 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:55 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:55 [MAB] event=update_reward ts=1783263715686 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.942703 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.079329
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:55 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:55 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:55 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715905 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:55 [MAB] event=arm_score ts=1783263715905 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.965757 confidence=0.039208 mem_usage=-0.926548
+2026/07/05 17:01:55 [MAB] event=select_arm ts=1783263715905 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.926548 arms=[arm,x86]
+2026/07/05 17:01:55 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:55 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:55 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:55 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:55 [MAB] event=update_reward ts=1783263715909 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.623505 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.964511
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:56 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:56 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716130 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716130 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.965591 confidence=0.036503 mem_usage=-0.929088
+2026/07/05 17:01:56 [MAB] event=select_arm ts=1783263716130 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.929088 arms=[arm,x86]
+2026/07/05 17:01:56 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:56 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:56 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:56 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:56 [MAB] event=update_reward ts=1783263716133 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.737956 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.007212
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:56 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:56 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716354 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716354 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-0.970484 confidence=0.034290 mem_usage=-0.936195
+2026/07/05 17:01:56 [MAB] event=select_arm ts=1783263716354 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.936195 arms=[arm,x86]
+2026/07/05 17:01:56 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:56 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:56 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:56 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:56 [MAB] event=update_reward ts=1783263716359 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=4.704134 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.548442
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:56 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:56 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716578 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716578 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.031290 confidence=0.032436 mem_usage=-0.998854
+2026/07/05 17:01:56 [MAB] event=select_arm ts=1783263716578 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-0.998854 arms=[arm,x86]
+2026/07/05 17:01:56 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:56 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:56 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:56 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:56 [MAB] event=update_reward ts=1783263716582 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.828974 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.039914
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:56 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:56 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:56 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716803 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:56 [MAB] event=arm_score ts=1783263716803 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.032111 confidence=0.030853 mem_usage=-1.001258
+2026/07/05 17:01:56 [MAB] event=select_arm ts=1783263716803 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.001258 arms=[arm,x86]
+2026/07/05 17:01:56 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:56 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:56 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:56 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:56 [MAB] event=update_reward ts=1783263716807 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.798538 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.029097
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:57 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:57 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717027 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717027 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.031849 confidence=0.029482 mem_usage=-1.002367
+2026/07/05 17:01:57 [MAB] event=select_arm ts=1783263717028 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.002367 arms=[arm,x86]
+2026/07/05 17:01:57 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:57 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:57 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:57 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:57 [MAB] event=update_reward ts=1783263717032 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.990845 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.095556
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:57 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:57 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717251 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717251 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.036944 confidence=0.028279 mem_usage=-1.008665
+2026/07/05 17:01:57 [MAB] event=select_arm ts=1783263717251 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.008665 arms=[arm,x86]
+2026/07/05 17:01:57 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:57 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:57 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:57 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:57 [MAB] event=update_reward ts=1783263717255 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.936259 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.077136
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:57 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:57 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717477 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.039920 confidence=0.027212 mem_usage=-1.012708
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717477 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:57 [MAB] event=select_arm ts=1783263717477 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.012708 arms=[arm,x86]
+2026/07/05 17:01:57 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:57 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:57 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:57 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:57 [MAB] event=update_reward ts=1783263717481 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.089364 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.127965
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:57 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:57 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717702 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717702 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.045990 confidence=0.026257 mem_usage=-1.019733
+2026/07/05 17:01:57 [MAB] event=select_arm ts=1783263717702 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.019733 arms=[arm,x86]
+2026/07/05 17:01:57 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:57 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:57 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:57 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:57 [MAB] event=update_reward ts=1783263717706 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.159896 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.150539
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:57 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:57 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:57 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717924 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:57 [MAB] event=arm_score ts=1783263717924 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.052733 confidence=0.025396 mem_usage=-1.027337
+2026/07/05 17:01:57 [MAB] event=select_arm ts=1783263717924 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.027337 arms=[arm,x86]
+2026/07/05 17:01:57 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:57 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:57 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:57 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:57 [MAB] event=update_reward ts=1783263717927 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.512452 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.921259
+2026/07/05 17:01:57 [LB]: Periodic targets update
+2026/07/05 17:01:57 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:01:57 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:01:57 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:01:57 Found 3 targets
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:58 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:58 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718148 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718148 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.044767 confidence=0.024615 mem_usage=-1.020152
+2026/07/05 17:01:58 [MAB] event=select_arm ts=1783263718148 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.020152 arms=[arm,x86]
+2026/07/05 17:01:58 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:58 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:58 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:58 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:58 [MAB] event=update_reward ts=1783263718152 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.158196 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.150001
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:58 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:58 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718372 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718372 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.050779 confidence=0.023901 mem_usage=-1.026878
+2026/07/05 17:01:58 [MAB] event=select_arm ts=1783263718372 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.026878 arms=[arm,x86]
+2026/07/05 17:01:58 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:58 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:58 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:58 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:58 [MAB] event=update_reward ts=1783263718376 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.193171 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.161014
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:58 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:58 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718598 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718598 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.056736 confidence=0.023246 mem_usage=-1.033489
+2026/07/05 17:01:58 [MAB] event=select_arm ts=1783263718598 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.033489 arms=[arm,x86]
+2026/07/05 17:01:58 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:58 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:58 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:58 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:58 [MAB] event=update_reward ts=1783263718602 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.942627 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.079303
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:58 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:58 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:58 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718822 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:58 [MAB] event=arm_score ts=1783263718822 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.057893 confidence=0.022643 mem_usage=-1.035250
+2026/07/05 17:01:58 [MAB] event=select_arm ts=1783263718822 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.035250 arms=[arm,x86]
+2026/07/05 17:01:58 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:58 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:58 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:58 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:58 [MAB] event=update_reward ts=1783263718826 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.908751 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.067724
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:59 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:59 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719046 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719046 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.058372 confidence=0.022084 mem_usage=-1.036289
+2026/07/05 17:01:59 [MAB] event=select_arm ts=1783263719046 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.036289 arms=[arm,x86]
+2026/07/05 17:01:59 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:59 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:59 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:59 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:59 [MAB] event=update_reward ts=1783263719049 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.654107 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.976108
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:59 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:59 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719267 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719267 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054547 confidence=0.021564 mem_usage=-1.032983
+2026/07/05 17:01:59 [MAB] event=select_arm ts=1783263719267 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.032983 arms=[arm,x86]
+2026/07/05 17:01:59 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:59 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:59 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:59 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:59 [MAB] event=update_reward ts=1783263719271 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.689397 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.989317
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:59 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:59 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719491 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719491 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.051648 confidence=0.021080 mem_usage=-1.030569
+2026/07/05 17:01:59 [MAB] event=select_arm ts=1783263719491 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.030569 arms=[arm,x86]
+2026/07/05 17:01:59 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:59 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:59 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:59 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:59 [MAB] event=update_reward ts=1783263719495 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.246816 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.177675
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:59 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:59 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719717 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719717 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.057010 confidence=0.020626 mem_usage=-1.036384
+2026/07/05 17:01:59 [MAB] event=select_arm ts=1783263719717 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.036384 arms=[arm,x86]
+2026/07/05 17:01:59 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:59 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:59 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:59 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:59 [MAB] event=update_reward ts=1783263719721 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.076093 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.123660
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:01:59 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:01:59 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:01:59 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719943 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.059730 confidence=0.020201 mem_usage=-1.039529
+2026/07/05 17:01:59 [MAB] event=arm_score ts=1783263719943 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:01:59 [MAB] event=select_arm ts=1783263719943 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.039529 arms=[arm,x86]
+2026/07/05 17:01:59 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:01:59 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:01:59 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:01:59 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:01:59 [MAB] event=update_reward ts=1783263719947 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.895922 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.063304
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:00 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:00 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720164 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720164 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.059870 confidence=0.019801 mem_usage=-1.040069
+2026/07/05 17:02:00 [MAB] event=select_arm ts=1783263720164 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.040069 arms=[arm,x86]
+2026/07/05 17:02:00 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:00 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:00 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:00 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:00 [MAB] event=update_reward ts=1783263720168 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.086136 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.126920
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:00 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:00 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720390 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720390 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.062400 confidence=0.019424 mem_usage=-1.042976
+2026/07/05 17:02:00 [MAB] event=select_arm ts=1783263720390 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.042976 arms=[arm,x86]
+2026/07/05 17:02:00 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:00 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:00 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:00 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:00 [MAB] event=update_reward ts=1783263720394 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.482892 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.909424
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:00 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:00 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720613 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720613 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.056838 confidence=0.019068 mem_usage=-1.037770
+2026/07/05 17:02:00 [MAB] event=select_arm ts=1783263720613 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.037770 arms=[arm,x86]
+2026/07/05 17:02:00 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:00 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:00 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:00 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:00 [MAB] event=update_reward ts=1783263720618 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.297895 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.193284
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:00 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:00 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:00 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720840 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.061625 confidence=0.018730 mem_usage=-1.042895
+2026/07/05 17:02:00 [MAB] event=arm_score ts=1783263720840 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:00 [MAB] event=select_arm ts=1783263720840 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.042895 arms=[arm,x86]
+2026/07/05 17:02:00 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:00 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:00 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:00 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:00 [MAB] event=update_reward ts=1783263720843 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.007068 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.100966
+2026/07/05 17:02:00 [LB]: Periodic targets update
+2026/07/05 17:02:00 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:02:00 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:02:00 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:02:00 Found 3 targets
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:01 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:01 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721063 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721063 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.062958 confidence=0.018410 mem_usage=-1.044548
+2026/07/05 17:02:01 [MAB] event=select_arm ts=1783263721063 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.044548 arms=[arm,x86]
+2026/07/05 17:02:01 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:01 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:01 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:01 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:01 [MAB] event=update_reward ts=1783263721066 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.764867 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.016993
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:01 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:01 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721287 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721287 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.061451 confidence=0.018106 mem_usage=-1.043346
+2026/07/05 17:02:01 [MAB] event=select_arm ts=1783263721287 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.043346 arms=[arm,x86]
+2026/07/05 17:02:01 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:01 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:01 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:01 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:01 [MAB] event=update_reward ts=1783263721291 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.877139 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.056796
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:01 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:01 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721510 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721510 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.061304 confidence=0.017816 mem_usage=-1.043488
+2026/07/05 17:02:01 [MAB] event=select_arm ts=1783263721510 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.043488 arms=[arm,x86]
+2026/07/05 17:02:01 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:01 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:01 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:01 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:01 [MAB] event=update_reward ts=1783263721514 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.022799 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.106183
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:01 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:01 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721735 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721735 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.062684 confidence=0.017540 mem_usage=-1.045144
+2026/07/05 17:02:01 [MAB] event=select_arm ts=1783263721735 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.045144 arms=[arm,x86]
+2026/07/05 17:02:01 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:01 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:01 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:01 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:01 [MAB] event=update_reward ts=1783263721739 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.226138 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.171286
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:01 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:01 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:01 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721960 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:01 [MAB] event=arm_score ts=1783263721960 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.065926 confidence=0.017276 mem_usage=-1.048650
+2026/07/05 17:02:01 [MAB] event=select_arm ts=1783263721960 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.048650 arms=[arm,x86]
+2026/07/05 17:02:01 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:01 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:01 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:01 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:01 [MAB] event=update_reward ts=1783263721964 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.026210 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.107311
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:02 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:02 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722182 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722182 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.067125 confidence=0.017024 mem_usage=-1.050101
+2026/07/05 17:02:02 [MAB] event=select_arm ts=1783263722182 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.050101 arms=[arm,x86]
+2026/07/05 17:02:02 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:02 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:02 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:02 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:02 [MAB] event=update_reward ts=1783263722185 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=1.849322 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.614819
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:02 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:02 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722404 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722404 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054386 confidence=0.016782 mem_usage=-1.037603
+2026/07/05 17:02:02 [MAB] event=select_arm ts=1783263722404 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.037603 arms=[arm,x86]
+2026/07/05 17:02:02 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:02 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:02 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:02 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:02 [MAB] event=update_reward ts=1783263722408 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.010883 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.102233
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:02 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:02 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722627 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722627 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.055697 confidence=0.016551 mem_usage=-1.039146
+2026/07/05 17:02:02 [MAB] event=select_arm ts=1783263722627 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.039146 arms=[arm,x86]
+2026/07/05 17:02:02 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:02 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:02 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:02 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:02 [MAB] event=update_reward ts=1783263722631 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.151595 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.147909
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:02 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:02 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:02 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722855 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.058155 confidence=0.016329 mem_usage=-1.041826
+2026/07/05 17:02:02 [MAB] event=arm_score ts=1783263722855 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:02 [MAB] event=select_arm ts=1783263722855 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.041826 arms=[arm,x86]
+2026/07/05 17:02:02 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:02 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:02 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:02 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:02 [MAB] event=update_reward ts=1783263722858 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.545644 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.934384
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:03 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:03 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723080 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723080 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054941 confidence=0.016115 mem_usage=-1.038825
+2026/07/05 17:02:03 [MAB] event=select_arm ts=1783263723080 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.038825 arms=[arm,x86]
+2026/07/05 17:02:03 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:03 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:03 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:03 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:03 [MAB] event=update_reward ts=1783263723084 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.817849 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.035974
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:03 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:03 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723306 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723306 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054461 confidence=0.015910 mem_usage=-1.038550
+2026/07/05 17:02:03 [MAB] event=select_arm ts=1783263723306 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.038550 arms=[arm,x86]
+2026/07/05 17:02:03 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:03 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:03 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:03 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:03 [MAB] event=update_reward ts=1783263723310 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.817539 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.035864
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:03 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:03 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723532 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723532 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054002 confidence=0.015713 mem_usage=-1.038289
+2026/07/05 17:02:03 [MAB] event=select_arm ts=1783263723532 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.038289 arms=[arm,x86]
+2026/07/05 17:02:03 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:03 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:03 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:03 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:03 [MAB] event=update_reward ts=1783263723535 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.894406 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.062780
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:03 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:03 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723758 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723758 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054213 confidence=0.015522 mem_usage=-1.038691
+2026/07/05 17:02:03 [MAB] event=select_arm ts=1783263723758 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.038691 arms=[arm,x86]
+2026/07/05 17:02:03 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:03 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:03 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:03 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:03 [MAB] event=update_reward ts=1783263723762 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.284275 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.189146
+2026/07/05 17:02:03 [LB]: Periodic targets update
+2026/07/05 17:02:03 Found target: BsSpu8uJfLgvAwNzsUZZdd1783263705840818188
+2026/07/05 17:02:03 Found target: CnVSQXCCciGLTt3byQBsX41783263691919055717
+2026/07/05 17:02:03 Found target: DcsfrBd2qyqABy7uGFZQXd1783263691921461990
+2026/07/05 17:02:03 Found 3 targets
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:03 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:03 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:03 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723981 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:03 [MAB] event=arm_score ts=1783263723981 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.057388 confidence=0.015338 mem_usage=-1.042049
+2026/07/05 17:02:03 [MAB] event=select_arm ts=1783263723981 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.042049 arms=[arm,x86]
+2026/07/05 17:02:03 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:03 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:03 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:03 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:03 [MAB] event=update_reward ts=1783263723985 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.027304 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.107672
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:04 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:04 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724207 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724207 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.058543 confidence=0.015161 mem_usage=-1.043382
+2026/07/05 17:02:04 [MAB] event=select_arm ts=1783263724207 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.043382 arms=[arm,x86]
+2026/07/05 17:02:04 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:04 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:04 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:04 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:04 [MAB] event=update_reward ts=1783263724210 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.311912 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-0.838075
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:04 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:04 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724428 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724428 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.053590 confidence=0.014990 mem_usage=-1.038600
+2026/07/05 17:02:04 [MAB] event=select_arm ts=1783263724428 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.038600 arms=[arm,x86]
+2026/07/05 17:02:04 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:04 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:04 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:04 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:04 [MAB] event=update_reward ts=1783263724432 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=3.045523 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.113673
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:04 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:04 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724652 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054910 confidence=0.014824 mem_usage=-1.040086
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724652 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:04 [MAB] event=select_arm ts=1783263724652 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.040086 arms=[arm,x86]
+2026/07/05 17:02:04 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:04 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:04 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:04 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:04 [MAB] event=update_reward ts=1783263724656 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.851733 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.047927
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:04 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:04 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:04 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724874 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:04 [MAB] event=arm_score ts=1783263724874 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054760 confidence=0.014664 mem_usage=-1.040096
+2026/07/05 17:02:04 [MAB] event=select_arm ts=1783263724874 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.040096 arms=[arm,x86]
+2026/07/05 17:02:04 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:04 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:04 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:04 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:04 [MAB] event=update_reward ts=1783263724877 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.897925 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.063995
+2026/07/05 17:02:05 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:05 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:05 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:05 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:05 [MAB] event=arm_score ts=1783263725099 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054954 confidence=0.014509 mem_usage=-1.040445
+2026/07/05 17:02:05 [MAB] event=arm_score ts=1783263725099 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:05 [MAB] event=select_arm ts=1783263725099 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.040445 arms=[arm,x86]
+2026/07/05 17:02:05 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:05 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:05 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:05 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:05 [MAB] event=update_reward ts=1783263725103 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.785070 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.024273
+2026/07/05 17:02:05 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=x86 arch=amd64 pattern="" ring_size=2
+2026/07/05 17:02:05 [LB] Compatible tag found: function=mab_dynamic_linucb_1783263690 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/05 17:02:05 [LB] Compatible tags for function 'mab_dynamic_linucb_1783263690': [x86 arm]
+2026/07/05 17:02:05 [LB][MAB] event=before_select function=mab_dynamic_linucb_1783263690 compatible_tags=[x86 arm] has_context=true
+2026/07/05 17:02:05 [MAB] event=arm_score ts=1783263725324 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=x86 score=0.000000 expected_reward=-1.156220 confidence=0.026257 mem_usage=-1.129963
+2026/07/05 17:02:05 [MAB] event=arm_score ts=1783263725324 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm score=0.000000 expected_reward=-1.054322 confidence=0.014358 mem_usage=-1.039963
+2026/07/05 17:02:05 [MAB] event=select_arm ts=1783263725324 policy=LinUCB function=mab_dynamic_linucb_1783263690 selected_arm=arm reason=linucb_score score=-1.039963 arms=[arm,x86]
+2026/07/05 17:02:05 [LB][MAB] event=after_select function=mab_dynamic_linucb_1783263690 selected_tag=arm compatible_tags=[x86 arm]
+2026/07/05 17:02:05 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/05 17:02:05 [LB] Selected target for function 'mab_dynamic_linucb_1783263690': target_tag=arm candidate=BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 candidate_tag=arm
+2026/07/05 17:02:05 [LB-Update] Node BsSpu8uJfLgvAwNzsUZZdd1783263705840818188 reported 512 MB free
+2026/07/05 17:02:05 [MAB] event=update_reward ts=1783263725328 policy=LinUCB function=mab_dynamic_linucb_1783263690 arm=arm duration_ms=2.899021 warm_start=true mem_usage=0.000000 lambda=0.000000 reward=-1.064373
