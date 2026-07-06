@@ -11,8 +11,16 @@ const (
 // Currently, it holds memory usage, but can be extended (i.e.: we could also add % of cpu load)
 // It is used only by contextual MABs, obviously. The UCB1 doesn't need this since it works without context.
 type Context struct {
-	// "archName" -> memory usage %
+	// ArmMemUsage keeps the memory utilization snapshot for each arm/tag.
+	// The historical name is kept for compatibility with the existing LinUCB code,
+	// but the key is now the MAB arm, i.e. usually a machine_tag/ring.
 	ArchMemUsage map[string]float64
+
+	// ArmCostFactor keeps the normalized cost factor for each arm/tag at decision time.
+	ArmCostFactor map[string]float64
+
+	// ArmEnergyFactor keeps the normalized energy factor for each arm/tag at decision time.
+	ArmEnergyFactor map[string]float64
 }
 
 // Policy is the interface that any Bandit algorithm must implement.

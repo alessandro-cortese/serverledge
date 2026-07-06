@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/serverledge-faas/serverledge/internal/client"
+	"github.com/serverledge-faas/serverledge/internal/config"
 	"github.com/serverledge-faas/serverledge/internal/container"
 	"github.com/serverledge-faas/serverledge/internal/function"
 	"github.com/serverledge-faas/serverledge/internal/node"
@@ -22,6 +23,7 @@ import (
 	"github.com/serverledge-faas/serverledge/internal/telemetry"
 	"github.com/serverledge-faas/serverledge/internal/workflow"
 	"github.com/serverledge-faas/serverledge/utils"
+
 	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/labstack/echo/v4"
@@ -336,6 +338,8 @@ func GetServerStatus(c echo.Context) error {
 		Coordinates:             coords,
 		LoadAvg:                 loadAvgValues,
 		LastUpdateTime:          time.Now().Unix(),
+		CostFactor:              config.GetFloat(config.NODE_COST_FACTOR, 1.0),
+		EnergyFactor:            config.GetFloat(config.NODE_ENERGY_FACTOR, 1.0),
 	}
 
 	return c.JSON(http.StatusOK, response)

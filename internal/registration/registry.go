@@ -124,13 +124,26 @@ func registerToEtcd(asLoadBalancer bool) error {
 	node.LocalNode.Arch = arch
 	node.LocalNode.MachineTag = machineTag
 
+	costFactor := config.GetFloat(config.NODE_COST_FACTOR, 1.0)
+	energyFactor := config.GetFloat(config.NODE_ENERGY_FACTOR, 1.0)
+
+	if costFactor <= 0 {
+		costFactor = 1.0
+	}
+
+	if energyFactor <= 0 {
+		energyFactor = 1.0
+	}
+
 	payload := fmt.Sprintf(
-		"%s;%d;%d;%s;%s",
+		"%s;%d;%d;%s;%s;%f;%f",
 		registeredLocalIP,
 		apiPort,
 		udpPort,
 		arch,
 		machineTag,
+		costFactor,
+		energyFactor,
 	)
 
 	SelfRegistration = &NodeRegistration{
@@ -139,6 +152,8 @@ func registerToEtcd(asLoadBalancer bool) error {
 		APIPort:        apiPort,
 		UDPPort:        udpPort,
 		IsLoadBalancer: asLoadBalancer,
+		CostFactor:     costFactor,
+		EnergyFactor:   energyFactor,
 	}
 
 	// save couple (id, hostport) to the correct Area-dir on etcd
@@ -207,6 +222,22 @@ func parseEtcdRegisteredNode(area string, key string, payload []byte) (NodeRegis
 		machineTag = split[4]
 	}
 
+	costFactor := 1.0
+	if len(split) > 5 && split[5] != "" {
+		parsedCostFactor, err := strconv.ParseFloat(split[5], 64)
+		if err == nil && parsedCostFactor > 0 {
+			costFactor = parsedCostFactor
+		}
+	}
+
+	energyFactor := 1.0
+	if len(split) > 6 && split[6] != "" {
+		parsedEnergyFactor, err := strconv.ParseFloat(split[6], 64)
+		if err == nil && parsedEnergyFactor > 0 {
+			energyFactor = parsedEnergyFactor
+		}
+	}
+
 	return NodeRegistration{
 		NodeID: node.NodeID{
 			Area:       area,
@@ -214,9 +245,11 @@ func parseEtcdRegisteredNode(area string, key string, payload []byte) (NodeRegis
 			Arch:       arch,
 			MachineTag: machineTag,
 		},
-		IPAddress: ipAddress,
-		APIPort:   apiPort,
-		UDPPort:   udpPort,
+		IPAddress:    ipAddress,
+		APIPort:      apiPort,
+		UDPPort:      udpPort,
+		CostFactor:   costFactor,
+		EnergyFactor: energyFactor,
 	}, nil
 }
 

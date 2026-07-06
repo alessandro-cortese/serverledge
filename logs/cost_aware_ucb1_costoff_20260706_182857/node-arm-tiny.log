@@ -1,0 +1,68 @@
+2026/07/06 18:29:01 Local node id: (ROME)vKpVjum8by27PngFGoYpfA1783355341327784155 - arm-tiny (arch: amd64)
+2026/07/06 18:29:01 Registration for node: (ROME)vKpVjum8by27PngFGoYpfA1783355341327784155 - arm-tiny
+2026/07/06 18:29:01 Connecting to etcd
+2026/07/06 18:29:01 Connected to etcd
+2026/07/06 18:29:01 etcd connection state: TRANSIENT_FAILURE
+2026/07/06 18:29:01 etcd: transient failure, triggering reconnect
+2026/07/06 18:29:02 etcd connection state: READY
+2026/07/06 18:29:02 etcd: connected and ready
+2026/07/06 18:29:02 Registering to etcd: registry/ROME/arm-tiny/vKpVjum8by27PngFGoYpfA1783355341327784155
+2026/07/06 18:29:02 Configured scheduling policy: default
+2026/07/06 18:29:02 Configured offloading policy: disable
+2026/07/06 18:29:02 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/06 18:29:02 Scheduler started.
+2026/07/06 18:29:02 No remote area is configured; vertical offloading disabled
+2026/07/06 18:29:02 UDP server up and listening on port 9880
+⇨ http server started on [::]:1327
+2026/07/06 18:29:12 Container 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 has name /quizzical_hermann
+2026/07/06 18:29:12 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:12 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:12 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:15 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:15 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:15 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:15 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:16 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:16 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:16 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:16 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:18 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:18 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:19 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:19 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:19 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:19 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:20 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:20 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:20 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:20 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:20 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:20 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:21 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:21 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:22 Periodic nearby Monitoring
+2026/07/06 18:29:22 Requesting status information for 192.168.0.46:9877
+2026/07/06 18:29:22 Requesting status information for 192.168.0.46:9879
+2026/07/06 18:29:22 Requesting status information for 192.168.0.46:9878
+2026/07/06 18:29:22 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:22 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:23 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:23 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:23 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:23 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:24 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:24 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:25 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:25 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:26 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:26 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:26 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:26 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:27 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:27 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:28 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:28 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:29 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:29 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431
+2026/07/06 18:29:30 Using warm 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431 for mab_cost_aware_1783355337. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:29:30 [mab_cost_aware_1783355337] Executing on container: 4a46466795d4dfa911d0f67ed872619a1c8bcc8a3afd2cec2ef258a645bc2431

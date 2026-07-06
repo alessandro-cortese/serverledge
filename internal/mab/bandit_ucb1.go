@@ -125,11 +125,8 @@ func (b *UCB1Bandit) UpdateReward(arch string, ctx *Context, isWarmStart bool, d
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	if ctx != nil {
-		ctx = nil // is not used here but will still be set in MAB mode
-	}
-
-	if _, ok := b.Arms[arch]; !ok {
+	stats, ok := b.Arms[arch]
+	if !ok {
 		return // Should not happen
 	}
 
@@ -141,14 +138,38 @@ func (b *UCB1Bandit) UpdateReward(arch string, ctx *Context, isWarmStart bool, d
 			arch,
 			durationMs,
 		)
-
 		return
 	}
 
-	stats := b.Arms[arch]
+	if durationMs <= 0 {
+		log.Printf(
+			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
+			nowMillis(),
+			string(b.GetType()),
+			b.FunctionName,
+			arch,
+			durationMs,
+		)
+		return
+	}
 
-	// Reward calculation.
-	reward := -math.Log(durationMs)
+	latencyReward := -math.Log(durationMs)
+	breakdown := buildCostBreakdown(
+		arch,
+		latencyReward,
+		ctx,
+		0.0,
+		0.0,
+	)
+	reward := breakdown.FinalReward
+
+	logMABRewardBreakdown(
+		string(b.GetType()),
+		b.FunctionName,
+		arch,
+		durationMs,
+		breakdown,
+	)
 
 	stats.Count++
 	b.TotalCounts++

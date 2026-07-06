@@ -16,6 +16,8 @@ type NodeRegistration struct {
 	APIPort        int
 	UDPPort        int
 	IsLoadBalancer bool
+	CostFactor     float64
+	EnergyFactor   float64
 }
 
 type StatusInformation struct {
@@ -28,4 +30,6 @@ type StatusInformation struct {
 	Coordinates             vivaldi.Coordinate
 	LoadAvg                 []float64
 	LastUpdateTime          int64 // timestamp of last update of this information
+	CostFactor              float64
+	EnergyFactor            float64
 }

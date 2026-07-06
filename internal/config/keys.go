@@ -3,6 +3,14 @@ package config
 // the machine tag used to associate the node with the correct ring
 const MACHINE_TAG = "node.machine_tag"
 
+// Relative monetary/capacity cost declared by a node.
+// It is used by MAB cost-aware rewards and is expected to be normalized.
+const NODE_COST_FACTOR = "node.cost_factor"
+
+// Relative energy cost declared by a node.
+// It is used by MAB cost-aware rewards and is expected to be normalized.
+const NODE_ENERGY_FACTOR = "node.energy_factor"
+
 // used to specify the type of architecture on which to run
 const FUNCTION_TAG_PATTERN = "function.tag_pattern"
 
@@ -79,6 +87,14 @@ const MAB_UCB1_C = "mab.ucb1.c"
 
 // Aplha value for the LinUCB policy
 const MAB_LINUCB_ALPHA = "mab.linucb.alpha"
+
+// Weight for the cost component in the MAB reward.
+// reward = latencyReward - costWeight*costFactor - ...
+const MAB_COST_WEIGHT = "mab.cost.weight"
+
+// Weight for the energy component in the MAB reward.
+// reward = latencyReward - energyWeight*energyFactor - ...
+const MAB_ENERGY_WEIGHT = "mab.energy.weight"
 
 // Lambda value for the LinUCB policy, used for the memory penalty of reward
 const MAB_LINUCB_LAMBDA = "mab.linucb.lambda"

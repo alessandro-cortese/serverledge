@@ -171,7 +171,7 @@ func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStar
 		panic(3) // should never happen if correctly used
 	}
 
-	// Reconstruct the feature vector x_t used at decision time
+	// Reconstruct the feature vector x_t used at decision time.
 	memUsage := 0.0
 	if ctx != nil {
 		memUsage = ctx.ArchMemUsage[arm]
@@ -180,10 +180,39 @@ func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStar
 		panic(4) // should never happen
 	}
 
-	lambda := config.GetFloat(config.MAB_LINUCB_LAMBDA, 0.0)
+	if durationMs <= 0 {
+		log.Printf(
+			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
+			nowMillis(),
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			durationMs,
+		)
+		return
+	}
 
-	// reward as negative Log to handle better very slow and very fast exec times plus eventual memory penalty
-	reward := -math.Log(durationMs) - (lambda * memPenalty(memUsage))
+	lambda := config.GetFloat(config.MAB_LINUCB_LAMBDA, 0.0)
+	memoryPenalty := memPenalty(memUsage)
+	latencyReward := -math.Log(durationMs)
+
+	breakdown := buildCostBreakdown(
+		arm,
+		latencyReward,
+		ctx,
+		memoryPenalty,
+		lambda,
+	)
+	reward := breakdown.FinalReward
+
+	logMABRewardBreakdown(
+		string(p.GetType()),
+		p.FunctionName,
+		arm,
+		durationMs,
+		breakdown,
+	)
+
 	x := p.computeFeatures(memUsage)
 
 	// Update A: A = A + x * x^T

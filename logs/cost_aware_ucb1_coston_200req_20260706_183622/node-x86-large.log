@@ -1,0 +1,35 @@
+2026/07/06 18:36:23 Local node id: (ROME)Yfj9dc9aZ5sc6MzJoZmaP61783355783474809800 - x86-large (arch: amd64)
+2026/07/06 18:36:23 Registration for node: (ROME)Yfj9dc9aZ5sc6MzJoZmaP61783355783474809800 - x86-large
+2026/07/06 18:36:23 Connecting to etcd
+2026/07/06 18:36:23 Connected to etcd
+2026/07/06 18:36:23 etcd connection state: TRANSIENT_FAILURE
+2026/07/06 18:36:23 etcd: transient failure, triggering reconnect
+2026/07/06 18:36:24 etcd connection state: READY
+2026/07/06 18:36:24 etcd: connected and ready
+2026/07/06 18:36:24 Registering to etcd: registry/ROME/x86-large/Yfj9dc9aZ5sc6MzJoZmaP61783355783474809800
+2026/07/06 18:36:24 Configured scheduling policy: default
+2026/07/06 18:36:24 Configured offloading policy: disable
+2026/07/06 18:36:24 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/06 18:36:24 Scheduler started.
+2026/07/06 18:36:24 No remote area is configured; vertical offloading disabled
+2026/07/06 18:36:24 UDP server up and listening on port 9878
+⇨ http server started on [::]:1325
+2026/07/06 18:36:34 Container 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd has name /nifty_shamir
+2026/07/06 18:36:34 [mab_cost_aware_1783355782] Executing on container: 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd
+2026/07/06 18:36:36 Using warm 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd for mab_cost_aware_1783355782. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:36:36 [mab_cost_aware_1783355782] Executing on container: 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd
+2026/07/06 18:36:38 Using warm 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd for mab_cost_aware_1783355782. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:36:38 [mab_cost_aware_1783355782] Executing on container: 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd
+2026/07/06 18:36:44 Periodic nearby Monitoring
+2026/07/06 18:36:44 Requesting status information for 192.168.0.46:9879
+2026/07/06 18:36:44 Requesting status information for 192.168.0.46:9880
+2026/07/06 18:36:44 Requesting status information for 192.168.0.46:9877
+2026/07/06 18:36:45 Using warm 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd for mab_cost_aware_1783355782. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:36:45 [mab_cost_aware_1783355782] Executing on container: 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd
+2026/07/06 18:36:54 No remote area is configured; vertical offloading disabled
+2026/07/06 18:36:55 Using warm 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd for mab_cost_aware_1783355782. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:36:55 [mab_cost_aware_1783355782] Executing on container: 4e1a9a4540f9c739c3a7456488f6d0d4b548553ea3d922df9cf59a6caf6b6ffd
+2026/07/06 18:37:04 Periodic nearby Monitoring
+2026/07/06 18:37:04 Requesting status information for 192.168.0.46:9880
+2026/07/06 18:37:04 Requesting status information for 192.168.0.46:9877
+2026/07/06 18:37:04 Requesting status information for 192.168.0.46:9879

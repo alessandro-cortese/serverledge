@@ -47,6 +47,8 @@ type NodeMetric struct {
 	LastUpdate    int64
 	TotalCPU      float64
 	FreeCPU       float64
+	CostFactor    float64
+	EnergyFactor  float64
 }
 
 type NodeMetricCache struct {
@@ -85,12 +87,42 @@ func (c *NodeMetricCache) Update(nodeName string, freeMemMB int64, totalMemMB in
 		totalMemMB = curr.TotalMemoryMB
 	}
 
+	costFactor := 1.0
+	energyFactor := 1.0
+	if ok {
+		if curr.CostFactor > 0 {
+			costFactor = curr.CostFactor
+		}
+		if curr.EnergyFactor > 0 {
+			energyFactor = curr.EnergyFactor
+		}
+	}
+
 	c.metrics[nodeName] = NodeMetric{
 		TotalMemoryMB: totalMemMB,
 		FreeMemoryMB:  freeMemMB,
 		LastUpdate:    updateTime,
 		FreeCPU:       freeCpu,
+		CostFactor:    costFactor,
+		EnergyFactor:  energyFactor,
 	}
+}
+
+func (c *NodeMetricCache) UpdateCostProfile(nodeName string, costFactor float64, energyFactor float64) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if costFactor <= 0 {
+		costFactor = 1.0
+	}
+	if energyFactor <= 0 {
+		energyFactor = 1.0
+	}
+
+	curr := c.metrics[nodeName]
+	curr.CostFactor = costFactor
+	curr.EnergyFactor = energyFactor
+	c.metrics[nodeName] = curr
 }
 
 func (c *NodeMetricCache) GetFreeMemory(nodeName string) int64 {
@@ -156,51 +188,82 @@ func (b *ArchitectureAwareBalancer) calculateSystemContext() *mab.Context {
 }
 */
 
-// Calculate the avg utilization of each architecture
+// Calculate the avg utilization and normalized cost profile of each MAB arm.
+//
+// The arm is the machine_tag/ring, so these maps are keyed by tag, for example:
+// "x86-tiny", "x86-large", "x86-tiny/gpu/nvidia", "arm-tiny".
 func (b *GeneralLoadBalancer) calculateSystemContext() *mab.Context {
 	usageMap := make(map[string]float64)
+	costMap := make(map[string]float64)
+	energyMap := make(map[string]float64)
 
-	for _, arch := range b.architectures {
-		ring, ok := b.rings[arch]
+	for _, tag := range b.architectures {
+		ring, ok := b.rings[tag]
 		if !ok {
-			usageMap[arch] = 100.0
+			usageMap[tag] = 1.0
+			costMap[tag] = 1.0
+			energyMap[tag] = 1.0
 			continue
 		}
 
 		var totalFree int64 = 0
 		var totalCap int64 = 0
+		var costSum float64 = 0
+		var energySum float64 = 0
+		var costSamples int64 = 0
 
-		var nodes []*middleware.ProxyTarget
-		nodes = ring.GetAllTargets()
-
+		nodes := ring.GetAllTargets()
 		if len(nodes) == 0 {
-			usageMap[arch] = 100.0 // If no node let's assume it's full. This architecture will not be used anyway.
+			usageMap[tag] = 1.0 // If no node let's assume it's full. This arm will not be used anyway.
+			costMap[tag] = 1.0
+			energyMap[tag] = 1.0
 			continue
 		}
 
 		for _, node := range nodes {
-
 			metric, ok := NodeMetrics.GetMetric(node.Name)
-
 			if ok && metric.TotalMemoryMB > 0 {
 				totalFree += metric.FreeMemoryMB
 				totalCap += metric.TotalMemoryMB
 			} else {
-				// TODO: I think I have to eliminate this panic invocation, the node is added now and not yet monitored, assumed 0 load
 				log.Printf("[LB] Node %s not yet in metrics cache, assuming full availability\n", node.Name)
-				continue
-				// panic(0) // it should never happen
 			}
 
-		}
-		if totalCap == 0 {
-			usageMap[arch] = 1.0
-			continue
+			costFactor := getTargetCostFactor(node)
+			energyFactor := getTargetEnergyFactor(node)
+			if ok {
+				if metric.CostFactor > 0 {
+					costFactor = metric.CostFactor
+				}
+				if metric.EnergyFactor > 0 {
+					energyFactor = metric.EnergyFactor
+				}
+			}
+
+			costSum += costFactor
+			energySum += energyFactor
+			costSamples++
 		}
 
-		used := float64(totalCap - totalFree)
-		usageMap[arch] = used / float64(totalCap) // % utilization (0.0 - 1.0) fort this specific architecture
+		if totalCap == 0 {
+			usageMap[tag] = 0.0
+		} else {
+			used := float64(totalCap - totalFree)
+			usageMap[tag] = used / float64(totalCap) // utilization in [0.0, 1.0]
+		}
+
+		if costSamples == 0 {
+			costMap[tag] = 1.0
+			energyMap[tag] = 1.0
+		} else {
+			costMap[tag] = costSum / float64(costSamples)
+			energyMap[tag] = energySum / float64(costSamples)
+		}
 	}
 
-	return &mab.Context{ArchMemUsage: usageMap}
+	return &mab.Context{
+		ArchMemUsage:    usageMap,
+		ArmCostFactor:   costMap,
+		ArmEnergyFactor: energyMap,
+	}
 }

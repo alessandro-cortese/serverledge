@@ -1,0 +1,26 @@
+2026/07/06 18:32:34 Local node id: (ROME)nEz7h2LBm2c75e6aPeDwqX1783355554388602578 - x86-tiny/gpu/nvidia (arch: amd64)
+2026/07/06 18:32:34 Registration for node: (ROME)nEz7h2LBm2c75e6aPeDwqX1783355554388602578 - x86-tiny/gpu/nvidia
+2026/07/06 18:32:34 Connecting to etcd
+2026/07/06 18:32:34 Connected to etcd
+2026/07/06 18:32:34 etcd connection state: TRANSIENT_FAILURE
+2026/07/06 18:32:34 etcd: transient failure, triggering reconnect
+2026/07/06 18:32:35 etcd connection state: READY
+2026/07/06 18:32:35 etcd: connected and ready
+2026/07/06 18:32:35 Registering to etcd: registry/ROME/x86-tiny/gpu/nvidia/nEz7h2LBm2c75e6aPeDwqX1783355554388602578
+2026/07/06 18:32:35 Configured scheduling policy: default
+2026/07/06 18:32:35 Configured offloading policy: disable
+2026/07/06 18:32:35 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/06 18:32:35 Scheduler started.
+2026/07/06 18:32:35 No remote area is configured; vertical offloading disabled
+2026/07/06 18:32:35 UDP server up and listening on port 9879
+⇨ http server started on [::]:1326
+2026/07/06 18:32:44 Container bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2 has name /sad_chebyshev
+2026/07/06 18:32:44 [mab_cost_aware_1783355553] Executing on container: bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2
+2026/07/06 18:32:46 Using warm bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2 for mab_cost_aware_1783355553. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:32:46 [mab_cost_aware_1783355553] Executing on container: bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2
+2026/07/06 18:32:53 Using warm bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2 for mab_cost_aware_1783355553. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/06 18:32:53 [mab_cost_aware_1783355553] Executing on container: bab3923f8cb68c493d429103db6bb80eda025cbd7bac433a0f5be780c9f58db2
+2026/07/06 18:32:55 Periodic nearby Monitoring
+2026/07/06 18:32:55 Requesting status information for 192.168.0.46:9880
+2026/07/06 18:32:55 Requesting status information for 192.168.0.46:9878
+2026/07/06 18:32:55 Requesting status information for 192.168.0.46:9877

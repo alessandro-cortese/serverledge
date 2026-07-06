@@ -194,3 +194,39 @@ func logMABContextualArmScore(
 		memUsage,
 	)
 }
+
+func logMABRewardBreakdown(
+	policy string,
+	functionName string,
+	arm string,
+	durationMs float64,
+	breakdown CostBreakdown,
+) {
+	info := ParseMachineTag(arm)
+	capabilities := strings.Join(info.Capabilities, ",")
+
+	log.Printf(
+		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f cost_weight=%.6f cost_factor=%.6f cost_term=%.6f energy_weight=%.6f energy_factor=%.6f energy_term=%.6f memory_weight=%.6f memory_penalty=%.6f memory_term=%.6f final_reward=%.6f\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		info.BaseTag,
+		info.Architecture,
+		info.Specialization,
+		capabilities,
+		durationMs,
+		breakdown.LatencyReward,
+		breakdown.CostWeight,
+		breakdown.CostFactor,
+		breakdown.CostTerm,
+		breakdown.EnergyWeight,
+		breakdown.EnergyFactor,
+		breakdown.EnergyTerm,
+		breakdown.MemoryWeight,
+		breakdown.MemoryPenalty,
+		breakdown.MemoryTerm,
+		breakdown.FinalReward,
+	)
+}

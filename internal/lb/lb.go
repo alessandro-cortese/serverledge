@@ -152,9 +152,20 @@ func getTargets(region string) ([]*middleware.ProxyTarget, error) {
 			machineTag = target.Arch
 		}
 
+		costFactor := target.CostFactor
+		if costFactor <= 0 {
+			costFactor = 1.0
+		}
+		energyFactor := target.EnergyFactor
+		if energyFactor <= 0 {
+			energyFactor = 1.0
+		}
+
 		targetMeta := echo.Map{
-			"arch":        target.Arch,
-			"machine_tag": machineTag,
+			"arch":          target.Arch,
+			"machine_tag":   machineTag,
+			"cost_factor":   costFactor,
+			"energy_factor": energyFactor,
 		}
 
 		targets = append(targets, &middleware.ProxyTarget{
@@ -198,6 +209,7 @@ func updateTargets(balancer middleware.ProxyBalancer, region string) {
 						availableMemoryMb := nodeInfo.AvailableMemory
 						freeCpu := nodeInfo.TotalCPU - nodeInfo.UsedCPU
 						NodeMetrics.Update(curr.Name, availableMemoryMb, totalMemory, nodeInfo.LastUpdateTime, freeCpu)
+						NodeMetrics.UpdateCostProfile(curr.Name, nodeInfo.CostFactor, nodeInfo.EnergyFactor)
 					}
 
 				}
@@ -221,6 +233,7 @@ func updateTargets(balancer middleware.ProxyBalancer, region string) {
 					availableMemoryMb := nodeInfo.AvailableMemory
 					freeCpu := nodeInfo.TotalCPU - nodeInfo.UsedCPU
 					NodeMetrics.Update(curr.Name, availableMemoryMb, totalMemory, nodeInfo.LastUpdateTime, freeCpu)
+					NodeMetrics.UpdateCostProfile(curr.Name, nodeInfo.CostFactor, nodeInfo.EnergyFactor)
 				}
 			}
 		}

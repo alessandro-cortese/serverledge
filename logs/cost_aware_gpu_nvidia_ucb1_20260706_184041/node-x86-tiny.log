@@ -1,0 +1,17 @@
+2026/07/06 18:40:42 Local node id: (ROME)dqu7p7Ri7VUgGjbPYfm4eb1783356042055763521 - x86-tiny (arch: amd64)
+2026/07/06 18:40:42 Registration for node: (ROME)dqu7p7Ri7VUgGjbPYfm4eb1783356042055763521 - x86-tiny
+2026/07/06 18:40:42 Connecting to etcd
+2026/07/06 18:40:42 Connected to etcd
+2026/07/06 18:40:42 etcd connection state: TRANSIENT_FAILURE
+2026/07/06 18:40:42 etcd: transient failure, triggering reconnect
+2026/07/06 18:40:43 etcd connection state: READY
+2026/07/06 18:40:43 etcd: connected and ready
+2026/07/06 18:40:43 Registering to etcd: registry/ROME/x86-tiny/dqu7p7Ri7VUgGjbPYfm4eb1783356042055763521
+2026/07/06 18:40:43 Configured scheduling policy: default
+2026/07/06 18:40:43 Configured offloading policy: disable
+2026/07/06 18:40:43 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/06 18:40:43 Scheduler started.
+2026/07/06 18:40:43 No remote area is configured; vertical offloading disabled
+2026/07/06 18:40:43 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/07/06 18:40:52 New request: creation of mab_cost_aware_1783356041
