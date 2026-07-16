@@ -1,0 +1,34 @@
+2026/07/16 16:16:36 Local node id: (ROME)75dE4KCiGaxGcgjBAKaF6h1784211396441358038 - arm-tiny (arch: amd64)
+2026/07/16 16:16:36 Registration for node: (ROME)75dE4KCiGaxGcgjBAKaF6h1784211396441358038 - arm-tiny
+2026/07/16 16:16:36 Connecting to etcd
+2026/07/16 16:16:36 Connected to etcd
+2026/07/16 16:16:37 etcd connection state: READY
+2026/07/16 16:16:37 etcd: connected and ready
+2026/07/16 16:16:37 Registering to etcd: registry/ROME/arm-tiny/75dE4KCiGaxGcgjBAKaF6h1784211396441358038
+2026/07/16 16:16:37 Configured scheduling policy: default
+2026/07/16 16:16:37 Configured offloading policy: disable
+2026/07/16 16:16:37 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/16 16:16:37 Scheduler started.
+2026/07/16 16:16:37 No remote area is configured; vertical offloading disabled
+2026/07/16 16:16:37 UDP server up and listening on port 9880
+⇨ http server started on [::]:1327
+2026/07/16 16:16:46 Container 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a has name /serene_taussig
+2026/07/16 16:16:46 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:47 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:47 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:50 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:50 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:51 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:51 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:53 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:53 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:54 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:54 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:55 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:55 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:56 Using warm 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:56 [mab_cost_aware_1784211395] Executing on container: 7daf15f1ceab8cbc32ec0c5cc8012e8dd0b3285a1186f2c78e7346333fef937a
+2026/07/16 16:16:57 Periodic nearby Monitoring
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9878
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9877
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9879

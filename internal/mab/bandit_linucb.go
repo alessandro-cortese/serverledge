@@ -3,6 +3,7 @@ package mab
 import (
 	"log"
 	"math"
+	"strings"
 	"sync"
 
 	"github.com/serverledge-faas/serverledge/internal/config"
@@ -73,47 +74,81 @@ func (p *LinUCBDisjointPolicy) InitArm(arm string) {
 	)
 }
 
-// SelectArm calculates the UCB score for each arm using the context and returns the best one.
+// SelectArm chooses among all arms known by the policy.
+// It delegates to SelectArmFrom with no action mask.
 func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
+	return p.SelectArmFrom(ctx, nil)
+}
+
+// SelectArmFrom calculates the LinUCB score only for the supplied action mask.
+//
+// allowedArms semantics:
+//   - nil: consider every arm known by the policy;
+//   - non-nil: consider only the listed, known arms.
+func (p *LinUCBDisjointPolicy) SelectArmFrom(
+	ctx *Context,
+	allowedArms []string,
+) string {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+
+	candidateArms := filterAllowedArms(p.Arms, allowedArms)
+
+	if len(candidateArms) == 0 {
+		log.Printf(
+			"[MAB] event=no_allowed_arms ts=%d policy=%s function=%s\n",
+			nowMillis(),
+			string(p.GetType()),
+			p.FunctionName,
+		)
+
+		return ""
+	}
 
 	bestArm := ""
 	bestScore := -math.MaxFloat64
 
-	for arm, state := range p.Arms {
-		// Construct Feature Vector x_t for this arm
-		// We need the memory usage specifically for THIS arm from the context
-		memUsage, ok := ctx.ArchMemUsage[arm]
-		if !ok {
-			// If no info let's assume it is a new arm and therefore it has no functions running.
-			memUsage = 0.0
+	for _, arm := range candidateArms {
+		state := p.Arms[arm]
+
+		// Construct the feature vector for this arm.
+		// A missing context is interpreted as zero utilization.
+		memUsage := 0.0
+
+		if ctx != nil && ctx.ArchMemUsage != nil {
+			if usage, ok := ctx.ArchMemUsage[arm]; ok {
+				memUsage = usage
+			}
 		}
 
 		x := p.computeFeatures(memUsage)
 
-		// Compute Inverse of A
 		var AInv mat.Dense
-		err := AInv.Inverse(state.A)
-		if err != nil {
-			log.Printf("[LinUCB] Error inverting matrix for arm %s: %v", arm, err)
-			panic(1) // it should never happen
+
+		if err := AInv.Inverse(state.A); err != nil {
+			log.Printf(
+				"[LinUCB] Error inverting matrix for arm %s: %v",
+				arm,
+				err,
+			)
+
+			return ""
 		}
 
-		// Compute Theta_hat = A_inv * b (line 8 of Algorithm 1 in the aforementioned paper
+		// theta = A^-1 * b
 		var theta mat.VecDense
 		theta.MulVec(&AInv, state.b)
 
-		// Compute x^T * theta
+		// Expected reward: x^T * theta
 		expectedReward := mat.Dot(x, &theta)
 
-		// Compute alpha * sqrt(x^T * A_inv * x)
+		// Confidence term: alpha * sqrt(x^T * A^-1 * x)
 		var tempVec mat.VecDense
 		tempVec.MulVec(&AInv, x)
+
 		variance := mat.Dot(x, &tempVec)
 		confidence := p.Alpha * math.Sqrt(variance)
 
-		// Final UCB Score for this arm
 		score := expectedReward + confidence
 
 		logMABContextualArmScore(
@@ -133,8 +168,15 @@ func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
 	}
 
 	if bestArm == "" {
-		log.Println("[LinUCB] Warning: No arms available/configured. Panic.")
-		panic(2) // should never happen if initialized correctly
+		log.Printf(
+			"[MAB] event=no_arm_selected ts=%d policy=%s function=%s allowed_arms=%v\n",
+			nowMillis(),
+			string(p.GetType()),
+			p.FunctionName,
+			candidateArms,
+		)
+
+		return ""
 	}
 
 	logMABContextualSelectArm(
@@ -143,7 +185,7 @@ func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
 		bestArm,
 		"linucb_score",
 		bestScore,
-		formatArmsFromMap(p.Arms),
+		strings.Join(candidateArms, ","),
 	)
 
 	return bestArm

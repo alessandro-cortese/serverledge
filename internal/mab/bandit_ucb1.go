@@ -3,6 +3,7 @@ package mab
 import (
 	"log"
 	"math"
+	"strings"
 	"sync"
 )
 
@@ -10,15 +11,15 @@ import (
 
 // ArmStats maintains information about a single arm dedicated to a single function
 type ArmStats struct {
-	Count      int64   // UCB needs to know hom many times we chose that arm/architecture
-	SumRewards float64 // Sum of rewards
-	AvgReward  float64 // Avg Reward (Q value in the formula)
+	Count      int64   // Count is the number of valid feedback samples used to estimate this arm.
+	SumRewards float64 // SumRewards is the sum of valid rewards observed for this arm.
+	AvgReward  float64 // AvgReward is the empirical mean reward of this arm.
 }
 
 // UCB1Bandit is the bandit that handles decision for ONE function
 type UCB1Bandit struct {
 	FunctionName string               // TODO: Ask if can do this
-	TotalCounts  int64                // number of total executions (t)
+	TotalCounts  int64                // TotalCounts is the total number of valid feedback samples observed across all arms for this function.
 	Arms         map[string]*ArmStats // Map "amd64" -> Stats, "arm64" -> Stats for each arm
 	mu           sync.RWMutex         // Mutex per thread-safety
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
@@ -41,54 +42,98 @@ func (b *UCB1Bandit) InitArm(arm string) {
 	)
 }
 
-// SelectArm implements UCB-1 formulas
-// Returns the suggested architecture to use ("amd64" o "arm64").
-// ctx *Ctx is necessary even if not used to be compliant with the interface.
+// SelectArm chooses among all arms known by the policy.
+// It delegates to SelectArmFrom with no action mask.
 func (b *UCB1Bandit) SelectArm(ctx *Context) string {
+	return b.SelectArmFrom(ctx, nil)
+}
+
+// SelectArmFrom implements UCB1 over the supplied action mask.
+//
+// allowedArms semantics:
+//   - nil: consider every arm known by the bandit;
+//   - non-nil: consider only the listed, known arms.
+//
+// Selection does not change Count or TotalCounts. Those counters are updated
+// only when UpdateReward receives a valid feedback sample.
+func (b *UCB1Bandit) SelectArmFrom(
+	ctx *Context,
+	allowedArms []string,
+) string {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	ctx = nil // not used, favor garbage collection
+	// UCB1 is non-contextual.
+	ctx = nil
+
+	candidateArms := filterAllowedArms(b.Arms, allowedArms)
+
+	if len(candidateArms) == 0 {
+		log.Printf(
+			"[MAB] event=no_allowed_arms ts=%d policy=%s function=%s\n",
+			nowMillis(),
+			string(b.GetType()),
+			b.FunctionName,
+		)
+
+		return ""
+	}
+
 	minSampleCount := int64(1)
 	currentMinSample := int64(math.MaxInt64)
-	leastTriedArch := ""
+	leastTriedArm := ""
 
-	// If an arm hasn't tried at least minSampleCount times, it has to be tried
-	// If more than one arm hasn't reached this threshold, choose the least tried one
-	for arch, stats := range b.Arms {
-		if stats.Count < minSampleCount && stats.Count < currentMinSample {
+	// Initial exploration is restricted to the allowed action set.
+	for _, arm := range candidateArms {
+		stats := b.Arms[arm]
+
+		if stats.Count < minSampleCount &&
+			stats.Count < currentMinSample {
+
 			currentMinSample = stats.Count
-			leastTriedArch = arch
+			leastTriedArm = arm
 		}
 	}
 
-	if leastTriedArch != "" {
-
+	if leastTriedArm != "" {
 		logMABSelectArm(
 			string(b.GetType()),
 			b.FunctionName,
-			leastTriedArch,
+			leastTriedArm,
 			"least_tried",
 			0.0,
 			b.TotalCounts,
-			formatArmsFromMap(b.Arms),
+			strings.Join(candidateArms, ","),
 		)
 
-		return leastTriedArch
+		return leastTriedArm
 	}
 
 	bestScore := -math.MaxFloat64
-	bestArch := ""
+	bestArm := ""
 
-	// Calculate UCB1 score for each architecture
-	for arch, stats := range b.Arms {
-		explorationBonus := b.c * math.Sqrt(math.Log(float64(b.TotalCounts))/float64(stats.Count))
+	// If every candidate has at least one sample, TotalCounts should be positive.
+	// The guard protects against manually initialized or inconsistent test states.
+	totalCounts := b.TotalCounts
+	if totalCounts < 1 {
+		totalCounts = 1
+	}
+
+	for _, arm := range candidateArms {
+		stats := b.Arms[arm]
+
+		explorationBonus := b.c *
+			math.Sqrt(
+				math.Log(float64(totalCounts))/
+					float64(stats.Count),
+			)
+
 		score := stats.AvgReward + explorationBonus
 
 		logMABArmScore(
 			string(b.GetType()),
 			b.FunctionName,
-			arch,
+			arm,
 			score,
 			stats.Count,
 			stats.AvgReward,
@@ -97,26 +142,33 @@ func (b *UCB1Bandit) SelectArm(ctx *Context) string {
 
 		if score > bestScore {
 			bestScore = score
-			bestArch = arch
+			bestArm = arm
 		}
 	}
 
-	if bestArch == "" {
-		log.Printf("Couldn't select any ARM. Panic\n")
-		panic(1)
+	if bestArm == "" {
+		log.Printf(
+			"[MAB] event=no_arm_selected ts=%d policy=%s function=%s allowed_arms=%v\n",
+			nowMillis(),
+			string(b.GetType()),
+			b.FunctionName,
+			candidateArms,
+		)
+
+		return ""
 	}
 
 	logMABSelectArm(
 		string(b.GetType()),
 		b.FunctionName,
-		bestArch,
+		bestArm,
 		"ucb_score",
 		bestScore,
 		b.TotalCounts,
-		formatArmsFromMap(b.Arms),
+		strings.Join(candidateArms, ","),
 	)
 
-	return bestArch
+	return bestArm
 }
 
 // UpdateReward updates bandit stats after execution. For now reward is 1.0 / executionTime (not considering setup time).

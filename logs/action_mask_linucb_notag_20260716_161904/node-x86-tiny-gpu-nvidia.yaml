@@ -1,0 +1,8 @@
+etcd.address: 127.0.0.1:2379
+api.port: 1326
+registry.area: ROME
+registry.udp.port: 9879
+node.machine_tag: x86-tiny/gpu/nvidia
+node.cost_factor: 1.6
+node.energy_factor: 1.8
+container.pool.memory: 512

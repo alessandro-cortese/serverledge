@@ -1,0 +1,36 @@
+2026/07/16 16:16:36 Local node id: (ROME)DicwkVEW2pDoAvyE9i9hRh1784211396441346568 - x86-large (arch: amd64)
+2026/07/16 16:16:36 Registration for node: (ROME)DicwkVEW2pDoAvyE9i9hRh1784211396441346568 - x86-large
+2026/07/16 16:16:36 Connecting to etcd
+2026/07/16 16:16:36 Connected to etcd
+2026/07/16 16:16:37 etcd connection state: READY
+2026/07/16 16:16:37 etcd: connected and ready
+2026/07/16 16:16:37 Registering to etcd: registry/ROME/x86-large/DicwkVEW2pDoAvyE9i9hRh1784211396441346568
+2026/07/16 16:16:37 Configured scheduling policy: default
+2026/07/16 16:16:37 Configured offloading policy: disable
+2026/07/16 16:16:37 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/16 16:16:37 Scheduler started.
+2026/07/16 16:16:37 No remote area is configured; vertical offloading disabled
+2026/07/16 16:16:37 UDP server up and listening on port 9878
+⇨ http server started on [::]:1325
+2026/07/16 16:16:47 Container 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 has name /suspicious_moser
+2026/07/16 16:16:47 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:48 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:48 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:50 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:50 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:51 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:51 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:53 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:53 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:53 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:53 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:53 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:53 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:55 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:55 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:56 Using warm 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:56 [mab_cost_aware_1784211395] Executing on container: 3bb67a2cceecd1de190793a6d7f8433b59405a483c7b42b9a66565f01e542cf5
+2026/07/16 16:16:57 Periodic nearby Monitoring
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9880
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9877
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9879

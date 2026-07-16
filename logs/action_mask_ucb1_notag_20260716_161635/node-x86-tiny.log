@@ -1,0 +1,37 @@
+2026/07/16 16:16:36 Local node id: (ROME)WY4J8KBPVx2W22x5XAwpjW1784211396441369527 - x86-tiny (arch: amd64)
+2026/07/16 16:16:36 Registration for node: (ROME)WY4J8KBPVx2W22x5XAwpjW1784211396441369527 - x86-tiny
+2026/07/16 16:16:36 Connecting to etcd
+2026/07/16 16:16:36 Connected to etcd
+2026/07/16 16:16:37 etcd connection state: READY
+2026/07/16 16:16:37 etcd: connected and ready
+2026/07/16 16:16:37 Registering to etcd: registry/ROME/x86-tiny/WY4J8KBPVx2W22x5XAwpjW1784211396441369527
+2026/07/16 16:16:37 Configured scheduling policy: default
+2026/07/16 16:16:37 Configured offloading policy: disable
+2026/07/16 16:16:37 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/16 16:16:37 Scheduler started.
+2026/07/16 16:16:37 No remote area is configured; vertical offloading disabled
+2026/07/16 16:16:37 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/07/16 16:16:46 New request: creation of mab_cost_aware_1784211395
+2026/07/16 16:16:48 Container 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 has name /angry_boyd
+2026/07/16 16:16:48 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:49 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:49 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:50 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:50 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:50 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:50 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:51 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:51 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:51 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:51 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:52 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:52 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:54 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:54 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:56 Using warm 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90 for mab_cost_aware_1784211395. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/07/16 16:16:56 [mab_cost_aware_1784211395] Executing on container: 2bdedba3ea981dd1832a1494322f309c96ee47ba1011d70bca1a67fe66c52d90
+2026/07/16 16:16:57 Periodic nearby Monitoring
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9880
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9878
+2026/07/16 16:16:57 Requesting status information for 192.168.0.46:9879

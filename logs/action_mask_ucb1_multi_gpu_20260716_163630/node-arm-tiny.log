@@ -1,0 +1,14 @@
+2026/07/16 16:36:31 Local node id: (ROME)EARf3p97FrpKVo5dFJxNtN1784212591287721395 - arm-tiny (arch: amd64)
+2026/07/16 16:36:31 Registration for node: (ROME)EARf3p97FrpKVo5dFJxNtN1784212591287721395 - arm-tiny
+2026/07/16 16:36:31 Connecting to etcd
+2026/07/16 16:36:31 Connected to etcd
+2026/07/16 16:36:32 etcd connection state: READY
+2026/07/16 16:36:32 etcd: connected and ready
+2026/07/16 16:36:32 Registering to etcd: registry/ROME/arm-tiny/EARf3p97FrpKVo5dFJxNtN1784212591287721395
+2026/07/16 16:36:32 Configured scheduling policy: default
+2026/07/16 16:36:32 Configured offloading policy: disable
+2026/07/16 16:36:32 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/16 16:36:32 Scheduler started.
+2026/07/16 16:36:32 No remote area is configured; vertical offloading disabled
+2026/07/16 16:36:32 UDP server up and listening on port 9880
+⇨ http server started on [::]:1327

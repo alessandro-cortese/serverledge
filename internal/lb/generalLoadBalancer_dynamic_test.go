@@ -137,3 +137,133 @@ func TestGeneralLoadBalancerMABCanSelectNewlyAddedArmForExploration(t *testing.T
 
 	assert.Equal(t, "arm", selected, "UCB1 should force exploration of the newly added, untried arm")
 }
+
+func TestGeneralLoadBalancerMABAppliesActionMaskBeforeSelection(
+	t *testing.T,
+) {
+	b := newGeneralLbForTest(
+		newDynamicTarget(
+			"plain",
+			container.X86,
+			"x86-tiny",
+		),
+		newDynamicTarget(
+			"nvidia",
+			container.X86,
+			"x86-tiny/gpu/nvidia",
+		),
+		newDynamicTarget(
+			"amd",
+			container.X86,
+			"x86-large/gpu/amd",
+		),
+	)
+
+	b.mode = MAB
+
+	funcName := "gpuActionMaskFunction"
+
+	fun := &function.Function{
+		Name:           funcName,
+		MemoryMB:       128,
+		SupportedArchs: []string{container.X86},
+		TagPattern:     "gpu",
+	}
+
+	policy := mab.GlobalBanditManager.GetBandit(funcName)
+
+	ucb, ok := policy.(*mab.UCB1Bandit)
+	require.True(t, ok)
+
+	// The incompatible plain arm is untried.
+	// With the old unmasked logic it would be selected as least-tried,
+	// after which the LB would apply a Round Robin fallback.
+	ucb.Arms["x86-tiny"].Count = 0
+
+	ucb.Arms["x86-tiny/gpu/nvidia"].Count = 1
+	ucb.Arms["x86-tiny/gpu/nvidia"].AvgReward = 0.0
+
+	ucb.Arms["x86-large/gpu/amd"].Count = 1
+	ucb.Arms["x86-large/gpu/amd"].AvgReward = 10.0
+
+	ucb.TotalCounts = 2
+
+	compatibleTags := b.compatibleTagsForFunction(fun)
+
+	require.ElementsMatch(
+		t,
+		[]string{
+			"x86-tiny/gpu/nvidia",
+			"x86-large/gpu/amd",
+		},
+		compatibleTags,
+	)
+
+	selected := b.selectTargetTag(
+		funcName,
+		fun,
+		compatibleTags,
+		nil,
+	)
+
+	assert.Equal(
+		t,
+		"x86-large/gpu/amd",
+		selected,
+	)
+
+	assert.NotEqual(
+		t,
+		"x86-tiny",
+		selected,
+	)
+}
+
+func TestGeneralLoadBalancerMABWithSingleCompatibleTagStillUsesMaskedPolicy(
+	t *testing.T,
+) {
+	b := newGeneralLbForTest(
+		newDynamicTarget(
+			"plain",
+			container.X86,
+			"x86-tiny",
+		),
+		newDynamicTarget(
+			"nvidia",
+			container.X86,
+			"x86-tiny/gpu/nvidia",
+		),
+	)
+
+	b.mode = MAB
+
+	funcName := "nvidiaOnlyActionMaskFunction"
+
+	fun := &function.Function{
+		Name:           funcName,
+		MemoryMB:       128,
+		SupportedArchs: []string{container.X86},
+		TagPattern:     "gpu,nvidia",
+	}
+
+	compatibleTags := b.compatibleTagsForFunction(fun)
+
+	require.Equal(
+		t,
+		[]string{"x86-tiny/gpu/nvidia"},
+		compatibleTags,
+	)
+
+	selected := b.selectTargetTag(
+		funcName,
+		fun,
+		compatibleTags,
+		nil,
+	)
+
+	assert.Equal(
+		t,
+		"x86-tiny/gpu/nvidia",
+		selected,
+	)
+}

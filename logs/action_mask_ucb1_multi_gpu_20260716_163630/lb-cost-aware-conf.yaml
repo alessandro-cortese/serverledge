@@ -1,0 +1,13 @@
+etcd.address: 127.0.0.1:2379
+api.port: 8080
+registry.area: ROME
+lb.arch_awareness: true
+lb.mode: MAB
+mab.policy: UCB1
+mab.ucb1.c: 0.8
+mab.linucb.alpha: 0.1
+mab.linucb.lambda: 0.7
+mab.cost.weight: 0.0
+mab.energy.weight: 0.0
+lb.replicas: 128
+lb.refresh_interval: 3

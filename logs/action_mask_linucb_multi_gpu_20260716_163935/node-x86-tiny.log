@@ -1,0 +1,15 @@
+2026/07/16 16:39:36 Local node id: (ROME)SL84UtV93ZVoAzC83GJyCc1784212776406309878 - x86-tiny (arch: amd64)
+2026/07/16 16:39:36 Registration for node: (ROME)SL84UtV93ZVoAzC83GJyCc1784212776406309878 - x86-tiny
+2026/07/16 16:39:36 Connecting to etcd
+2026/07/16 16:39:36 Connected to etcd
+2026/07/16 16:39:36 etcd connection state: READY
+2026/07/16 16:39:36 etcd: connected and ready
+2026/07/16 16:39:36 Registering to etcd: registry/ROME/x86-tiny/SL84UtV93ZVoAzC83GJyCc1784212776406309878
+2026/07/16 16:39:36 Configured scheduling policy: default
+2026/07/16 16:39:36 Configured offloading policy: disable
+2026/07/16 16:39:36 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/16 16:39:36 Scheduler started.
+2026/07/16 16:39:36 No remote area is configured; vertical offloading disabled
+2026/07/16 16:39:36 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/07/16 16:39:46 New request: creation of mab_cost_aware_1784212775

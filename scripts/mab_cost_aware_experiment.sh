@@ -46,6 +46,11 @@ MAB_COST_WEIGHT="${MAB_COST_WEIGHT:-0.0}"
 MAB_ENERGY_WEIGHT="${MAB_ENERGY_WEIGHT:-0.0}"
 
 FUNCTION_TAG_PATTERN="${FUNCTION_TAG_PATTERN:-}"
+
+# Allows experiments to change the logical class of the x86-large node
+# without permanently modifying this script.
+X86_LARGE_MACHINE_TAG="${X86_LARGE_MACHINE_TAG:-x86-large}"
+
 FUNCTION_NAME="${FUNCTION_NAME:-mab_cost_aware_$(date +%s)}"
 
 CREATE_PORT="${CREATE_PORT:-1324}"
@@ -100,7 +105,7 @@ etcd.address: 127.0.0.1:2379
 api.port: 1325
 registry.area: ROME
 registry.udp.port: 9878
-node.machine_tag: x86-large
+node.machine_tag: ${X86_LARGE_MACHINE_TAG}
 node.cost_factor: 1.2
 node.energy_factor: 1.2
 container.pool.memory: 512
@@ -227,6 +232,7 @@ echo "[done] Experiment completed."
 echo "[done] Policy: $MAB_POLICY"
 echo "[done] Function name: $FUNCTION_NAME"
 echo "[done] Function tag_pattern: ${FUNCTION_TAG_PATTERN:-<none>}"
+echo "[done] x86-large machine tag: $X86_LARGE_MACHINE_TAG"
 echo "[done] Cost weight: $MAB_COST_WEIGHT"
 echo "[done] Energy weight: $MAB_ENERGY_WEIGHT"
 echo "[done] Logs: $LOG_DIR"

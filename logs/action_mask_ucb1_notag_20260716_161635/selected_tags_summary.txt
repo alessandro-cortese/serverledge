@@ -1,0 +1,4 @@
+      8 selected_tag=arm-tiny
+      9 selected_tag=x86-large
+      9 selected_tag=x86-tiny
+     14 selected_tag=x86-tiny/gpu/nvidia

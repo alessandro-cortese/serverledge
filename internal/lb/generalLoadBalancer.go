@@ -236,15 +236,22 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 }
 
 // selectTargetTag selects the machine tag to prioritize for an invoke request.
-// The selection domain is already restricted to compatibleTags.
-func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Function, compatibleTags []string, ctx *mab.Context) string {
+//
+// compatibleTags is the action mask supplied by the load balancer:
+//
+//   - without a function tag_pattern it contains every currently executable ring;
+//   - with a tag_pattern it contains only the rings satisfying that constraint.
+//
+// In MAB mode the policy is always invoked, even when the mask contains one arm.
+// This keeps constrained and unconstrained invocations on the same selection path.
+func (b *GeneralLoadBalancer) selectTargetTag(
+	funcName string,
+	fun *function.Function,
+	compatibleTags []string,
+	ctx *mab.Context,
+) string {
 	if len(compatibleTags) == 0 {
 		return ""
-	}
-
-	// If only one tag is compatible, skip MAB/RR/Random and use that tag directly.
-	if len(compatibleTags) == 1 {
-		return compatibleTags[0]
 	}
 
 	switch b.mode {
@@ -257,7 +264,12 @@ func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Fun
 		)
 
 		bandit := mab.GlobalBanditManager.GetBandit(funcName)
-		selectedTag := bandit.SelectArm(ctx)
+
+		// The MAB sees only the actions currently allowed for this function.
+		selectedTag := bandit.SelectArmFrom(
+			ctx,
+			compatibleTags,
+		)
 
 		log.Printf(
 			"[LB][MAB] event=after_select function=%s selected_tag=%s compatible_tags=%v\n",
@@ -266,33 +278,37 @@ func (b *GeneralLoadBalancer) selectTargetTag(funcName string, fun *function.Fun
 			compatibleTags,
 		)
 
+		// SelectArmFrom should never return a masked-out arm.
+		// Keep this validation as a defensive check.
 		if containsString(compatibleTags, selectedTag) {
-			// Update archRRIndex to maintain consistency if the mode changes
+			// Update archRRIndex to maintain consistency if the mode changes.
 			for i, tag := range b.architectures {
 				if tag == selectedTag {
-					b.archRRIndex = (i + 1) % len(b.architectures)
+					b.archRRIndex =
+						(i + 1) % len(b.architectures)
 					break
 				}
 			}
+
 			return selectedTag
 		}
 
 		log.Printf(
-			"[LB][MAB] event=incompatible_selection function=%s selected_tag=%s compatible_tags=%v fallback=rr\n",
+			"[LB][MAB] event=invalid_masked_selection function=%s selected_tag=%s compatible_tags=%v fallback=rr\n",
 			funcName,
 			selectedTag,
 			compatibleTags,
 		)
 
+		// Defensive fallback only. In normal operation this should not be reached.
 		return b.selectArchitectureRRFrom(compatibleTags)
 
 	case RR:
-		// RoundRobin baseline: select only among tags that are compatible with this function.
+		// Round Robin baseline: only compatible tags are considered.
 		return b.selectArchitectureRRFrom(compatibleTags)
 
 	default:
-		// Random load balancer for testing purposes.
-		// It must still select only among compatible tags.
+		// Random baseline: only compatible tags are considered.
 		return b.selectArchitectureRandomFrom(compatibleTags)
 	}
 }
