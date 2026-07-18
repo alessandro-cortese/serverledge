@@ -2,6 +2,7 @@ package mab
 
 import (
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/serverledge-faas/serverledge/internal/config"
@@ -44,23 +45,57 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 		policyType := config.GetString(config.MAB_POLICY, "UCB1")
 		log.Printf("BanditManager GetBandit: policy type: %s\n", policyType)
 
+		configuredPolicy :=
+			config.GetString(
+				config.MAB_POLICY,
+				string(UCB1),
+			)
+
+		normalizedPolicy :=
+			strings.ToLower(
+				strings.TrimSpace(
+					configuredPolicy,
+				),
+			)
+
 		var newBandit Policy
 
-		switch policyType {
-		case "LinUCB":
-			// Alpha param could also be in config
-			alpha := config.GetFloat(config.MAB_LINUCB_ALPHA, 0.1)
-			newBandit = NewLinUCBDisjointPolicy(functionName, alpha)
-			log.Printf("Initialized LinUCB bandit for %s", functionName)
+		switch normalizedPolicy {
+		case "linucb":
+			alpha :=
+				config.GetFloat(
+					config.MAB_LINUCB_ALPHA,
+					0.1,
+				)
+
+			newBandit =
+				NewLinUCBDisjointPolicy(
+					functionName,
+					alpha,
+				)
+
+		case "ucb1utilizationaware",
+			"ucb1-utilization-aware",
+			"ucb1_utilization_aware":
+
+			newBandit =
+				NewUCB1UtilizationAwareBandit(
+					functionName,
+					config.GetFloat(
+						config.MAB_UCB1_C,
+						0.8,
+					),
+				)
+
 		default:
-			// Default to UCB1 (Legacy)
-			newBandit = &UCB1Bandit{
-				FunctionName: functionName,
-				TotalCounts:  0,
-				Arms:         map[string]*ArmStats{},
-				c:            config.GetFloat(config.MAB_UCB1_C, 0.8),
-			}
-			log.Printf("Initialized UCB1 bandit for %s", functionName)
+			newBandit =
+				NewUCB1Bandit(
+					functionName,
+					config.GetFloat(
+						config.MAB_UCB1_C,
+						0.8,
+					),
+				)
 		}
 
 		// Init arm of all known architectures

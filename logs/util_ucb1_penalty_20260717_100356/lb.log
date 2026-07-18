@@ -1,0 +1,835 @@
+2026/07/17 10:04:01 Registration for node: (ROME)mscs28doWCnXEr9vn6yBEN1784275441867542082 - amd64
+2026/07/17 10:04:01 Connecting to etcd
+2026/07/17 10:04:01 Connected to etcd
+2026/07/17 10:04:01 etcd connection state: READY
+2026/07/17 10:04:01 etcd: connected and ready
+2026/07/17 10:04:01 Registering to etcd: registry/ROME/__lb/amd64/mscs28doWCnXEr9vn6yBEN1784275441867542082
+2026/07/17 10:04:01 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:01 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:01 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:01 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:01 Found 4 targets
+2026/07/17 10:04:01 Initializing with 4 targets.
+2026/07/17 10:04:01 Running ArchitectureAwareLB with 128 replicas per node in the hash rings
+2026/07/17 10:04:01 LB mode set to MAB
+2026/07/17 10:04:01 [LB][MAB] event=new_machine_tag_discovered tag=arm-tiny arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/17 10:04:01 [LB] Adding target arm-tiny
+2026/07/17 10:04:01 [LB][MAB] event=new_machine_tag_discovered tag=x86-large/gpu/amd arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/17 10:04:01 [LB] Adding target x86-large/gpu/amd
+2026/07/17 10:04:01 [LB][MAB] event=new_machine_tag_discovered tag=x86-tiny/gpu/nvidia arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/17 10:04:01 [LB] Adding target x86-tiny/gpu/nvidia
+2026/07/17 10:04:01 [LB][MAB] event=new_machine_tag_discovered tag=x86-tiny arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/17 10:04:01 [LB] Adding target x86-tiny
+⇨ http server started on [::]:8080
+2026/07/17 10:04:04 [LB]: Periodic targets update
+2026/07/17 10:04:04 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:04 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:04 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:04 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:04 Found 4 targets
+2026/07/17 10:04:06 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:06 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:06 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:06 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:06 BanditManager GetBandit: policy type: UCB1
+2026/07/17 10:04:06 Initialized UCB1 bandit for mab_cost_aware_1784275436
+2026/07/17 10:04:06 [MAB] event=arm_added ts=1784275446897 policy=UCB1 function=mab_cost_aware_1784275436 arm=arm-tiny arms=[arm-tiny]
+2026/07/17 10:04:06 [MAB] event=arm_added ts=1784275446897 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd arms=[arm-tiny,x86-large/gpu/amd]
+2026/07/17 10:04:06 [MAB] event=arm_added ts=1784275446897 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia arms=[arm-tiny,x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:06 [MAB] event=arm_added ts=1784275446897 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny arms=[arm-tiny,x86-large/gpu/amd,x86-tiny,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:06 [MAB] event=select_arm ts=1784275446897 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=least_tried score=0.000000 total_counts=0 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:06 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:06 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:06 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:07 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:07 [MAB] event=skip_cold_start ts=1784275447375 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=6.415243 reason=cold_start
+2026/07/17 10:04:07 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:07 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:07 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:07 [MAB] event=select_arm ts=1784275447597 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=least_tried score=0.000000 total_counts=0 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:07 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:07 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:07 [MAB] event=reward_breakdown ts=1784275447601 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.478562 latency_reward=-0.907679 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.907679
+2026/07/17 10:04:07 [MAB] event=update_reward ts=1784275447601 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.478562 warm_start=true reward=-0.907679 count=1 avg_reward=-0.907679 total_counts=1
+2026/07/17 10:04:07 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:07 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:07 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:07 [MAB] event=select_arm ts=1784275447822 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=least_tried score=0.000000 total_counts=1 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:07 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:07 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:07 [LB]: Periodic targets update
+2026/07/17 10:04:07 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:07 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:07 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:07 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:07 Found 4 targets
+2026/07/17 10:04:08 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:08 [MAB] event=skip_cold_start ts=1784275448338 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=5.714528 reason=cold_start
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:08 [MAB] event=select_arm ts=1784275448558 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=least_tried score=0.000000 total_counts=1 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:08 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:08 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:08 [MAB] event=reward_breakdown ts=1784275448562 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.821826 latency_reward=-1.037384 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.037384
+2026/07/17 10:04:08 [MAB] event=update_reward ts=1784275448562 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.821826 warm_start=true reward=-1.037384 count=1 avg_reward=-1.037384 total_counts=2
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:08 [MAB] event=arm_score ts=1784275448783 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.241635 base_score=-0.241635 count=1 avg_reward=-0.907679 exploration_bonus=0.666044 total_counts=2 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:08 [MAB] event=arm_score ts=1784275448783 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.371341 base_score=-0.371341 count=1 avg_reward=-1.037384 exploration_bonus=0.666044 total_counts=2 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:08 [MAB] event=select_arm ts=1784275448783 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.241635 total_counts=2 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:08 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:08 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:08 [MAB] event=reward_breakdown ts=1784275448786 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.945846 latency_reward=-1.080396 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.080396
+2026/07/17 10:04:08 [MAB] event=update_reward ts=1784275448786 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.945846 warm_start=true reward=-1.080396 count=2 avg_reward=-0.994037 total_counts=3
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:08 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:08 [MAB] event=arm_score ts=1784275448999 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.401116 base_score=-0.401116 count=2 avg_reward=-0.994037 exploration_bonus=0.592922 total_counts=3 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:08 [MAB] event=arm_score ts=1784275448999 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.198867 base_score=-0.198867 count=1 avg_reward=-1.037384 exploration_bonus=0.838518 total_counts=3 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:08 [MAB] event=select_arm ts=1784275448999 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.198867 total_counts=3 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:08 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:08 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:09 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:09 [MAB] event=reward_breakdown ts=1784275449002 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.792556 latency_reward=-1.026957 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.026957
+2026/07/17 10:04:09 [MAB] event=update_reward ts=1784275449002 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.792556 warm_start=true reward=-1.026957 count=2 avg_reward=-1.032171 total_counts=4
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449222 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.327994 base_score=-0.327994 count=2 avg_reward=-0.994037 exploration_bonus=0.666044 total_counts=4 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449222 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.366127 base_score=-0.366127 count=2 avg_reward=-1.032171 exploration_bonus=0.666044 total_counts=4 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=select_arm ts=1784275449222 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.327994 total_counts=4 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:09 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:09 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:09 [MAB] event=reward_breakdown ts=1784275449226 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.319496 latency_reward=-1.199813 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.199813
+2026/07/17 10:04:09 [MAB] event=update_reward ts=1784275449226 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.319496 warm_start=true reward=-1.199813 count=3 avg_reward=-1.062629 total_counts=5
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449446 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.476671 base_score=-0.476671 count=3 avg_reward=-1.062629 exploration_bonus=0.585958 total_counts=5 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449446 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.314522 base_score=-0.314522 count=2 avg_reward=-1.032171 exploration_bonus=0.717649 total_counts=5 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=select_arm ts=1784275449446 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.314522 total_counts=5 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:09 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:09 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:09 [MAB] event=reward_breakdown ts=1784275449450 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.534038 latency_reward=-1.262441 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.262441
+2026/07/17 10:04:09 [MAB] event=update_reward ts=1784275449450 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.534038 warm_start=true reward=-1.262441 count=3 avg_reward=-1.108928 total_counts=6
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449670 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.444372 base_score=-0.444372 count=3 avg_reward=-1.062629 exploration_bonus=0.618257 total_counts=6 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449670 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.490670 base_score=-0.490670 count=3 avg_reward=-1.108928 exploration_bonus=0.618257 total_counts=6 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=select_arm ts=1784275449670 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.444372 total_counts=6 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:09 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:09 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:09 [MAB] event=reward_breakdown ts=1784275449674 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.206498 latency_reward=-1.165179 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.165179
+2026/07/17 10:04:09 [MAB] event=update_reward ts=1784275449674 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.206498 warm_start=true reward=-1.165179 count=4 avg_reward=-1.088267 total_counts=7
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:09 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449895 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.530283 base_score=-0.530283 count=4 avg_reward=-1.088267 exploration_bonus=0.557984 total_counts=7 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=arm_score ts=1784275449895 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.464624 base_score=-0.464624 count=3 avg_reward=-1.108928 exploration_bonus=0.644304 total_counts=7 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:09 [MAB] event=select_arm ts=1784275449895 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.464624 total_counts=7 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:09 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:09 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:09 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:09 [MAB] event=reward_breakdown ts=1784275449899 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.301431 latency_reward=-1.194356 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.194356
+2026/07/17 10:04:09 [MAB] event=update_reward ts=1784275449899 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.301431 warm_start=true reward=-1.194356 count=4 avg_reward=-1.130285 total_counts=8
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450119 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.511456 base_score=-0.511456 count=4 avg_reward=-1.088267 exploration_bonus=0.576811 total_counts=8 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450119 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.553474 base_score=-0.553474 count=4 avg_reward=-1.130285 exploration_bonus=0.576811 total_counts=8 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=select_arm ts=1784275450119 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.511456 total_counts=8 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:10 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:10 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:10 [MAB] event=reward_breakdown ts=1784275450123 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.934003 latency_reward=-1.076368 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.076368
+2026/07/17 10:04:10 [MAB] event=update_reward ts=1784275450123 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.934003 warm_start=true reward=-1.076368 count=5 avg_reward=-1.085887 total_counts=9
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450344 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.555562 base_score=-0.555562 count=5 avg_reward=-1.085887 exploration_bonus=0.530325 total_counts=9 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450344 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.537363 base_score=-0.537363 count=4 avg_reward=-1.130285 exploration_bonus=0.592922 total_counts=9 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=select_arm ts=1784275450344 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.537363 total_counts=9 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:10 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:10 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:10 [MAB] event=reward_breakdown ts=1784275450348 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.909966 latency_reward=-1.068141 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.068141
+2026/07/17 10:04:10 [MAB] event=update_reward ts=1784275450348 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.909966 warm_start=true reward=-1.068141 count=5 avg_reward=-1.117856 total_counts=10
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450570 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.542996 base_score=-0.542996 count=5 avg_reward=-1.085887 exploration_bonus=0.542891 total_counts=10 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450570 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.574965 base_score=-0.574965 count=5 avg_reward=-1.117856 exploration_bonus=0.542891 total_counts=10 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=select_arm ts=1784275450570 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.542996 total_counts=10 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:10 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:10 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:10 [MAB] event=reward_breakdown ts=1784275450573 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.919302 latency_reward=-1.071345 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.071345
+2026/07/17 10:04:10 [MAB] event=update_reward ts=1784275450573 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.919302 warm_start=true reward=-1.071345 count=6 avg_reward=-1.083463 total_counts=11
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:10 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450794 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.577721 base_score=-0.577721 count=6 avg_reward=-1.083463 exploration_bonus=0.505743 total_counts=11 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=arm_score ts=1784275450794 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.563843 base_score=-0.563843 count=5 avg_reward=-1.117856 exploration_bonus=0.554013 total_counts=11 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:10 [MAB] event=select_arm ts=1784275450794 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.563843 total_counts=11 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:10 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:10 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:10 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:10 [MAB] event=reward_breakdown ts=1784275450798 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.844060 latency_reward=-1.045233 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.045233
+2026/07/17 10:04:10 [MAB] event=update_reward ts=1784275450798 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.844060 warm_start=true reward=-1.045233 count=6 avg_reward=-1.105752 total_counts=12
+2026/07/17 10:04:10 [LB]: Periodic targets update
+2026/07/17 10:04:10 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:10 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:10 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:10 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:10 Found 4 targets
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451016 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.568627 base_score=-0.568627 count=6 avg_reward=-1.083463 exploration_bonus=0.514837 total_counts=12 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451016 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.590916 base_score=-0.590916 count=6 avg_reward=-1.105752 exploration_bonus=0.514837 total_counts=12 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=select_arm ts=1784275451016 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.568627 total_counts=12 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:11 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:11 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:11 [MAB] event=reward_breakdown ts=1784275451020 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.951081 latency_reward=-1.082172 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.082172
+2026/07/17 10:04:11 [MAB] event=update_reward ts=1784275451020 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.951081 warm_start=true reward=-1.082172 count=7 avg_reward=-1.083279 total_counts=13
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451242 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.599017 base_score=-0.599017 count=7 avg_reward=-1.083279 exploration_bonus=0.484262 total_counts=13 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451242 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.582689 base_score=-0.582689 count=6 avg_reward=-1.105752 exploration_bonus=0.523063 total_counts=13 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=select_arm ts=1784275451242 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.582689 total_counts=13 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:11 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:11 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:11 [MAB] event=reward_breakdown ts=1784275451245 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.614992 latency_reward=-0.961261 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-0.961261
+2026/07/17 10:04:11 [MAB] event=update_reward ts=1784275451245 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.614992 warm_start=true reward=-0.961261 count=7 avg_reward=-1.085111 total_counts=14
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451464 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.592071 base_score=-0.592071 count=7 avg_reward=-1.083279 exploration_bonus=0.491208 total_counts=14 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451464 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.593903 base_score=-0.593903 count=7 avg_reward=-1.085111 exploration_bonus=0.491208 total_counts=14 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=select_arm ts=1784275451464 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.592071 total_counts=14 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:11 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:11 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:11 [MAB] event=reward_breakdown ts=1784275451469 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.285142 latency_reward=-1.189410 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.189410
+2026/07/17 10:04:11 [MAB] event=update_reward ts=1784275451469 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.285142 warm_start=true reward=-1.189410 count=8 avg_reward=-1.096545 total_counts=15
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451690 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.631095 base_score=-0.631095 count=8 avg_reward=-1.096545 exploration_bonus=0.465450 total_counts=15 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451690 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.587523 base_score=-0.587523 count=7 avg_reward=-1.085111 exploration_bonus=0.497587 total_counts=15 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=select_arm ts=1784275451690 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.587523 total_counts=15 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:11 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:11 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:11 [MAB] event=reward_breakdown ts=1784275451694 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.192650 latency_reward=-1.160851 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.160851
+2026/07/17 10:04:11 [MAB] event=update_reward ts=1784275451694 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.192650 warm_start=true reward=-1.160851 count=8 avg_reward=-1.094578 total_counts=16
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:11 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451907 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.625581 base_score=-0.625581 count=8 avg_reward=-1.096545 exploration_bonus=0.470964 total_counts=16 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=arm_score ts=1784275451907 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.623614 base_score=-0.623614 count=8 avg_reward=-1.094578 exploration_bonus=0.470964 total_counts=16 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:11 [MAB] event=select_arm ts=1784275451907 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.623614 total_counts=16 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:11 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:11 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:11 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:11 [MAB] event=reward_breakdown ts=1784275451909 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=1.694346 latency_reward=-0.527297 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-0.527297
+2026/07/17 10:04:11 [MAB] event=update_reward ts=1784275451909 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=1.694346 warm_start=true reward=-0.527297 count=9 avg_reward=-1.031547 total_counts=17
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452129 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.620460 base_score=-0.620460 count=8 avg_reward=-1.096545 exploration_bonus=0.476085 total_counts=17 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452129 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.582689 base_score=-0.582689 count=9 avg_reward=-1.031547 exploration_bonus=0.448857 total_counts=17 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=select_arm ts=1784275452129 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.582689 total_counts=17 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:12 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:12 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:12 [MAB] event=reward_breakdown ts=1784275452133 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.879233 latency_reward=-1.057524 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.057524
+2026/07/17 10:04:12 [MAB] event=update_reward ts=1784275452133 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.879233 warm_start=true reward=-1.057524 count=10 avg_reward=-1.034145 total_counts=18
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452353 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.615682 base_score=-0.615682 count=8 avg_reward=-1.096545 exploration_bonus=0.480864 total_counts=18 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452353 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.604047 base_score=-0.604047 count=10 avg_reward=-1.034145 exploration_bonus=0.430097 total_counts=18 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=select_arm ts=1784275452353 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.604047 total_counts=18 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:12 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:12 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:12 [MAB] event=reward_breakdown ts=1784275452357 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.117513 latency_reward=-1.137036 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.137036
+2026/07/17 10:04:12 [MAB] event=update_reward ts=1784275452357 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.117513 warm_start=true reward=-1.137036 count=11 avg_reward=-1.043498 total_counts=19
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452576 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.611205 base_score=-0.611205 count=8 avg_reward=-1.096545 exploration_bonus=0.485340 total_counts=19 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452576 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.629599 base_score=-0.629599 count=11 avg_reward=-1.043498 exploration_bonus=0.413900 total_counts=19 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=select_arm ts=1784275452576 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.611205 total_counts=19 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:12 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:12 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:12 [MAB] event=reward_breakdown ts=1784275452580 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.736665 latency_reward=-1.006740 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.006740
+2026/07/17 10:04:12 [MAB] event=update_reward ts=1784275452580 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.736665 warm_start=true reward=-1.006740 count=9 avg_reward=-1.086567 total_counts=20
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:12 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452803 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.625015 base_score=-0.625015 count=9 avg_reward=-1.086567 exploration_bonus=0.461552 total_counts=20 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=arm_score ts=1784275452803 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.626009 base_score=-0.626009 count=11 avg_reward=-1.043498 exploration_bonus=0.417489 total_counts=20 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:12 [MAB] event=select_arm ts=1784275452803 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.625015 total_counts=20 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:12 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:12 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:12 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:12 [MAB] event=reward_breakdown ts=1784275452807 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.106290 latency_reward=-1.133429 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.133429
+2026/07/17 10:04:12 [MAB] event=update_reward ts=1784275452807 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.106290 warm_start=true reward=-1.133429 count=10 avg_reward=-1.091253 total_counts=21
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453029 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.649835 base_score=-0.649835 count=10 avg_reward=-1.091253 exploration_bonus=0.441418 total_counts=21 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453029 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.622623 base_score=-0.622623 count=11 avg_reward=-1.043498 exploration_bonus=0.420875 total_counts=21 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=select_arm ts=1784275453029 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.622623 total_counts=21 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:13 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:13 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:13 [MAB] event=reward_breakdown ts=1784275453033 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.262381 latency_reward=-1.182457 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.182457
+2026/07/17 10:04:13 [MAB] event=update_reward ts=1784275453033 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.262381 warm_start=true reward=-1.182457 count=12 avg_reward=-1.055078 total_counts=22
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453254 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.646476 base_score=-0.646476 count=10 avg_reward=-1.091253 exploration_bonus=0.444777 total_counts=22 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453254 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.649054 base_score=-0.649054 count=12 avg_reward=-1.055078 exploration_bonus=0.406024 total_counts=22 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=select_arm ts=1784275453254 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.646476 total_counts=22 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:13 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:13 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:13 [MAB] event=reward_breakdown ts=1784275453258 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.084336 latency_reward=-1.126336 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.126336
+2026/07/17 10:04:13 [MAB] event=update_reward ts=1784275453258 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.084336 warm_start=true reward=-1.126336 count=11 avg_reward=-1.094442 total_counts=23
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453477 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.667326 base_score=-0.667326 count=11 avg_reward=-1.094442 exploration_bonus=0.427117 total_counts=23 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453477 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.646145 base_score=-0.646145 count=12 avg_reward=-1.055078 exploration_bonus=0.408933 total_counts=23 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=select_arm ts=1784275453477 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.646145 total_counts=23 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:13 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:13 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:13 [MAB] event=reward_breakdown ts=1784275453481 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.987845 latency_reward=-1.094552 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.094552
+2026/07/17 10:04:13 [MAB] event=update_reward ts=1784275453481 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.987845 warm_start=true reward=-1.094552 count=13 avg_reward=-1.058115 total_counts=24
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453701 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.664437 base_score=-0.664437 count=11 avg_reward=-1.094442 exploration_bonus=0.430006 total_counts=24 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453701 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.662567 base_score=-0.662567 count=13 avg_reward=-1.058115 exploration_bonus=0.395548 total_counts=24 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=select_arm ts=1784275453701 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.662567 total_counts=24 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:13 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:13 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:13 [MAB] event=reward_breakdown ts=1784275453705 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.061244 latency_reward=-1.118821 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.118821
+2026/07/17 10:04:13 [MAB] event=update_reward ts=1784275453705 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.061244 warm_start=true reward=-1.118821 count=14 avg_reward=-1.062451 total_counts=25
+2026/07/17 10:04:13 [LB]: Periodic targets update
+2026/07/17 10:04:13 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:13 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:13 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:13 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:13 Found 4 targets
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:13 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453927 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.661684 base_score=-0.661684 count=11 avg_reward=-1.094442 exploration_bonus=0.432759 total_counts=25 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=arm_score ts=1784275453927 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.678851 base_score=-0.678851 count=14 avg_reward=-1.062451 exploration_bonus=0.383600 total_counts=25 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:13 [MAB] event=select_arm ts=1784275453927 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.661684 total_counts=25 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:13 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:13 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:13 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:13 [MAB] event=reward_breakdown ts=1784275453931 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.204805 latency_reward=-1.164651 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.164651
+2026/07/17 10:04:13 [MAB] event=update_reward ts=1784275453931 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.204805 warm_start=true reward=-1.164651 count=12 avg_reward=-1.100293 total_counts=26
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454152 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.683442 base_score=-0.683442 count=12 avg_reward=-1.100293 exploration_bonus=0.416851 total_counts=26 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454152 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.676521 base_score=-0.676521 count=14 avg_reward=-1.062451 exploration_bonus=0.385929 total_counts=26 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=select_arm ts=1784275454152 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.676521 total_counts=26 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:14 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:14 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:14 [MAB] event=reward_breakdown ts=1784275454156 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.310673 latency_reward=-1.197151 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.197151
+2026/07/17 10:04:14 [MAB] event=update_reward ts=1784275454156 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.310673 warm_start=true reward=-1.197151 count=15 avg_reward=-1.071431 total_counts=27
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454377 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.681034 base_score=-0.681034 count=12 avg_reward=-1.100293 exploration_bonus=0.419259 total_counts=27 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454377 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.696434 base_score=-0.696434 count=15 avg_reward=-1.071431 exploration_bonus=0.374996 total_counts=27 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=select_arm ts=1784275454377 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.681034 total_counts=27 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:14 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:14 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:14 [MAB] event=reward_breakdown ts=1784275454381 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.160423 latency_reward=-1.150706 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.150706
+2026/07/17 10:04:14 [MAB] event=update_reward ts=1784275454381 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.160423 warm_start=true reward=-1.150706 count=13 avg_reward=-1.104171 total_counts=28
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454599 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.699144 base_score=-0.699144 count=13 avg_reward=-1.104171 exploration_bonus=0.405027 total_counts=28 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454599 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.694371 base_score=-0.694371 count=15 avg_reward=-1.071431 exploration_bonus=0.377060 total_counts=28 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=select_arm ts=1784275454599 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.694371 total_counts=28 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:14 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:14 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:14 [MAB] event=reward_breakdown ts=1784275454603 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.205521 latency_reward=-1.164875 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.164875
+2026/07/17 10:04:14 [MAB] event=update_reward ts=1784275454603 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.205521 warm_start=true reward=-1.164875 count=16 avg_reward=-1.077271 total_counts=29
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:14 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454823 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.697017 base_score=-0.697017 count=13 avg_reward=-1.104171 exploration_bonus=0.407154 total_counts=29 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=arm_score ts=1784275454823 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.710267 base_score=-0.710267 count=16 avg_reward=-1.077271 exploration_bonus=0.367004 total_counts=29 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:14 [MAB] event=select_arm ts=1784275454823 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.697017 total_counts=29 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:14 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:14 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:14 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:14 [MAB] event=reward_breakdown ts=1784275454827 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.054110 latency_reward=-1.116488 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.116488
+2026/07/17 10:04:14 [MAB] event=update_reward ts=1784275454827 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.054110 warm_start=true reward=-1.116488 count=14 avg_reward=-1.105051 total_counts=30
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455049 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.710737 base_score=-0.710737 count=14 avg_reward=-1.105051 exploration_bonus=0.394314 total_counts=30 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455049 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.708424 base_score=-0.708424 count=16 avg_reward=-1.077271 exploration_bonus=0.368847 total_counts=30 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=select_arm ts=1784275455049 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.708424 total_counts=30 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:15 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:15 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:15 [MAB] event=reward_breakdown ts=1784275455053 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.694865 latency_reward=-0.991348 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-0.991348
+2026/07/17 10:04:15 [MAB] event=update_reward ts=1784275455053 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.694865 warm_start=true reward=-0.991348 count=17 avg_reward=-1.072217 total_counts=31
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455274 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.708841 base_score=-0.708841 count=14 avg_reward=-1.105051 exploration_bonus=0.396210 total_counts=31 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455274 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.712662 base_score=-0.712662 count=17 avg_reward=-1.072217 exploration_bonus=0.359555 total_counts=31 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=select_arm ts=1784275455274 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.708841 total_counts=31 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:15 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:15 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:15 [MAB] event=reward_breakdown ts=1784275455278 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.942658 latency_reward=-1.079313 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.079313
+2026/07/17 10:04:15 [MAB] event=update_reward ts=1784275455278 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.942658 warm_start=true reward=-1.079313 count=15 avg_reward=-1.103335 total_counts=32
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455499 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.718794 base_score=-0.718794 count=15 avg_reward=-1.103335 exploration_bonus=0.384541 total_counts=32 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455499 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.711004 base_score=-0.711004 count=17 avg_reward=-1.072217 exploration_bonus=0.361213 total_counts=32 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=select_arm ts=1784275455499 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.711004 total_counts=32 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:15 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:15 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:15 [MAB] event=reward_breakdown ts=1784275455503 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.151890 latency_reward=-1.148002 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.148002
+2026/07/17 10:04:15 [MAB] event=update_reward ts=1784275455503 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.151890 warm_start=true reward=-1.148002 count=18 avg_reward=-1.076427 total_counts=33
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455724 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.717091 base_score=-0.717091 count=15 avg_reward=-1.103335 exploration_bonus=0.386244 total_counts=33 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455724 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.723836 base_score=-0.723836 count=18 avg_reward=-1.076427 exploration_bonus=0.352591 total_counts=33 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=select_arm ts=1784275455724 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.717091 total_counts=33 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:15 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:15 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:15 [MAB] event=reward_breakdown ts=1784275455727 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.484774 latency_reward=-0.910182 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.910182
+2026/07/17 10:04:15 [MAB] event=update_reward ts=1784275455727 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.484774 warm_start=true reward=-0.910182 count=16 avg_reward=-1.091263 total_counts=34
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:15 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455949 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.715691 base_score=-0.715691 count=16 avg_reward=-1.091263 exploration_bonus=0.375572 total_counts=34 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=arm_score ts=1784275455949 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.722334 base_score=-0.722334 count=18 avg_reward=-1.076427 exploration_bonus=0.354093 total_counts=34 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:15 [MAB] event=select_arm ts=1784275455949 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.715691 total_counts=34 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:15 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:15 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:15 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:15 [MAB] event=reward_breakdown ts=1784275455952 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.896563 latency_reward=-1.063525 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.063525
+2026/07/17 10:04:15 [MAB] event=update_reward ts=1784275455952 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.896563 warm_start=true reward=-1.063525 count=17 avg_reward=-1.089631 total_counts=35
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456173 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.723778 base_score=-0.723778 count=17 avg_reward=-1.089631 exploration_bonus=0.365853 total_counts=35 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456173 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.720882 base_score=-0.720882 count=18 avg_reward=-1.076427 exploration_bonus=0.355545 total_counts=35 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=select_arm ts=1784275456173 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.720882 total_counts=35 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:16 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:16 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:16 [MAB] event=reward_breakdown ts=1784275456177 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.599166 latency_reward=-0.955191 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-0.955191
+2026/07/17 10:04:16 [MAB] event=update_reward ts=1784275456177 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.599166 warm_start=true reward=-0.955191 count=19 avg_reward=-1.070046 total_counts=36
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456397 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.722332 base_score=-0.722332 count=17 avg_reward=-1.089631 exploration_bonus=0.367300 total_counts=36 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456397 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.722616 base_score=-0.722616 count=19 avg_reward=-1.070046 exploration_bonus=0.347431 total_counts=36 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=select_arm ts=1784275456397 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.722332 total_counts=36 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:16 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:16 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:16 [MAB] event=reward_breakdown ts=1784275456401 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.085693 latency_reward=-1.126776 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.126776
+2026/07/17 10:04:16 [MAB] event=update_reward ts=1784275456401 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.085693 warm_start=true reward=-1.126776 count=18 avg_reward=-1.091695 total_counts=37
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456621 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.733382 base_score=-0.733382 count=18 avg_reward=-1.091695 exploration_bonus=0.358313 total_counts=37 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456621 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.721290 base_score=-0.721290 count=19 avg_reward=-1.070046 exploration_bonus=0.348756 total_counts=37 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=select_arm ts=1784275456621 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.721290 total_counts=37 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:16 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:16 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:16 [MAB] event=reward_breakdown ts=1784275456625 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.316691 latency_reward=-1.198968 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.198968
+2026/07/17 10:04:16 [MAB] event=update_reward ts=1784275456625 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.316691 warm_start=true reward=-1.198968 count=20 avg_reward=-1.076492 total_counts=38
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:16 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456847 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.732061 base_score=-0.732061 count=18 avg_reward=-1.091695 exploration_bonus=0.359634 total_counts=38 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=arm_score ts=1784275456847 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.735314 base_score=-0.735314 count=20 avg_reward=-1.076492 exploration_bonus=0.341178 total_counts=38 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:16 [MAB] event=select_arm ts=1784275456847 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.732061 total_counts=38 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:16 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:16 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:16 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:16 [MAB] event=reward_breakdown ts=1784275456851 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.194633 latency_reward=-1.161472 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.161472
+2026/07/17 10:04:16 [MAB] event=update_reward ts=1784275456851 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.194633 warm_start=true reward=-1.161472 count=19 avg_reward=-1.095367 total_counts=39
+2026/07/17 10:04:16 [LB]: Periodic targets update
+2026/07/17 10:04:16 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:16 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:16 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:16 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:16 Found 4 targets
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457073 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.744078 base_score=-0.744078 count=19 avg_reward=-1.095367 exploration_bonus=0.351289 total_counts=39 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457073 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.734098 base_score=-0.734098 count=20 avg_reward=-1.076492 exploration_bonus=0.342394 total_counts=39 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=select_arm ts=1784275457073 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.734098 total_counts=39 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:17 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:17 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:17 [MAB] event=reward_breakdown ts=1784275457077 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.969091 latency_reward=-1.088256 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.088256
+2026/07/17 10:04:17 [MAB] event=update_reward ts=1784275457077 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.969091 warm_start=true reward=-1.088256 count=21 avg_reward=-1.077053 total_counts=40
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457297 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.742866 base_score=-0.742866 count=19 avg_reward=-1.095367 exploration_bonus=0.352501 total_counts=40 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457297 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.741757 base_score=-0.741757 count=21 avg_reward=-1.077053 exploration_bonus=0.335295 total_counts=40 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=select_arm ts=1784275457297 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.741757 total_counts=40 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:17 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:17 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:17 [MAB] event=reward_breakdown ts=1784275457302 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=3.567925 latency_reward=-1.271984 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.271984
+2026/07/17 10:04:17 [MAB] event=update_reward ts=1784275457302 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=3.567925 warm_start=true reward=-1.271984 count=22 avg_reward=-1.085913 total_counts=41
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457515 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.741688 base_score=-0.741688 count=19 avg_reward=-1.095367 exploration_bonus=0.353679 total_counts=41 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457515 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.757232 base_score=-0.757232 count=22 avg_reward=-1.085913 exploration_bonus=0.328681 total_counts=41 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=select_arm ts=1784275457515 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.741688 total_counts=41 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:17 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:17 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:17 [MAB] event=reward_breakdown ts=1784275457518 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=1.676352 latency_reward=-0.516620 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.516620
+2026/07/17 10:04:17 [MAB] event=update_reward ts=1784275457518 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=1.676352 warm_start=true reward=-0.516620 count=20 avg_reward=-1.066430 total_counts=42
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457728 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.720590 base_score=-0.720590 count=20 avg_reward=-1.066430 exploration_bonus=0.345840 total_counts=42 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457728 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.756167 base_score=-0.756167 count=22 avg_reward=-1.085913 exploration_bonus=0.329746 total_counts=42 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=select_arm ts=1784275457728 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.720590 total_counts=42 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:17 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:17 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:17 [MAB] event=reward_breakdown ts=1784275457730 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=1.467630 latency_reward=-0.383649 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.383649
+2026/07/17 10:04:17 [MAB] event=update_reward ts=1784275457730 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=1.467630 warm_start=true reward=-0.383649 count=21 avg_reward=-1.033917 total_counts=43
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:17 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457947 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.695350 base_score=-0.695350 count=21 avg_reward=-1.033917 exploration_bonus=0.338566 total_counts=43 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=arm_score ts=1784275457947 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.755131 base_score=-0.755131 count=22 avg_reward=-1.085913 exploration_bonus=0.330782 total_counts=43 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:17 [MAB] event=select_arm ts=1784275457947 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.695350 total_counts=43 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:17 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:17 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:17 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:17 [MAB] event=reward_breakdown ts=1784275457951 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.954249 latency_reward=-1.083244 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.083244
+2026/07/17 10:04:17 [MAB] event=update_reward ts=1784275457951 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.954249 warm_start=true reward=-1.083244 count=22 avg_reward=-1.036159 total_counts=44
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458172 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.704367 base_score=-0.704367 count=22 avg_reward=-1.036159 exploration_bonus=0.331791 total_counts=44 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458172 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.754122 base_score=-0.754122 count=22 avg_reward=-1.085913 exploration_bonus=0.331791 total_counts=44 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=select_arm ts=1784275458172 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.704367 total_counts=44 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:18 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:18 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:18 [MAB] event=reward_breakdown ts=1784275458176 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.154685 latency_reward=-1.148889 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.148889
+2026/07/17 10:04:18 [MAB] event=update_reward ts=1784275458176 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.154685 warm_start=true reward=-1.148889 count=23 avg_reward=-1.041060 total_counts=45
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458397 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.715600 base_score=-0.715600 count=23 avg_reward=-1.041060 exploration_bonus=0.325460 total_counts=45 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458397 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.753138 base_score=-0.753138 count=22 avg_reward=-1.085913 exploration_bonus=0.332775 total_counts=45 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=select_arm ts=1784275458397 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.715600 total_counts=45 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:18 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:18 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:18 [MAB] event=reward_breakdown ts=1784275458401 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.192716 latency_reward=-1.160872 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.160872
+2026/07/17 10:04:18 [MAB] event=update_reward ts=1784275458401 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.192716 warm_start=true reward=-1.160872 count=24 avg_reward=-1.046052 total_counts=46
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458622 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.726526 base_score=-0.726526 count=24 avg_reward=-1.046052 exploration_bonus=0.319526 total_counts=46 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458622 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.752179 base_score=-0.752179 count=22 avg_reward=-1.085913 exploration_bonus=0.333734 total_counts=46 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=select_arm ts=1784275458622 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.726526 total_counts=46 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:18 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:18 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:18 [MAB] event=reward_breakdown ts=1784275458625 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.964941 latency_reward=-1.086857 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.086857
+2026/07/17 10:04:18 [MAB] event=update_reward ts=1784275458625 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.964941 warm_start=true reward=-1.086857 count=25 avg_reward=-1.047684 total_counts=47
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:18 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458847 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.733736 base_score=-0.733736 count=25 avg_reward=-1.047684 exploration_bonus=0.313949 total_counts=47 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=arm_score ts=1784275458847 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.751243 base_score=-0.751243 count=22 avg_reward=-1.085913 exploration_bonus=0.334670 total_counts=47 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:18 [MAB] event=select_arm ts=1784275458847 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.733736 total_counts=47 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:18 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:18 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:18 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:18 [MAB] event=reward_breakdown ts=1784275458851 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.607281 latency_reward=-0.958308 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.958308
+2026/07/17 10:04:18 [MAB] event=update_reward ts=1784275458851 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.607281 warm_start=true reward=-0.958308 count=26 avg_reward=-1.044247 total_counts=48
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459070 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.735554 base_score=-0.735554 count=26 avg_reward=-1.044247 exploration_bonus=0.308693 total_counts=48 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459070 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.750329 base_score=-0.750329 count=22 avg_reward=-1.085913 exploration_bonus=0.335584 total_counts=48 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=select_arm ts=1784275459070 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.735554 total_counts=48 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:19 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:19 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:19 [MAB] event=reward_breakdown ts=1784275459074 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.870598 latency_reward=-1.054520 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.054520
+2026/07/17 10:04:19 [MAB] event=update_reward ts=1784275459074 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.870598 warm_start=true reward=-1.054520 count=27 avg_reward=-1.044627 total_counts=49
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459296 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.740900 base_score=-0.740900 count=27 avg_reward=-1.044627 exploration_bonus=0.303728 total_counts=49 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459296 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.749436 base_score=-0.749436 count=22 avg_reward=-1.085913 exploration_bonus=0.336477 total_counts=49 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=select_arm ts=1784275459296 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.740900 total_counts=49 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:19 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:19 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:19 [MAB] event=reward_breakdown ts=1784275459300 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.078478 latency_reward=-1.124435 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.124435
+2026/07/17 10:04:19 [MAB] event=update_reward ts=1784275459300 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.078478 warm_start=true reward=-1.124435 count=28 avg_reward=-1.047478 total_counts=50
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459519 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.748450 base_score=-0.748450 count=28 avg_reward=-1.047478 exploration_bonus=0.299028 total_counts=50 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459519 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.748564 base_score=-0.748564 count=22 avg_reward=-1.085913 exploration_bonus=0.337349 total_counts=50 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=select_arm ts=1784275459519 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.748450 total_counts=50 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:19 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:19 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:19 [MAB] event=reward_breakdown ts=1784275459523 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.283383 latency_reward=-1.188874 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.188874
+2026/07/17 10:04:19 [MAB] event=update_reward ts=1784275459523 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.283383 warm_start=true reward=-1.188874 count=29 avg_reward=-1.052353 total_counts=51
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459744 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.757784 base_score=-0.757784 count=29 avg_reward=-1.052353 exploration_bonus=0.294570 total_counts=51 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459744 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.747711 base_score=-0.747711 count=22 avg_reward=-1.085913 exploration_bonus=0.338202 total_counts=51 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=select_arm ts=1784275459744 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.747711 total_counts=51 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:19 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:19 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:19 [MAB] event=reward_breakdown ts=1784275459749 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=4.086209 latency_reward=-1.407618 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.407618
+2026/07/17 10:04:19 [MAB] event=update_reward ts=1784275459749 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=4.086209 warm_start=true reward=-1.407618 count=23 avg_reward=-1.099900 total_counts=52
+2026/07/17 10:04:19 [LB]: Periodic targets update
+2026/07/17 10:04:19 Found target: 9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:04:19 Found target: TLUyUMFsRYzxPrVRgqZWEf1784275436864445191
+2026/07/17 10:04:19 Found target: CACz4gQXvNoT52oHZmjokV1784275436866498783
+2026/07/17 10:04:19 Found target: wZ5GXfWJqLEygVM4FatGuX1784275436863416928
+2026/07/17 10:04:19 Found 4 targets
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:19 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459969 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.757057 base_score=-0.757057 count=29 avg_reward=-1.052353 exploration_bonus=0.295296 total_counts=52 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=arm_score ts=1784275459969 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.768317 base_score=-0.768317 count=23 avg_reward=-1.099900 exploration_bonus=0.331584 total_counts=52 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:19 [MAB] event=select_arm ts=1784275459969 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.757057 total_counts=52 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:19 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:19 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:19 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:19 [MAB] event=reward_breakdown ts=1784275459973 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.949625 latency_reward=-1.081678 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.081678
+2026/07/17 10:04:19 [MAB] event=update_reward ts=1784275459973 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.949625 warm_start=true reward=-1.081678 count=30 avg_reward=-1.053331 total_counts=53
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460194 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.762299 base_score=-0.762299 count=30 avg_reward=-1.053331 exploration_bonus=0.291032 total_counts=53 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460194 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.767518 base_score=-0.767518 count=23 avg_reward=-1.099900 exploration_bonus=0.332382 total_counts=53 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=select_arm ts=1784275460194 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.762299 total_counts=53 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:20 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:20 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:20 [MAB] event=reward_breakdown ts=1784275460198 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.157371 latency_reward=-1.149740 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.149740
+2026/07/17 10:04:20 [MAB] event=update_reward ts=1784275460198 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.157371 warm_start=true reward=-1.149740 count=31 avg_reward=-1.056441 total_counts=54
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460417 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.769468 base_score=-0.769468 count=31 avg_reward=-1.056441 exploration_bonus=0.286973 total_counts=54 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460417 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.766737 base_score=-0.766737 count=23 avg_reward=-1.099900 exploration_bonus=0.333163 total_counts=54 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=select_arm ts=1784275460417 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-tiny/gpu/nvidia reason=ucb_score score=-0.766737 total_counts=54 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-tiny/gpu/nvidia compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:20 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-tiny/gpu/nvidia candidate=CACz4gQXvNoT52oHZmjokV1784275436866498783 candidate_tag=x86-tiny/gpu/nvidia
+2026/07/17 10:04:20 [LB-Update] Node CACz4gQXvNoT52oHZmjokV1784275436866498783 reported 512 MB free
+2026/07/17 10:04:20 [MAB] event=reward_breakdown ts=1784275460421 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia base_tag=x86-tiny architecture=x86 specialization=tiny capabilities=[gpu,nvidia] duration_ms=2.992156 latency_reward=-1.095994 cost_weight=0.000000 cost_factor=1.600000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.800000 energy_term=0.000000 final_reward=-1.095994
+2026/07/17 10:04:20 [MAB] event=update_reward ts=1784275460421 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia duration_ms=2.992156 warm_start=true reward=-1.095994 count=24 avg_reward=-1.099737 total_counts=55
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460642 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.768809 base_score=-0.768809 count=31 avg_reward=-1.056441 exploration_bonus=0.287632 total_counts=55 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460642 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.772840 base_score=-0.772840 count=24 avg_reward=-1.099737 exploration_bonus=0.326898 total_counts=55 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=select_arm ts=1784275460642 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.768809 total_counts=55 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:20 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:20 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:20 [MAB] event=reward_breakdown ts=1784275460646 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.691081 latency_reward=-0.989943 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.989943
+2026/07/17 10:04:20 [MAB] event=update_reward ts=1784275460646 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.691081 warm_start=true reward=-0.989943 count=32 avg_reward=-1.054363 total_counts=56
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:20 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460864 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.770625 base_score=-0.770625 count=32 avg_reward=-1.054363 exploration_bonus=0.283738 total_counts=56 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=arm_score ts=1784275460864 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.772105 base_score=-0.772105 count=24 avg_reward=-1.099737 exploration_bonus=0.327632 total_counts=56 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:20 [MAB] event=select_arm ts=1784275460864 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.770625 total_counts=56 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:20 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:20 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:20 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:20 [MAB] event=reward_breakdown ts=1784275460867 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=2.054030 latency_reward=-0.719804 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-0.719804
+2026/07/17 10:04:20 [MAB] event=update_reward ts=1784275460867 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=2.054030 warm_start=true reward=-0.719804 count=33 avg_reward=-1.044225 total_counts=57
+2026/07/17 10:04:21 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-large/gpu/amd arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:21 [LB] Compatible tag found: function=mab_cost_aware_1784275436 tag=x86-tiny/gpu/nvidia arch=amd64 pattern="gpu" ring_size=1
+2026/07/17 10:04:21 [LB] Compatible tags for function 'mab_cost_aware_1784275436': [x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:21 [LB][MAB] event=before_select function=mab_cost_aware_1784275436 compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia] has_context=true
+2026/07/17 10:04:21 [MAB] event=arm_score ts=1784275461087 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd score=-0.764206 base_score=-0.764206 count=33 avg_reward=-1.044225 exploration_bonus=0.280019 total_counts=57 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:21 [MAB] event=arm_score ts=1784275461087 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-tiny/gpu/nvidia score=-0.771386 base_score=-0.771386 count=24 avg_reward=-1.099737 exploration_bonus=0.328351 total_counts=57 utilization=0.000000 utilization_threshold=0.300000 utilization_penalty=0.000000 utilization_weight=8.000000 utilization_term=0.000000
+2026/07/17 10:04:21 [MAB] event=select_arm ts=1784275461087 policy=UCB1 function=mab_cost_aware_1784275436 selected_arm=x86-large/gpu/amd reason=ucb_score score=-0.764206 total_counts=57 arms=[x86-large/gpu/amd,x86-tiny/gpu/nvidia]
+2026/07/17 10:04:21 [LB][MAB] event=after_select function=mab_cost_aware_1784275436 selected_tag=x86-large/gpu/amd compatible_tags=[x86-large/gpu/amd x86-tiny/gpu/nvidia]
+2026/07/17 10:04:21 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/17 10:04:21 [LB] Selected target for function 'mab_cost_aware_1784275436': target_tag=x86-large/gpu/amd candidate=TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 candidate_tag=x86-large/gpu/amd
+2026/07/17 10:04:21 [LB-Update] Node TLUyUMFsRYzxPrVRgqZWEf1784275436864445191 reported 256 MB free
+2026/07/17 10:04:21 [MAB] event=reward_breakdown ts=1784275461091 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd base_tag=x86-large architecture=x86 specialization=large capabilities=[gpu,amd] duration_ms=3.115254 latency_reward=-1.136311 cost_weight=0.000000 cost_factor=1.200000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.200000 energy_term=0.000000 final_reward=-1.136311
+2026/07/17 10:04:21 [MAB] event=update_reward ts=1784275461091 policy=UCB1 function=mab_cost_aware_1784275436 arm=x86-large/gpu/amd duration_ms=3.115254 warm_start=true reward=-1.136311 count=34 avg_reward=-1.046933 total_counts=58

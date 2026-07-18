@@ -29,9 +29,6 @@ type CostBreakdown struct {
 	EnergyWeight  float64
 	EnergyFactor  float64
 	EnergyTerm    float64
-	MemoryWeight  float64
-	MemoryPenalty float64
-	MemoryTerm    float64
 	FinalReward   float64
 }
 
@@ -268,38 +265,44 @@ func defaultIfNonPositive(value float64, fallback float64) float64 {
 	return value
 }
 
-func armCostFactor(arm string, ctx *Context) float64 {
-	if ctx == nil || ctx.ArmCostFactor == nil {
-		return defaultCostFactor
-	}
-	return defaultIfNonPositive(ctx.ArmCostFactor[arm], defaultCostFactor)
-}
-
-func armEnergyFactor(arm string, ctx *Context) float64 {
-	if ctx == nil || ctx.ArmEnergyFactor == nil {
-		return defaultEnergyFactor
-	}
-	return defaultIfNonPositive(ctx.ArmEnergyFactor[arm], defaultEnergyFactor)
-}
-
 func buildCostBreakdown(
-	arm string,
 	latencyReward float64,
-	ctx *Context,
-	memoryPenalty float64,
-	memoryWeight float64,
+	feedback ExecutionFeedback,
 ) CostBreakdown {
-	costWeight := config.GetFloat(config.MAB_COST_WEIGHT, 0.0)
-	energyWeight := config.GetFloat(config.MAB_ENERGY_WEIGHT, 0.0)
+	costWeight := config.GetFloat(
+		config.MAB_COST_WEIGHT,
+		0.0,
+	)
 
-	costFactor := armCostFactor(arm, ctx)
-	energyFactor := armEnergyFactor(arm, ctx)
+	energyWeight := config.GetFloat(
+		config.MAB_ENERGY_WEIGHT,
+		0.0,
+	)
 
-	costTerm := costWeight * costFactor
-	energyTerm := energyWeight * energyFactor
-	memoryTerm := memoryWeight * memoryPenalty
+	// Cost and energy refer to the concrete execution node, not to an average
+	// of all nodes that belong to the same machine-tag ring.
+	costFactor := defaultIfNonPositive(
+		feedback.CostFactor,
+		defaultCostFactor,
+	)
 
-	finalReward := latencyReward - costTerm - energyTerm - memoryTerm
+	energyFactor := defaultIfNonPositive(
+		feedback.EnergyFactor,
+		defaultEnergyFactor,
+	)
+
+	costTerm :=
+		costWeight *
+			costFactor
+
+	energyTerm :=
+		energyWeight *
+			energyFactor
+
+	finalReward :=
+		latencyReward -
+			costTerm -
+			energyTerm
 
 	return CostBreakdown{
 		LatencyReward: latencyReward,
@@ -309,9 +312,6 @@ func buildCostBreakdown(
 		EnergyWeight:  energyWeight,
 		EnergyFactor:  energyFactor,
 		EnergyTerm:    energyTerm,
-		MemoryWeight:  memoryWeight,
-		MemoryPenalty: memoryPenalty,
-		MemoryTerm:    memoryTerm,
 		FinalReward:   finalReward,
 	}
 }

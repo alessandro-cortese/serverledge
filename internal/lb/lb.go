@@ -78,17 +78,48 @@ func StartReverseProxy(e *echo.Echo, region string) {
 			reqID := res.Request.Header.Get("Serverledge-MAB-Request-ID")
 			machineTag := res.Header.Get("Serverledge-Node-Tag")
 
-			go func(data []byte, path string, tag string, reqID string) {
-				if !isAware {
-					return
-				}
-				err := mab.UpdateBandit(data, path, tag, reqID)
-				if err != nil {
-					log.Printf("Failed to update bandit: %v", err)
-				}
-			}(bodyBytes, reqPath, machineTag, reqID)
+			nodeName :=
+				res.Header.Get(
+					"Serverledge-Node-Name",
+				)
 
-			nodeName := res.Header.Get("Serverledge-Node-Name")
+			if isAware {
+				// Snapshot cost and energy from the concrete node that executed
+				// the invocation. The feedback is copied into the goroutine.
+				feedback :=
+					executionFeedbackForNode(
+						nodeName,
+					)
+
+				go func(
+					data []byte,
+					path string,
+					tag string,
+					reqID string,
+					feedback mab.ExecutionFeedback,
+				) {
+					if err := mab.UpdateBandit(
+						data,
+						path,
+						tag,
+						reqID,
+						feedback,
+					); err != nil {
+
+						log.Printf(
+							"Failed to update bandit: %v",
+							err,
+						)
+					}
+				}(
+					bodyBytes,
+					reqPath,
+					machineTag,
+					reqID,
+					feedback,
+				)
+			}
+
 			freeMemStr := res.Header.Get("Serverledge-Free-Mem")
 			freeCpuStr := res.Header.Get("Serverledge-Free-CPU")
 			timestampStr := res.Header.Get("Serverledge-Timestamp")
@@ -271,4 +302,47 @@ func GetSingleTargetInfo(target *middleware.ProxyTarget) *registration.StatusInf
 	}
 
 	return &statusInfo
+}
+
+// executionFeedbackForNode snapshots the structural cost and energy factors
+// of the concrete node selected by the hash ring. These values are used in the
+// permanent reward update and must not be replaced by an average over the ring.
+func executionFeedbackForNode(
+	nodeName string,
+) mab.ExecutionFeedback {
+	feedback := mab.ExecutionFeedback{
+		NodeName:     nodeName,
+		CostFactor:   1.0,
+		EnergyFactor: 1.0,
+	}
+
+	if nodeName == "" {
+		return feedback
+	}
+
+	metric, ok :=
+		NodeMetrics.GetMetric(
+			nodeName,
+		)
+
+	if !ok {
+		log.Printf(
+			"[MAB] event=node_profile_missing node_name=%s using_default_factors=true",
+			nodeName,
+		)
+
+		return feedback
+	}
+
+	if metric.CostFactor > 0 {
+		feedback.CostFactor =
+			metric.CostFactor
+	}
+
+	if metric.EnergyFactor > 0 {
+		feedback.EnergyFactor =
+			metric.EnergyFactor
+	}
+
+	return feedback
 }

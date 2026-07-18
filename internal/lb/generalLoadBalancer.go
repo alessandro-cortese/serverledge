@@ -168,9 +168,15 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	c.Request().Header.Set("Serverledge-MAB-Request-ID", reqID)
 
 	var ctx *mab.Context = nil
+
 	if b.mode == MAB {
-		ctx = b.calculateSystemContext()           // memory snapshot for the MAB/LinUCB
-		mab.GlobalContextStorage.Store(reqID, ctx) // Cache it for LinUCB update
+		// Snapshot current ring utilization plus static cost/energy profiles.
+		// The same snapshot is used for selection and for the matching reward update.
+		ctx = b.calculateSystemContext()
+		mab.GlobalContextStorage.Store(
+			reqID,
+			ctx,
+		)
 	}
 
 	// A function cannot necessarily be executed everywhere.

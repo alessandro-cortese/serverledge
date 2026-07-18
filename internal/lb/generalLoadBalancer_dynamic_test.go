@@ -267,3 +267,64 @@ func TestGeneralLoadBalancerMABWithSingleCompatibleTagStillUsesMaskedPolicy(
 		selected,
 	)
 }
+
+func TestGeneralLoadBalancerContextAggregatesUtilizationPerRing(
+	t *testing.T,
+) {
+	previousMetrics := NodeMetrics
+
+	NodeMetrics = &NodeMetricCache{
+		metrics: make(map[string]NodeMetric),
+	}
+
+	t.Cleanup(func() {
+		NodeMetrics = previousMetrics
+	})
+
+	b := newGeneralLbForTest(
+		newDynamicTarget(
+			"available-node",
+			container.X86,
+			"available-ring",
+		),
+		newDynamicTarget(
+			"busy-node",
+			container.X86,
+			"busy-ring",
+		),
+	)
+
+	NodeMetrics.Update(
+		"available-node",
+		800,
+		1000,
+		1,
+		1.0,
+	)
+
+	NodeMetrics.Update(
+		"busy-node",
+		100,
+		1000,
+		1,
+		1.0,
+	)
+
+	ctx := b.calculateSystemContext()
+
+	require.NotNil(t, ctx)
+
+	assert.InDelta(
+		t,
+		0.20,
+		ctx.ArchMemUsage["available-ring"],
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		0.90,
+		ctx.ArchMemUsage["busy-ring"],
+		1e-9,
+	)
+}

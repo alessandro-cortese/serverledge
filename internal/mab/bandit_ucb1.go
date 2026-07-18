@@ -24,6 +24,31 @@ type UCB1Bandit struct {
 	mu           sync.RWMutex         // Mutex per thread-safety
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
 	// Higher values lead to more exploration. Lower values lead to more exploitation.
+	policyType BanditType
+}
+
+func NewUCB1Bandit(
+	functionName string,
+	exploration float64,
+) *UCB1Bandit {
+	return &UCB1Bandit{
+		FunctionName: functionName,
+		Arms:         make(map[string]*ArmStats),
+		c:            exploration,
+		policyType:   UCB1,
+	}
+}
+
+func NewUCB1UtilizationAwareBandit(
+	functionName string,
+	exploration float64,
+) *UCB1Bandit {
+	return &UCB1Bandit{
+		FunctionName: functionName,
+		Arms:         make(map[string]*ArmStats),
+		c:            exploration,
+		policyType:   UCB1UtilizationAware,
+	}
 }
 
 // InitArm adds a new arm to the bandit
@@ -63,10 +88,10 @@ func (b *UCB1Bandit) SelectArmFrom(
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	// UCB1 is non-contextual.
-	ctx = nil
-
-	candidateArms := filterAllowedArms(b.Arms, allowedArms)
+	candidateArms := filterAllowedArms(
+		b.Arms,
+		allowedArms,
+	)
 
 	if len(candidateArms) == 0 {
 		log.Printf(
@@ -119,6 +144,16 @@ func (b *UCB1Bandit) SelectArmFrom(
 		totalCounts = 1
 	}
 
+	utilizationAware :=
+		b.GetType() == UCB1UtilizationAware
+
+	utilizationWeight := 0.0
+
+	if utilizationAware {
+		utilizationWeight =
+			configuredUCB1UtilizationWeight()
+	}
+
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
@@ -128,17 +163,47 @@ func (b *UCB1Bandit) SelectArmFrom(
 					float64(stats.Count),
 			)
 
-		score := stats.AvgReward + explorationBonus
+		baseScore :=
+			stats.AvgReward +
+				explorationBonus
 
-		logMABArmScore(
-			string(b.GetType()),
-			b.FunctionName,
-			arm,
-			score,
-			stats.Count,
-			stats.AvgReward,
-			b.TotalCounts,
-		)
+		score := baseScore
+
+		if utilizationAware {
+			breakdown :=
+				buildUtilizationScoreBreakdown(
+					arm,
+					baseScore,
+					ctx,
+					utilizationWeight,
+				)
+
+			score = breakdown.FinalScore
+
+			logMABUCB1UtilizationArmScore(
+				string(b.GetType()),
+				b.FunctionName,
+				arm,
+				score,
+				baseScore,
+				explorationBonus,
+				stats.Count,
+				stats.AvgReward,
+				b.TotalCounts,
+				breakdown,
+			)
+		} else {
+			logMABUCB1ArmScore(
+				string(b.GetType()),
+				b.FunctionName,
+				arm,
+				score,
+				explorationBonus,
+				stats.Count,
+				stats.AvgReward,
+				b.TotalCounts,
+			)
+		}
 
 		if score > bestScore {
 			bestScore = score
@@ -171,71 +236,80 @@ func (b *UCB1Bandit) SelectArmFrom(
 	return bestArm
 }
 
-// UpdateReward updates bandit stats after execution. For now reward is 1.0 / executionTime (not considering setup time).
-// It may be fine-tuned in the future. ctx *Context is need even if it's unused to be compliant with the interface.
-func (b *UCB1Bandit) UpdateReward(arch string, ctx *Context, isWarmStart bool, durationMs float64) {
+// UpdateReward updates the empirical reward of an arm after a valid execution.
+// The historical reward contains latency, node-specific cost and node-specific
+// energy. Plain UCB1 does not use context during selection, while the optional
+// UCB1UtilizationAware variant applies utilization only to its selection score.
+func (b *UCB1Bandit) UpdateReward(
+	arm string,
+	ctx *Context,
+	feedback ExecutionFeedback,
+) {
+
+	_ = ctx
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	stats, ok := b.Arms[arch]
+	stats, ok := b.Arms[arm]
 	if !ok {
-		return // Should not happen
+		return
 	}
 
-	if !isWarmStart {
-		// Redact this run if it was not a warm start. Likely to be an outlier.
+	if !feedback.IsWarmStart {
 		logMABSkipColdStart(
 			string(b.GetType()),
 			b.FunctionName,
-			arch,
-			durationMs,
+			arm,
+			feedback.DurationMs,
 		)
 		return
 	}
 
-	if durationMs <= 0 {
+	if feedback.DurationMs <= 0 {
 		log.Printf(
 			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
 			nowMillis(),
 			string(b.GetType()),
 			b.FunctionName,
-			arch,
-			durationMs,
+			arm,
+			feedback.DurationMs,
 		)
 		return
 	}
 
-	latencyReward := -math.Log(durationMs)
-	breakdown := buildCostBreakdown(
-		arch,
-		latencyReward,
-		ctx,
-		0.0,
-		0.0,
-	)
+	latencyReward :=
+		-math.Log(feedback.DurationMs)
+
+	breakdown :=
+		buildCostBreakdown(
+			latencyReward,
+			feedback,
+		)
+
 	reward := breakdown.FinalReward
 
 	logMABRewardBreakdown(
 		string(b.GetType()),
 		b.FunctionName,
-		arch,
-		durationMs,
+		arm,
+		feedback.DurationMs,
 		breakdown,
 	)
 
 	stats.Count++
 	b.TotalCounts++
 
-	// Update average reward.
 	stats.SumRewards += reward
-	stats.AvgReward = stats.SumRewards / float64(stats.Count)
+	stats.AvgReward =
+		stats.SumRewards /
+			float64(stats.Count)
 
 	logMABUpdateReward(
 		string(b.GetType()),
 		b.FunctionName,
-		arch,
-		durationMs,
-		isWarmStart,
+		arm,
+		feedback.DurationMs,
+		feedback.IsWarmStart,
 		reward,
 		stats.Count,
 		stats.AvgReward,
@@ -244,5 +318,9 @@ func (b *UCB1Bandit) UpdateReward(arch string, ctx *Context, isWarmStart bool, d
 }
 
 func (b *UCB1Bandit) GetType() BanditType {
-	return UCB1
+	if b.policyType == "" {
+		return UCB1
+	}
+
+	return b.policyType
 }

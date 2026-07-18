@@ -194,29 +194,20 @@ func (b *ArchitectureAwareBalancer) calculateSystemContext() *mab.Context {
 // "x86-tiny", "x86-large", "x86-tiny/gpu/nvidia", "arm-tiny".
 func (b *GeneralLoadBalancer) calculateSystemContext() *mab.Context {
 	usageMap := make(map[string]float64)
-	costMap := make(map[string]float64)
-	energyMap := make(map[string]float64)
 
 	for _, tag := range b.architectures {
 		ring, ok := b.rings[tag]
 		if !ok {
 			usageMap[tag] = 1.0
-			costMap[tag] = 1.0
-			energyMap[tag] = 1.0
 			continue
 		}
 
 		var totalFree int64 = 0
 		var totalCap int64 = 0
-		var costSum float64 = 0
-		var energySum float64 = 0
-		var costSamples int64 = 0
 
 		nodes := ring.GetAllTargets()
 		if len(nodes) == 0 {
 			usageMap[tag] = 1.0 // If no node let's assume it's full. This arm will not be used anyway.
-			costMap[tag] = 1.0
-			energyMap[tag] = 1.0
 			continue
 		}
 
@@ -229,20 +220,6 @@ func (b *GeneralLoadBalancer) calculateSystemContext() *mab.Context {
 				log.Printf("[LB] Node %s not yet in metrics cache, assuming full availability\n", node.Name)
 			}
 
-			costFactor := getTargetCostFactor(node)
-			energyFactor := getTargetEnergyFactor(node)
-			if ok {
-				if metric.CostFactor > 0 {
-					costFactor = metric.CostFactor
-				}
-				if metric.EnergyFactor > 0 {
-					energyFactor = metric.EnergyFactor
-				}
-			}
-
-			costSum += costFactor
-			energySum += energyFactor
-			costSamples++
 		}
 
 		if totalCap == 0 {
@@ -252,18 +229,9 @@ func (b *GeneralLoadBalancer) calculateSystemContext() *mab.Context {
 			usageMap[tag] = used / float64(totalCap) // utilization in [0.0, 1.0]
 		}
 
-		if costSamples == 0 {
-			costMap[tag] = 1.0
-			energyMap[tag] = 1.0
-		} else {
-			costMap[tag] = costSum / float64(costSamples)
-			energyMap[tag] = energySum / float64(costSamples)
-		}
 	}
 
 	return &mab.Context{
-		ArchMemUsage:    usageMap,
-		ArmCostFactor:   costMap,
-		ArmEnergyFactor: energyMap,
+		ArchMemUsage: usageMap,
 	}
 }

@@ -39,17 +39,24 @@ LB_REFRESH_INTERVAL="${LB_REFRESH_INTERVAL:-3}"
 
 MAB_POLICY="${MAB_POLICY:-UCB1}"
 MAB_UCB1_C="${MAB_UCB1_C:-0.8}"
+
 MAB_LINUCB_ALPHA="${MAB_LINUCB_ALPHA:-0.1}"
-MAB_LINUCB_LAMBDA="${MAB_LINUCB_LAMBDA:-0.7}"
 
 MAB_COST_WEIGHT="${MAB_COST_WEIGHT:-0.0}"
 MAB_ENERGY_WEIGHT="${MAB_ENERGY_WEIGHT:-0.0}"
+# These parameters are read only when
+# MAB_POLICY=UCB1UtilizationAware.
+MAB_UCB1_UTILIZATION_WEIGHT="${MAB_UCB1_UTILIZATION_WEIGHT:-0.0}"
+MAB_UCB1_UTILIZATION_THRESHOLD="${MAB_UCB1_UTILIZATION_THRESHOLD:-0.70}"
 
 FUNCTION_TAG_PATTERN="${FUNCTION_TAG_PATTERN:-}"
 
 # Allows experiments to change the logical class of the x86-large node
 # without permanently modifying this script.
 X86_LARGE_MACHINE_TAG="${X86_LARGE_MACHINE_TAG:-x86-large}"
+# Test controls for creating rings with different memory utilizations.
+X86_LARGE_POOL_MEMORY="${X86_LARGE_POOL_MEMORY:-512}"
+GPU_NVIDIA_POOL_MEMORY="${GPU_NVIDIA_POOL_MEMORY:-512}"
 
 FUNCTION_NAME="${FUNCTION_NAME:-mab_cost_aware_$(date +%s)}"
 
@@ -72,9 +79,10 @@ lb.mode: MAB
 mab.policy: ${MAB_POLICY}
 mab.ucb1.c: ${MAB_UCB1_C}
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
-mab.linucb.lambda: ${MAB_LINUCB_LAMBDA}
 mab.cost.weight: ${MAB_COST_WEIGHT}
 mab.energy.weight: ${MAB_ENERGY_WEIGHT}
+mab.ucb1.utilization.weight: ${MAB_UCB1_UTILIZATION_WEIGHT}
+mab.ucb1.utilization.threshold: ${MAB_UCB1_UTILIZATION_THRESHOLD}
 lb.replicas: 128
 lb.refresh_interval: ${LB_REFRESH_INTERVAL}
 EOF
@@ -108,7 +116,7 @@ registry.udp.port: 9878
 node.machine_tag: ${X86_LARGE_MACHINE_TAG}
 node.cost_factor: 1.2
 node.energy_factor: 1.2
-container.pool.memory: 512
+container.pool.memory: ${X86_LARGE_POOL_MEMORY}
 EOF
 
 cat > "${NODE_CONFS[2]}" <<EOF
@@ -119,7 +127,7 @@ registry.udp.port: 9879
 node.machine_tag: x86-tiny/gpu/nvidia
 node.cost_factor: 1.6
 node.energy_factor: 1.8
-container.pool.memory: 512
+container.pool.memory: ${GPU_NVIDIA_POOL_MEMORY}
 EOF
 
 cat > "${NODE_CONFS[3]}" <<EOF
@@ -235,4 +243,8 @@ echo "[done] Function tag_pattern: ${FUNCTION_TAG_PATTERN:-<none>}"
 echo "[done] x86-large machine tag: $X86_LARGE_MACHINE_TAG"
 echo "[done] Cost weight: $MAB_COST_WEIGHT"
 echo "[done] Energy weight: $MAB_ENERGY_WEIGHT"
+echo "[done] UCB1 utilization weight: $MAB_UCB1_UTILIZATION_WEIGHT"
+echo "[done] UCB1 utilization threshold: $MAB_UCB1_UTILIZATION_THRESHOLD"
+echo "[done] x86-large pool memory: $X86_LARGE_POOL_MEMORY"
+echo "[done] GPU NVIDIA pool memory: $GPU_NVIDIA_POOL_MEMORY"
 echo "[done] Logs: $LOG_DIR"

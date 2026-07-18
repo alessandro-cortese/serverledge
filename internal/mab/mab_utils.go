@@ -9,13 +9,31 @@ import (
 	"github.com/serverledge-faas/serverledge/internal/function"
 )
 
-func UpdateBandit(body []byte, reqPath string, tag string, reqID string) error { // Read the body
+func UpdateBandit(
+	body []byte,
+	reqPath string,
+	tag string,
+	reqID string,
+	feedback ExecutionFeedback,
+) error { // Read the body
 	// Modified function to use machineTag parameter instead of ach
 	// Parse the body to a Response object
 	var response function.Response
 	if err := json.Unmarshal(body, &response); err != nil {
 		return fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
+
+	feedback.DurationMs = response.ExecutionReport.Duration * 1000.0
+
+	feedback.IsWarmStart = response.IsWarmStart
+
+	feedback.ExecutionNode = response.ExecutionReport.ExecutionNode
+
+	if feedback.NodeName == "" {
+		feedback.NodeName =
+			feedback.ExecutionNode
+	}
+
 	// get the url of the request, to extract the function name, so that we can update the related MAB.
 	pathParts := strings.Split(reqPath, "/")
 	if len(pathParts) < 3 || pathParts[len(pathParts)-2] != "invoke" {
@@ -25,6 +43,18 @@ func UpdateBandit(body []byte, reqPath string, tag string, reqID string) error {
 
 	bandit := GlobalBanditManager.GetBandit(functionName)
 	ctx := GlobalContextStorage.RetrieveAndDelete(reqID)
+
+	if feedback.ExecutionNode != "" &&
+		feedback.NodeName != "" &&
+		feedback.ExecutionNode != feedback.NodeName {
+
+		log.Printf(
+			"[MAB] event=execution_node_mismatch function=%s node_name=%s execution_node=%s",
+			functionName,
+			feedback.NodeName,
+			feedback.ExecutionNode,
+		)
+	}
 
 	if tag == "" {
 		log.Println("Serverledge-Node-Tag header missing")
@@ -38,10 +68,14 @@ func UpdateBandit(body []byte, reqPath string, tag string, reqID string) error {
 	}
 
 	// Reward = 1 / Duration (we don't consider cold start delay, since we want to focus on architectures' performance)
-	durationMs := response.ExecutionReport.Duration * 1000.0 // s to ms
+	// durationMs := response.ExecutionReport.Duration * 1000.0 // s to ms
 
 	// finally update the reward for the bandit. This is thread safe since internally it has a mutex
-	bandit.UpdateReward(tag, ctx, response.IsWarmStart, durationMs)
+	bandit.UpdateReward(
+		tag,
+		ctx,
+		feedback,
+	)
 
 	return nil
 }

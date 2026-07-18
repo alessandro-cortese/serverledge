@@ -4,9 +4,11 @@ import (
 	"sync"
 )
 
-// ContextStorage is a temporary cache to store the context (state)
-// used for a specific request ID until the request completes.
-// It is needed to update context LinUCB
+// ContextStorage temporarily stores the decision-time utilization snapshot
+// until the corresponding execution completes.
+//
+// This allows contextual policies to update their model using exactly the
+// same system state that was observed when the arm was selected.
 type ContextStorage struct {
 	// sync.Map is safe for concurrent use. So we use it since the LB can handle multiple request simultaneously.
 	data sync.Map

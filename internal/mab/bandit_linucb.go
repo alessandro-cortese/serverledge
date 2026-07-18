@@ -6,7 +6,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/serverledge-faas/serverledge/internal/config"
 	"gonum.org/v1/gonum/mat" // for matrix operations
 )
 
@@ -92,7 +91,10 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	candidateArms := filterAllowedArms(p.Arms, allowedArms)
+	candidateArms := filterAllowedArms(
+		p.Arms,
+		allowedArms,
+	)
 
 	if len(candidateArms) == 0 {
 		log.Printf(
@@ -111,17 +113,13 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 	for _, arm := range candidateArms {
 		state := p.Arms[arm]
 
-		// Construct the feature vector for this arm.
-		// A missing context is interpreted as zero utilization.
-		memUsage := 0.0
+		// Missing context is interpreted as zero utilization.
+		utilization := armUtilization(
+			ctx,
+			arm,
+		)
 
-		if ctx != nil && ctx.ArchMemUsage != nil {
-			if usage, ok := ctx.ArchMemUsage[arm]; ok {
-				memUsage = usage
-			}
-		}
-
-		x := p.computeFeatures(memUsage)
+		x := p.computeFeatures(utilization)
 
 		var AInv mat.Dense
 
@@ -137,19 +135,38 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 
 		// theta = A^-1 * b
 		var theta mat.VecDense
-		theta.MulVec(&AInv, state.b)
+		theta.MulVec(
+			&AInv,
+			state.b,
+		)
 
 		// Expected reward: x^T * theta
-		expectedReward := mat.Dot(x, &theta)
+		expectedReward :=
+			mat.Dot(
+				x,
+				&theta,
+			)
 
-		// Confidence term: alpha * sqrt(x^T * A^-1 * x)
+		// Confidence: alpha * sqrt(x^T * A^-1 * x)
 		var tempVec mat.VecDense
-		tempVec.MulVec(&AInv, x)
+		tempVec.MulVec(
+			&AInv,
+			x,
+		)
 
-		variance := mat.Dot(x, &tempVec)
-		confidence := p.Alpha * math.Sqrt(variance)
+		variance :=
+			mat.Dot(
+				x,
+				&tempVec,
+			)
 
-		score := expectedReward + confidence
+		confidence :=
+			p.Alpha *
+				math.Sqrt(variance)
+
+		score :=
+			expectedReward +
+				confidence
 
 		logMABContextualArmScore(
 			string(p.GetType()),
@@ -158,7 +175,7 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 			score,
 			expectedReward,
 			confidence,
-			memUsage,
+			utilization,
 		)
 
 		if score > bestScore {
@@ -191,111 +208,136 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 	return bestArm
 }
 
-// UpdateReward updates A and b for the chosen arm. Context is necessary to keep track of the memory usage AT THE MOMENT
-// the decision was taken. So it has to be a "snapshot" of memory at that given time.
-func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, isWarmStart bool, durationMs float64) {
+// UpdateReward updates A and b for the chosen arm. The context must be the
+// utilization snapshot captured when the decision was made.
+func (p *LinUCBDisjointPolicy) UpdateReward(
+	arm string,
+	ctx *Context,
+	feedback ExecutionFeedback,
+) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	if !isWarmStart {
+	if !feedback.IsWarmStart {
 		logMABSkipColdStart(
 			string(p.GetType()),
 			p.FunctionName,
 			arm,
-			durationMs,
+			feedback.DurationMs,
 		)
-		return // likely an outlier, skip update
+		return
 	}
 
 	state, ok := p.Arms[arm]
 	if !ok {
-		log.Printf("[LinUCB] Warning: Trying to update unknown arm %s", arm)
-		panic(3) // should never happen if correctly used
+		log.Printf(
+			"[LinUCB] Warning: Trying to update unknown arm %s",
+			arm,
+		)
+		panic(3)
 	}
 
-	// Reconstruct the feature vector x_t used at decision time.
-	memUsage := 0.0
-	if ctx != nil {
-		memUsage = ctx.ArchMemUsage[arm]
-	} else {
-		log.Printf("[LinUCB] Warning: Context is nil for arm %s", arm)
-		panic(4) // should never happen
+	if ctx == nil {
+		log.Printf(
+			"[LinUCB] Warning: Context is nil for arm %s",
+			arm,
+		)
+		panic(4)
 	}
 
-	if durationMs <= 0 {
+	utilization := armUtilization(
+		ctx,
+		arm,
+	)
+
+	if feedback.DurationMs <= 0 {
 		log.Printf(
 			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
 			nowMillis(),
 			string(p.GetType()),
 			p.FunctionName,
 			arm,
-			durationMs,
+			feedback.DurationMs,
 		)
 		return
 	}
 
-	lambda := config.GetFloat(config.MAB_LINUCB_LAMBDA, 0.0)
-	memoryPenalty := memPenalty(memUsage)
-	latencyReward := -math.Log(durationMs)
+	latencyReward :=
+		-math.Log(feedback.DurationMs)
 
-	breakdown := buildCostBreakdown(
-		arm,
-		latencyReward,
-		ctx,
-		memoryPenalty,
-		lambda,
-	)
-	reward := breakdown.FinalReward
+	breakdown :=
+		buildCostBreakdown(
+			latencyReward,
+			feedback,
+		)
+
+	reward :=
+		breakdown.FinalReward
 
 	logMABRewardBreakdown(
 		string(p.GetType()),
 		p.FunctionName,
 		arm,
-		durationMs,
+		feedback.DurationMs,
 		breakdown,
 	)
 
-	x := p.computeFeatures(memUsage)
+	x := p.computeFeatures(utilization)
 
-	// Update A: A = A + x * x^T
+	// A = A + x * x^T
 	var outerProduct mat.Dense
-	outerProduct.Outer(1.0, x, x)
-	state.A.Add(state.A, &outerProduct)
+	outerProduct.Outer(
+		1.0,
+		x,
+		x,
+	)
+	state.A.Add(
+		state.A,
+		&outerProduct,
+	)
 
-	// Update b: b = b + reward * x
+	// b = b + reward * x
 	var scaledX mat.VecDense
-	scaledX.ScaleVec(reward, x)
-	state.b.AddVec(state.b, &scaledX)
+	scaledX.ScaleVec(
+		reward,
+		x,
+	)
+	state.b.AddVec(
+		state.b,
+		&scaledX,
+	)
 
 	logMABContextualUpdateReward(
 		string(p.GetType()),
 		p.FunctionName,
 		arm,
-		durationMs,
-		isWarmStart,
-		memUsage,
-		lambda,
+		feedback.DurationMs,
+		feedback.IsWarmStart,
+		utilization,
 		reward,
 	)
 }
 
-func memPenalty(memUsage float64) float64 {
-	// Grows from 0 at 0.75 utilization to 1 at 1.0 utilization
-	penalty := (memUsage - 0.75) / 0.25 // (memUsage - 0.75) / (1 - 0.75)
-	return max(0.0, penalty)
-}
-
-// computeFeatures transforms raw context data into the feature vector [1, sigma(u)].
-func (p *LinUCBDisjointPolicy) computeFeatures(memUsage float64) *mat.VecDense {
-	// Bias term
+// computeFeatures transforms raw context data into the feature vector
+// [1, sigma(u)].
+func (p *LinUCBDisjointPolicy) computeFeatures(
+	utilization float64,
+) *mat.VecDense {
 	bias := 1.0
 
-	// Non-linear penalty (sigma) as suggested: 1 / (1 - u + epsilon)
-	// epsilon prevents division by zero if usage is 100%
+	// Non-linear contextual feature:
+	// 1 / (1 - utilization + epsilon)
 	epsilon := 0.01
-	sigma := 1.0 / (1.0 - memUsage + epsilon)
+	u := clampUnitInterval(utilization)
+	sigma := 1.0 / (1.0 - u + epsilon)
 
-	return mat.NewVecDense(p.Dim, []float64{bias, sigma})
+	return mat.NewVecDense(
+		p.Dim,
+		[]float64{
+			bias,
+			sigma,
+		},
+	)
 }
 
 func (p *LinUCBDisjointPolicy) GetType() BanditType {

@@ -59,26 +59,62 @@ func logMABSelectArm(
 	)
 }
 
-func logMABArmScore(
+func logMABUCB1ArmScore(
 	policy string,
 	functionName string,
 	arm string,
 	score float64,
+	explorationBonus float64,
 	count int64,
 	avgReward float64,
 	totalCounts int64,
 ) {
 	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f count=%d avg_reward=%.6f total_counts=%d\n",
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f base_score=%.6f count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d contextual=false\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
 		functionName,
 		arm,
 		score,
+		score,
 		count,
 		avgReward,
+		explorationBonus,
 		totalCounts,
+	)
+}
+
+func logMABUCB1UtilizationArmScore(
+	policy string,
+	functionName string,
+	arm string,
+	score float64,
+	baseScore float64,
+	explorationBonus float64,
+	count int64,
+	avgReward float64,
+	totalCounts int64,
+	utilization UtilizationScoreBreakdown,
+) {
+	log.Printf(
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f base_score=%.6f count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d contextual=true utilization=%.6f utilization_threshold=%.6f utilization_penalty=%.6f utilization_weight=%.6f utilization_term=%.6f\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		score,
+		baseScore,
+		count,
+		avgReward,
+		explorationBonus,
+		totalCounts,
+		utilization.Utilization,
+		utilization.UtilizationThreshold,
+		utilization.UtilizationPenalty,
+		utilization.UtilizationWeight,
+		utilization.UtilizationTerm,
 	)
 }
 
@@ -153,12 +189,11 @@ func logMABContextualUpdateReward(
 	arm string,
 	durationMs float64,
 	isWarmStart bool,
-	memUsage float64,
-	lambda float64,
+	utilization float64,
 	reward float64,
 ) {
 	log.Printf(
-		"%s event=update_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f warm_start=%t mem_usage=%.6f lambda=%.6f reward=%.6f\n",
+		"%s event=update_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f warm_start=%t utilization=%.6f reward=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -166,8 +201,7 @@ func logMABContextualUpdateReward(
 		arm,
 		durationMs,
 		isWarmStart,
-		memUsage,
-		lambda,
+		utilization,
 		reward,
 	)
 }
@@ -179,10 +213,10 @@ func logMABContextualArmScore(
 	score float64,
 	expectedReward float64,
 	confidence float64,
-	memUsage float64,
+	utilization float64,
 ) {
 	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f expected_reward=%.6f confidence=%.6f mem_usage=%.6f\n",
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f expected_reward=%.6f confidence=%.6f contextual=true utilization=%.6f explicit_utilization_penalty=false\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -191,7 +225,7 @@ func logMABContextualArmScore(
 		score,
 		expectedReward,
 		confidence,
-		memUsage,
+		utilization,
 	)
 }
 
@@ -203,10 +237,14 @@ func logMABRewardBreakdown(
 	breakdown CostBreakdown,
 ) {
 	info := ParseMachineTag(arm)
-	capabilities := strings.Join(info.Capabilities, ",")
+	capabilities :=
+		strings.Join(
+			info.Capabilities,
+			",",
+		)
 
 	log.Printf(
-		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f cost_weight=%.6f cost_factor=%.6f cost_term=%.6f energy_weight=%.6f energy_factor=%.6f energy_term=%.6f memory_weight=%.6f memory_penalty=%.6f memory_term=%.6f final_reward=%.6f\n",
+		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f cost_weight=%.6f cost_factor=%.6f cost_term=%.6f energy_weight=%.6f energy_factor=%.6f energy_term=%.6f final_reward=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -224,9 +262,6 @@ func logMABRewardBreakdown(
 		breakdown.EnergyWeight,
 		breakdown.EnergyFactor,
 		breakdown.EnergyTerm,
-		breakdown.MemoryWeight,
-		breakdown.MemoryPenalty,
-		breakdown.MemoryTerm,
 		breakdown.FinalReward,
 	)
 }

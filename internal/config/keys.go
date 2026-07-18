@@ -96,8 +96,18 @@ const MAB_COST_WEIGHT = "mab.cost.weight"
 // reward = latencyReward - energyWeight*energyFactor - ...
 const MAB_ENERGY_WEIGHT = "mab.energy.weight"
 
-// Lambda value for the LinUCB policy, used for the memory penalty of reward
+// Legacy LinUCB utilization weight retained for old configuration files.
+// The current LinUCB implementation uses utilization as a contextual feature
+// and does not subtract an additional explicit penalty from its score.
 const MAB_LINUCB_LAMBDA = "mab.linucb.lambda"
+
+// Weight of the dynamic ring-utilization penalty used only by the optional
+// UCB1UtilizationAware policy. Plain UCB1 remains context-free.
+const MAB_UCB1_UTILIZATION_WEIGHT = "mab.ucb1.utilization.weight"
+
+// Utilization threshold used only by UCB1UtilizationAware. The default is
+// 0.70, meaning that the explicit penalty starts above 70% utilization.
+const MAB_UCB1_UTILIZATION_THRESHOLD = "mab.ucb1.utilization.threshold"
 
 // port for udp status listener
 const LISTEN_UDP_PORT = "registry.udp.port"

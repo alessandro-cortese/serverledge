@@ -1,0 +1,20 @@
+2026/07/17 10:03:56 Local node id: (ROME)9mGBMkJQb2yLVoH8XsNyB41784275436864622624 - arm-tiny (arch: amd64)
+2026/07/17 10:03:56 Registration for node: (ROME)9mGBMkJQb2yLVoH8XsNyB41784275436864622624 - arm-tiny
+2026/07/17 10:03:56 Connecting to etcd
+2026/07/17 10:03:56 Connected to etcd
+2026/07/17 10:03:56 etcd connection state: TRANSIENT_FAILURE
+2026/07/17 10:03:56 etcd: transient failure, triggering reconnect
+2026/07/17 10:03:57 etcd connection state: READY
+2026/07/17 10:03:57 etcd: connected and ready
+2026/07/17 10:03:57 Registering to etcd: registry/ROME/arm-tiny/9mGBMkJQb2yLVoH8XsNyB41784275436864622624
+2026/07/17 10:03:57 Configured scheduling policy: default
+2026/07/17 10:03:57 Configured offloading policy: disable
+2026/07/17 10:03:57 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/07/17 10:03:57 Scheduler started.
+2026/07/17 10:03:57 No remote area is configured; vertical offloading disabled
+2026/07/17 10:03:57 UDP server up and listening on port 9880
+⇨ http server started on [::]:1327
+2026/07/17 10:04:17 Periodic nearby Monitoring
+2026/07/17 10:04:17 Requesting status information for 192.168.0.46:9878
+2026/07/17 10:04:17 Requesting status information for 192.168.0.46:9879
+2026/07/17 10:04:17 Requesting status information for 192.168.0.46:9877

@@ -1,0 +1,8 @@
+etcd.address: 127.0.0.1:2379
+api.port: 1325
+registry.area: ROME
+registry.udp.port: 9878
+node.machine_tag: x86-large/gpu/amd
+node.cost_factor: 1.2
+node.energy_factor: 1.2
+container.pool.memory: 256
