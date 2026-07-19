@@ -96,6 +96,14 @@ const MAB_COST_WEIGHT = "mab.cost.weight"
 // reward = latencyReward - energyWeight*energyFactor - ...
 const MAB_ENERGY_WEIGHT = "mab.energy.weight"
 
+// Controls how cold-start feedback affects MAB learning.
+//
+// Supported values:
+//   - "skip": preserve the legacy behavior and ignore cold-start samples;
+//   - "execution": learn from DurationMs while excluding initialization,
+//     queueing and offloading overheads.
+const MAB_COLD_START_MODE = "mab.cold_start.mode"
+
 // Legacy LinUCB utilization weight retained for old configuration files.
 // The current LinUCB implementation uses utilization as a contextual feature
 // and does not subtract an additional explicit penalty from its score.

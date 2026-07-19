@@ -208,8 +208,11 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 	return bestArm
 }
 
-// UpdateReward updates A and b for the chosen arm. The context must be the
-// utilization snapshot captured when the decision was made.
+// UpdateReward updates A and b for the chosen arm after a feedback sample
+// accepted by the configured cold-start policy.
+//
+// The context must be the utilization snapshot captured when the decision was
+// made. Cold-start execution mode still uses only DurationMs for the reward.
 func (p *LinUCBDisjointPolicy) UpdateReward(
 	arm string,
 	ctx *Context,
@@ -218,23 +221,39 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	if !feedback.IsWarmStart {
-		logMABSkipColdStart(
-			string(p.GetType()),
-			p.FunctionName,
-			arm,
-			feedback.DurationMs,
+	policy :=
+		string(
+			p.GetType(),
 		)
-		return
-	}
 
-	state, ok := p.Arms[arm]
+	state, ok :=
+		p.Arms[arm]
+
 	if !ok {
 		log.Printf(
 			"[LinUCB] Warning: Trying to update unknown arm %s",
 			arm,
 		)
+
 		panic(3)
+	}
+
+	if !validateExecutionFeedback(
+		policy,
+		p.FunctionName,
+		arm,
+		feedback,
+	) {
+		return
+	}
+
+	if !shouldUpdateRewardFromFeedback(
+		policy,
+		p.FunctionName,
+		arm,
+		feedback,
+	) {
+		return
 	}
 
 	if ctx == nil {
@@ -242,28 +261,20 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 			"[LinUCB] Warning: Context is nil for arm %s",
 			arm,
 		)
+
 		panic(4)
 	}
 
-	utilization := armUtilization(
-		ctx,
-		arm,
-	)
-
-	if feedback.DurationMs <= 0 {
-		log.Printf(
-			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
-			nowMillis(),
-			string(p.GetType()),
-			p.FunctionName,
+	utilization :=
+		armUtilization(
+			ctx,
 			arm,
-			feedback.DurationMs,
 		)
-		return
-	}
 
 	latencyReward :=
-		-math.Log(feedback.DurationMs)
+		-math.Log(
+			feedback.DurationMs,
+		)
 
 	breakdown :=
 		buildCostBreakdown(
@@ -274,23 +285,42 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	reward :=
 		breakdown.FinalReward
 
+	if !isFiniteNumber(
+		reward,
+	) {
+		recordInvalidExecutionFeedback(
+			policy,
+			p.FunctionName,
+			arm,
+			"non_finite_reward",
+			feedback,
+		)
+
+		return
+	}
+
 	logMABRewardBreakdown(
-		string(p.GetType()),
+		policy,
 		p.FunctionName,
 		arm,
 		feedback.DurationMs,
 		breakdown,
 	)
 
-	x := p.computeFeatures(utilization)
+	x :=
+		p.computeFeatures(
+			utilization,
+		)
 
 	// A = A + x * x^T
 	var outerProduct mat.Dense
+
 	outerProduct.Outer(
 		1.0,
 		x,
 		x,
 	)
+
 	state.A.Add(
 		state.A,
 		&outerProduct,
@@ -298,17 +328,26 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 
 	// b = b + reward * x
 	var scaledX mat.VecDense
+
 	scaledX.ScaleVec(
 		reward,
 		x,
 	)
+
 	state.b.AddVec(
 		state.b,
 		&scaledX,
 	)
 
+	recordAcceptedExecutionFeedback(
+		policy,
+		p.FunctionName,
+		arm,
+		feedback,
+	)
+
 	logMABContextualUpdateReward(
-		string(p.GetType()),
+		policy,
 		p.FunctionName,
 		arm,
 		feedback.DurationMs,

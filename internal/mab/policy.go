@@ -28,12 +28,19 @@ type Context struct {
 // actually executed an invocation. Cost and energy are node-level structural
 // properties and must not be replaced with averages computed over the arm/ring.
 type ExecutionFeedback struct {
-	DurationMs    float64
-	IsWarmStart   bool
+	DurationMs       float64
+	ResponseTimeMs   float64
+	InitTimeMs       float64
+	QueueingTimeMs   float64
+	OffloadLatencyMs float64
+
+	IsWarmStart bool
+
 	NodeName      string
 	ExecutionNode string
-	CostFactor    float64
-	EnergyFactor  float64
+
+	CostFactor   float64
+	EnergyFactor float64
 }
 
 // Policy is the interface that any Bandit algorithm must implement.

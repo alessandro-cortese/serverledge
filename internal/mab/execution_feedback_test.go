@@ -18,7 +18,12 @@ func resetExecutionFeedbackConfig(
 	t.Helper()
 
 	viper.Reset()
-	t.Cleanup(viper.Reset)
+	GlobalColdStartStats.Reset()
+
+	t.Cleanup(func() {
+		viper.Reset()
+		GlobalColdStartStats.Reset()
+	})
 }
 
 func TestUCB1RewardUsesConcreteExecutionNodeFactors(
@@ -308,9 +313,13 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 	response := function.Response{
 		Success: true,
 		ExecutionReport: function.ExecutionReport{
-			Duration:      0.010,
-			IsWarmStart:   true,
-			ExecutionNode: "node-a",
+			ResponseTime:   0.475,
+			Duration:       0.007,
+			InitTime:       0.465,
+			QueueingTime:   0.002,
+			OffloadLatency: 0.001,
+			IsWarmStart:    false,
+			ExecutionNode:  "node-a",
 		},
 	}
 
@@ -363,12 +372,40 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 
 	assert.InDelta(
 		t,
-		10.0,
+		7.0,
 		recorder.feedback.DurationMs,
 		1e-9,
 	)
 
-	assert.True(
+	assert.InDelta(
+		t,
+		475.0,
+		recorder.feedback.ResponseTimeMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		465.0,
+		recorder.feedback.InitTimeMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		2.0,
+		recorder.feedback.QueueingTimeMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		1.0,
+		recorder.feedback.OffloadLatencyMs,
+		1e-9,
+	)
+
+	assert.False(
 		t,
 		recorder.feedback.IsWarmStart,
 	)

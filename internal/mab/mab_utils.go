@@ -23,11 +23,21 @@ func UpdateBandit(
 		return fmt.Errorf("failed to unmarshal response body: %v", err)
 	}
 
-	feedback.DurationMs = response.ExecutionReport.Duration * 1000.0
+	report := response.ExecutionReport
 
-	feedback.IsWarmStart = response.IsWarmStart
+	feedback.DurationMs = report.Duration * 1000.0
 
-	feedback.ExecutionNode = response.ExecutionReport.ExecutionNode
+	feedback.ResponseTimeMs = report.ResponseTime * 1000.0
+
+	feedback.InitTimeMs = report.InitTime * 1000.0
+
+	feedback.QueueingTimeMs = report.QueueingTime * 1000.0
+
+	feedback.OffloadLatencyMs = report.OffloadLatency * 1000.0
+
+	feedback.IsWarmStart = report.IsWarmStart
+
+	feedback.ExecutionNode = report.ExecutionNode
 
 	if feedback.NodeName == "" {
 		feedback.NodeName =
@@ -60,6 +70,13 @@ func UpdateBandit(
 		log.Println("Serverledge-Node-Tag header missing")
 		panic(0) // should never happen
 	}
+
+	logMABExecutionTiming(
+		string(bandit.GetType()),
+		functionName,
+		tag,
+		feedback,
+	)
 
 	// Calculate the reward for this execution
 	if response.ExecutionReport.Duration <= 0 {

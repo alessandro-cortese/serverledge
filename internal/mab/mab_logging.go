@@ -265,3 +265,122 @@ func logMABRewardBreakdown(
 		breakdown.FinalReward,
 	)
 }
+
+func logMABExecutionTiming(
+	policy string,
+	functionName string,
+	arm string,
+	feedback ExecutionFeedback,
+) {
+	responseMinusDurationMs :=
+		feedback.ResponseTimeMs -
+			feedback.DurationMs
+
+	log.Printf(
+		"%s event=execution_timing ts=%d policy=%s function=%s arm=%s node_name=%s execution_node=%s warm_start=%t response_time_ms=%.6f duration_ms=%.6f init_time_ms=%.6f queueing_time_ms=%.6f offload_latency_ms=%.6f response_minus_duration_ms=%.6f\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		feedback.NodeName,
+		feedback.ExecutionNode,
+		feedback.IsWarmStart,
+		feedback.ResponseTimeMs,
+		feedback.DurationMs,
+		feedback.InitTimeMs,
+		feedback.QueueingTimeMs,
+		feedback.OffloadLatencyMs,
+		responseMinusDurationMs,
+	)
+}
+
+func logMABUseColdStartSample(
+	policy string,
+	functionName string,
+	arm string,
+	durationMs float64,
+) {
+	log.Printf(
+		"%s event=use_cold_start_sample ts=%d policy=%s function=%s arm=%s duration_ms=%.6f mode=execution reward_time_source=duration_ms\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		durationMs,
+	)
+}
+
+func logMABInvalidExecutionFeedback(
+	policy string,
+	functionName string,
+	arm string,
+	reason string,
+	feedback ExecutionFeedback,
+) {
+	log.Printf(
+		"%s event=invalid_execution_feedback ts=%d policy=%s function=%s arm=%s reason=%s warm_start=%t duration_ms=%.6f response_time_ms=%.6f init_time_ms=%.6f queueing_time_ms=%.6f offload_latency_ms=%.6f cost_factor=%.6f energy_factor=%.6f\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		reason,
+		feedback.IsWarmStart,
+		feedback.DurationMs,
+		feedback.ResponseTimeMs,
+		feedback.InitTimeMs,
+		feedback.QueueingTimeMs,
+		feedback.OffloadLatencyMs,
+		feedback.CostFactor,
+		feedback.EnergyFactor,
+	)
+}
+
+func logMABInvalidObservabilityMetric(
+	policy string,
+	functionName string,
+	arm string,
+	metric string,
+	value float64,
+) {
+	log.Printf(
+		"%s event=invalid_observability_metric ts=%d policy=%s function=%s arm=%s metric=%s value=%.6f action=continue_if_reward_feedback_valid\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		metric,
+		value,
+	)
+}
+
+func logMABColdStartStats(
+	policy string,
+	functionName string,
+	arm string,
+	stats ColdStartStatsSnapshot,
+) {
+	log.Printf(
+		"%s event=cold_start_stats ts=%d policy=%s function=%s arm=%s total_invocations=%d cold_observed=%d warm_observed=%d cold_accepted=%d cold_skipped=%d invalid_feedback=%d cold_duration_samples=%d warm_duration_samples=%d cold_init_time_samples=%d avg_cold_duration_ms=%.6f avg_warm_duration_ms=%.6f avg_cold_init_time_ms=%.6f\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		stats.TotalInvocations,
+		stats.ColdObserved,
+		stats.WarmObserved,
+		stats.ColdAccepted,
+		stats.ColdSkipped,
+		stats.InvalidFeedback,
+		stats.ColdDurationSamples,
+		stats.WarmDurationSamples,
+		stats.ColdInitTimeSamples,
+		stats.AvgColdDurationMs,
+		stats.AvgWarmDurationMs,
+		stats.AvgColdInitTimeMs,
+	)
+}

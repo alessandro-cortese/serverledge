@@ -44,6 +44,12 @@ MAB_LINUCB_ALPHA="${MAB_LINUCB_ALPHA:-0.1}"
 
 MAB_COST_WEIGHT="${MAB_COST_WEIGHT:-0.0}"
 MAB_ENERGY_WEIGHT="${MAB_ENERGY_WEIGHT:-0.0}"
+
+# Cold-start learning strategy:
+#   skip      = legacy behavior
+#   execution = learn from DurationMs, excluding initialization overhead
+MAB_COLD_START_MODE="${MAB_COLD_START_MODE:-skip}"
+
 # These parameters are read only when
 # MAB_POLICY=UCB1UtilizationAware.
 MAB_UCB1_UTILIZATION_WEIGHT="${MAB_UCB1_UTILIZATION_WEIGHT:-0.0}"
@@ -78,6 +84,7 @@ lb.arch_awareness: true
 lb.mode: MAB
 mab.policy: ${MAB_POLICY}
 mab.ucb1.c: ${MAB_UCB1_C}
+mab.cold_start.mode: ${MAB_COLD_START_MODE}
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
 mab.cost.weight: ${MAB_COST_WEIGHT}
 mab.energy.weight: ${MAB_ENERGY_WEIGHT}
@@ -247,4 +254,5 @@ echo "[done] UCB1 utilization weight: $MAB_UCB1_UTILIZATION_WEIGHT"
 echo "[done] UCB1 utilization threshold: $MAB_UCB1_UTILIZATION_THRESHOLD"
 echo "[done] x86-large pool memory: $X86_LARGE_POOL_MEMORY"
 echo "[done] GPU NVIDIA pool memory: $GPU_NVIDIA_POOL_MEMORY"
+echo "[done] Cold-start mode: $MAB_COLD_START_MODE"
 echo "[done] Logs: $LOG_DIR"

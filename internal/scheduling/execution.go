@@ -68,7 +68,7 @@ func Execute(cont *container.Container, r *scheduledRequest, isWarm bool) error 
 	r.ExecutionArea = node.LocalNode.Area
 	r.ExecutionNode = node.LocalNode.Key
 
-	node.HandleCompletion(cont, r.Fun)
+	//node.HandleCompletion(cont, r.Fun)
 
 	// notify scheduler
 	completions <- &completionNotification{funcName: r.Fun.Name, offloaded: r.offloaded, report: *r.ExecutionReport, cont: cont, failed: false}

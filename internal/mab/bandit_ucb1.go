@@ -236,9 +236,14 @@ func (b *UCB1Bandit) SelectArmFrom(
 	return bestArm
 }
 
-// UpdateReward updates the empirical reward of an arm after a valid execution.
-// The historical reward contains latency, node-specific cost and node-specific
-// energy. Plain UCB1 does not use context during selection, while the optional
+// UpdateReward updates the empirical reward of an arm after a feedback sample
+// accepted by the configured cold-start policy.
+//
+// The historical reward contains execution latency, node-specific cost and
+// node-specific energy. Initialization, queueing and offloading times are not
+// included.
+//
+// Plain UCB1 does not use context during selection, while the optional
 // UCB1UtilizationAware variant applies utilization only to its selection score.
 func (b *UCB1Bandit) UpdateReward(
 	arm string,
@@ -255,25 +260,26 @@ func (b *UCB1Bandit) UpdateReward(
 		return
 	}
 
-	if !feedback.IsWarmStart {
-		logMABSkipColdStart(
-			string(b.GetType()),
-			b.FunctionName,
-			arm,
-			feedback.DurationMs,
+	policy :=
+		string(
+			b.GetType(),
 		)
+
+	if !validateExecutionFeedback(
+		policy,
+		b.FunctionName,
+		arm,
+		feedback,
+	) {
 		return
 	}
 
-	if feedback.DurationMs <= 0 {
-		log.Printf(
-			"[MAB] event=skip_invalid_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f reason=non_positive_duration\n",
-			nowMillis(),
-			string(b.GetType()),
-			b.FunctionName,
-			arm,
-			feedback.DurationMs,
-		)
+	if !shouldUpdateRewardFromFeedback(
+		policy,
+		b.FunctionName,
+		arm,
+		feedback,
+	) {
 		return
 	}
 
@@ -287,6 +293,20 @@ func (b *UCB1Bandit) UpdateReward(
 		)
 
 	reward := breakdown.FinalReward
+
+	if !isFiniteNumber(
+		reward,
+	) {
+		recordInvalidExecutionFeedback(
+			policy,
+			b.FunctionName,
+			arm,
+			"non_finite_reward",
+			feedback,
+		)
+
+		return
+	}
 
 	logMABRewardBreakdown(
 		string(b.GetType()),
@@ -303,6 +323,13 @@ func (b *UCB1Bandit) UpdateReward(
 	stats.AvgReward =
 		stats.SumRewards /
 			float64(stats.Count)
+
+	recordAcceptedExecutionFeedback(
+		policy,
+		b.FunctionName,
+		arm,
+		feedback,
+	)
 
 	logMABUpdateReward(
 		string(b.GetType()),
