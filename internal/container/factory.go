@@ -2,20 +2,61 @@ package container
 
 import (
 	"io"
+
+	"github.com/serverledge-faas/serverledge/internal/profiling"
 )
 
 // A Factory to create and manage container.
 type Factory interface {
-	Create(string, *ContainerOptions) (ContainerID, error)
-	CopyToContainer(ContainerID, io.Reader, string) error
-	Start(ContainerID) error
-	Destroy(ContainerID) error
-	HasImage(string) bool
-	PullImage(string) error
-	GetIPAddress(ContainerID) (string, error)
-	GetMemoryMB(id ContainerID) (int64, error)
-	GetLog(id ContainerID) (string, error)
-	GetImageArchitectures(string) ([]string, error)
+	Create(
+		string,
+		*ContainerOptions,
+	) (ContainerID, error)
+
+	CopyToContainer(
+		ContainerID,
+		io.Reader,
+		string,
+	) error
+
+	Start(
+		ContainerID,
+	) error
+
+	Destroy(
+		ContainerID,
+	) error
+
+	HasImage(
+		string,
+	) bool
+
+	PullImage(
+		string,
+	) error
+
+	GetIPAddress(
+		ContainerID,
+	) (string, error)
+
+	GetMemoryMB(
+		id ContainerID,
+	) (int64, error)
+
+	GetLog(
+		id ContainerID,
+	) (string, error)
+
+	GetResourceSnapshot(
+		id ContainerID,
+	) (
+		profiling.ResourceSnapshot,
+		error,
+	)
+
+	GetImageArchitectures(
+		string,
+	) ([]string, error)
 }
 
 // ContainerOptions contains options for container creation.

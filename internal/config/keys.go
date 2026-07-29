@@ -144,6 +144,12 @@ const METRICS_DUMP_JSON_FILE = "metrics.dump.json.file"
 // Filename to load metrics from JSON
 const METRICS_LOAD_JSON_FILE = "metrics.load.json.file"
 
+// Enables per-invocation Docker resource profiling.
+//
+// Profiling is disabled by default because every profiled invocation requires
+// two Docker statistics reads.
+const FUNCTION_PROFILING_ENABLED = "profiling.enabled"
+
 // Scheduling policy to use
 // Possible values: "qosaware", "default", "cloudonly"
 const SCHEDULING_POLICY = "scheduler.policy"

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/serverledge-faas/serverledge/internal/profiling"
 )
 
 // Request represents a single function invocation, with a ReqId, reference to the Function, parameters and metrics data
@@ -34,6 +36,8 @@ type ExecutionReport struct {
 	Output         string
 	ExecutionArea  string
 	ExecutionNode  string
+
+	ResourceProfile *profiling.InvocationResourceProfile `json:"ResourceProfile,omitempty"`
 }
 
 type Response struct {
