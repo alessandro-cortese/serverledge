@@ -24,7 +24,6 @@ type UCB1Bandit struct {
 	mu           sync.RWMutex         // Mutex per thread-safety
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
 	// Higher values lead to more exploration. Lower values lead to more exploitation.
-	policyType BanditType
 }
 
 func NewUCB1Bandit(
@@ -35,19 +34,6 @@ func NewUCB1Bandit(
 		FunctionName: functionName,
 		Arms:         make(map[string]*ArmStats),
 		c:            exploration,
-		policyType:   UCB1,
-	}
-}
-
-func NewUCB1UtilizationAwareBandit(
-	functionName string,
-	exploration float64,
-) *UCB1Bandit {
-	return &UCB1Bandit{
-		FunctionName: functionName,
-		Arms:         make(map[string]*ArmStats),
-		c:            exploration,
-		policyType:   UCB1UtilizationAware,
 	}
 }
 
@@ -87,6 +73,11 @@ func (b *UCB1Bandit) SelectArmFrom(
 ) string {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+
+	// UCB1 is intentionally context-free. The context argument is accepted
+	// because it is part of the common Policy interface, but it must not
+	// influence the selection score.
+	_ = ctx
 
 	candidateArms := filterAllowedArms(
 		b.Arms,
@@ -144,16 +135,6 @@ func (b *UCB1Bandit) SelectArmFrom(
 		totalCounts = 1
 	}
 
-	utilizationAware :=
-		b.GetType() == UCB1UtilizationAware
-
-	utilizationWeight := 0.0
-
-	if utilizationAware {
-		utilizationWeight =
-			configuredUCB1UtilizationWeight()
-	}
-
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
@@ -163,47 +144,20 @@ func (b *UCB1Bandit) SelectArmFrom(
 					float64(stats.Count),
 			)
 
-		baseScore :=
+		score :=
 			stats.AvgReward +
 				explorationBonus
 
-		score := baseScore
-
-		if utilizationAware {
-			breakdown :=
-				buildUtilizationScoreBreakdown(
-					arm,
-					baseScore,
-					ctx,
-					utilizationWeight,
-				)
-
-			score = breakdown.FinalScore
-
-			logMABUCB1UtilizationArmScore(
-				string(b.GetType()),
-				b.FunctionName,
-				arm,
-				score,
-				baseScore,
-				explorationBonus,
-				stats.Count,
-				stats.AvgReward,
-				b.TotalCounts,
-				breakdown,
-			)
-		} else {
-			logMABUCB1ArmScore(
-				string(b.GetType()),
-				b.FunctionName,
-				arm,
-				score,
-				explorationBonus,
-				stats.Count,
-				stats.AvgReward,
-				b.TotalCounts,
-			)
-		}
+		logMABUCB1ArmScore(
+			string(b.GetType()),
+			b.FunctionName,
+			arm,
+			score,
+			explorationBonus,
+			stats.Count,
+			stats.AvgReward,
+			b.TotalCounts,
+		)
 
 		if score > bestScore {
 			bestScore = score
@@ -243,8 +197,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 // node-specific energy. Initialization, queueing and offloading times are not
 // included.
 //
-// Plain UCB1 does not use context during selection, while the optional
-// UCB1UtilizationAware variant applies utilization only to its selection score.
+// Plain UCB1 does not use context during selection.
 func (b *UCB1Bandit) UpdateReward(
 	arm string,
 	ctx *Context,
@@ -345,9 +298,5 @@ func (b *UCB1Bandit) UpdateReward(
 }
 
 func (b *UCB1Bandit) GetType() BanditType {
-	if b.policyType == "" {
-		return UCB1
-	}
-
-	return b.policyType
+	return UCB1
 }

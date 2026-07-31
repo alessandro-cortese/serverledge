@@ -23,7 +23,7 @@ set -euo pipefail
 #
 #   # LinUCB, cost-aware
 #   MAB_POLICY=LinUCB MAB_COST_WEIGHT=0.6 MAB_ENERGY_WEIGHT=0.2 \
-#     MAB_LINUCB_ALPHA=0.1 MAB_LINUCB_LAMBDA=0.7 \
+#     MAB_LINUCB_ALPHA=0.1 \
 #     bash scripts/mab_cost_aware_experiment.sh
 #
 #   # GPU-only function: only nodes exposing gpu/nvidia should be compatible
@@ -49,11 +49,6 @@ MAB_ENERGY_WEIGHT="${MAB_ENERGY_WEIGHT:-0.0}"
 #   skip      = legacy behavior
 #   execution = learn from DurationMs, excluding initialization overhead
 MAB_COLD_START_MODE="${MAB_COLD_START_MODE:-skip}"
-
-# These parameters are read only when
-# MAB_POLICY=UCB1UtilizationAware.
-MAB_UCB1_UTILIZATION_WEIGHT="${MAB_UCB1_UTILIZATION_WEIGHT:-0.0}"
-MAB_UCB1_UTILIZATION_THRESHOLD="${MAB_UCB1_UTILIZATION_THRESHOLD:-0.70}"
 
 FUNCTION_TAG_PATTERN="${FUNCTION_TAG_PATTERN:-}"
 
@@ -88,8 +83,6 @@ mab.cold_start.mode: ${MAB_COLD_START_MODE}
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
 mab.cost.weight: ${MAB_COST_WEIGHT}
 mab.energy.weight: ${MAB_ENERGY_WEIGHT}
-mab.ucb1.utilization.weight: ${MAB_UCB1_UTILIZATION_WEIGHT}
-mab.ucb1.utilization.threshold: ${MAB_UCB1_UTILIZATION_THRESHOLD}
 lb.replicas: 128
 lb.refresh_interval: ${LB_REFRESH_INTERVAL}
 EOF
@@ -250,8 +243,6 @@ echo "[done] Function tag_pattern: ${FUNCTION_TAG_PATTERN:-<none>}"
 echo "[done] x86-large machine tag: $X86_LARGE_MACHINE_TAG"
 echo "[done] Cost weight: $MAB_COST_WEIGHT"
 echo "[done] Energy weight: $MAB_ENERGY_WEIGHT"
-echo "[done] UCB1 utilization weight: $MAB_UCB1_UTILIZATION_WEIGHT"
-echo "[done] UCB1 utilization threshold: $MAB_UCB1_UTILIZATION_THRESHOLD"
 echo "[done] x86-large pool memory: $X86_LARGE_POOL_MEMORY"
 echo "[done] GPU NVIDIA pool memory: $GPU_NVIDIA_POOL_MEMORY"
 echo "[done] Cold-start mode: $MAB_COLD_START_MODE"

@@ -85,39 +85,6 @@ func logMABUCB1ArmScore(
 	)
 }
 
-func logMABUCB1UtilizationArmScore(
-	policy string,
-	functionName string,
-	arm string,
-	score float64,
-	baseScore float64,
-	explorationBonus float64,
-	count int64,
-	avgReward float64,
-	totalCounts int64,
-	utilization UtilizationScoreBreakdown,
-) {
-	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f base_score=%.6f count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d contextual=true utilization=%.6f utilization_threshold=%.6f utilization_penalty=%.6f utilization_weight=%.6f utilization_term=%.6f\n",
-		mabLogPrefix,
-		nowMillis(),
-		policy,
-		functionName,
-		arm,
-		score,
-		baseScore,
-		count,
-		avgReward,
-		explorationBonus,
-		totalCounts,
-		utilization.Utilization,
-		utilization.UtilizationThreshold,
-		utilization.UtilizationPenalty,
-		utilization.UtilizationWeight,
-		utilization.UtilizationTerm,
-	)
-}
-
 func logMABUpdateReward(
 	policy string,
 	functionName string,
@@ -193,7 +160,7 @@ func logMABContextualUpdateReward(
 	reward float64,
 ) {
 	log.Printf(
-		"%s event=update_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f warm_start=%t utilization=%.6f reward=%.6f\n",
+		"%s event=update_reward ts=%d policy=%s function=%s arm=%s duration_ms=%.6f warm_start=%t utilization=%.6f explicit_utilization_penalty=false reward=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,

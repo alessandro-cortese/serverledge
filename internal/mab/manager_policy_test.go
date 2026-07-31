@@ -23,16 +23,6 @@ func TestBanditManagerCreatesConfiguredPolicy(
 			expectedType:     UCB1,
 		},
 		{
-			name:             "utilization-aware UCB1",
-			configuredPolicy: "UCB1UtilizationAware",
-			expectedType:     UCB1UtilizationAware,
-		},
-		{
-			name:             "hyphenated utilization-aware UCB1",
-			configuredPolicy: "ucb1-utilization-aware",
-			expectedType:     UCB1UtilizationAware,
-		},
-		{
 			name:             "LinUCB",
 			configuredPolicy: "LinUCB",
 			expectedType:     LinUCB,

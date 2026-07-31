@@ -74,19 +74,6 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 					alpha,
 				)
 
-		case "ucb1utilizationaware",
-			"ucb1-utilization-aware",
-			"ucb1_utilization_aware":
-
-			newBandit =
-				NewUCB1UtilizationAwareBandit(
-					functionName,
-					config.GetFloat(
-						config.MAB_UCB1_C,
-						0.8,
-					),
-				)
-
 		default:
 			newBandit =
 				NewUCB1Bandit(

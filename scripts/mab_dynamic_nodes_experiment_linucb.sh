@@ -17,7 +17,7 @@ set -euo pipefail
 # Usage examples:
 #   bash scripts/mab_dynamic_nodes_experiment_linucb.sh
 #   PRE_REQUESTS=10 POST_REQUESTS=60 SECOND_NODE_CONF=node1-conf.yaml bash scripts/mab_dynamic_nodes_experiment_linucb.sh
-#   MAB_LINUCB_ALPHA=0.2 MAB_LINUCB_LAMBDA=0.0 bash scripts/mab_dynamic_nodes_experiment_linucb.sh
+#   MAB_LINUCB_ALPHA=0.2 bash scripts/mab_dynamic_nodes_experiment_linucb.sh
 #
 # Notes:
 #   - This script demonstrates dynamic discovery and LinUCB arm activation.
@@ -36,7 +36,6 @@ LB_REFRESH_INTERVAL="${LB_REFRESH_INTERVAL:-3}"
 
 # LinUCB parameters.
 MAB_LINUCB_ALPHA="${MAB_LINUCB_ALPHA:-0.1}"
-MAB_LINUCB_LAMBDA="${MAB_LINUCB_LAMBDA:-0.0}"
 
 # First phase: start only these nodes.
 FIRST_NODE_CONFS=(${FIRST_NODE_CONFS:-node2-conf.yaml node6-conf.yaml})
@@ -63,7 +62,6 @@ lb.arch_awareness: true
 lb.mode: MAB
 mab.policy: LinUCB
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
-mab.linucb.lambda: ${MAB_LINUCB_LAMBDA}
 lb.replicas: 128
 lb.refresh_interval: ${LB_REFRESH_INTERVAL}
 EOF

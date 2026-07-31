@@ -9,13 +9,22 @@ import (
 	"gonum.org/v1/gonum/mat" // for matrix operations
 )
 
-// LinUCBDisjointPolicy implements the LinUCB algorithm with disjoint linear models.
-// Reference: Li et al., "A Contextual-Bandit Approach to Personalized News Article Recommendation", Algorithm 1.
+const linUCBUtilizationEpsilon = 0.01
+
+// LinUCBDisjointPolicy implements LinUCB with one disjoint linear model for
+// each MAB arm/machine-tag ring.
+//
+// The contextual feature is the aggregate memory utilization of the ring at
+// decision time. Utilization is not subtracted from the scalar reward: the
+// policy learns its relationship with execution performance through A and b.
+//
+// Reference: Li et al., "A Contextual-Bandit Approach to Personalized News
+// Article Recommendation", Algorithm 1.
 type LinUCBDisjointPolicy struct {
-	FunctionName string  // TODO: Ask if I can do this
+	FunctionName string
 	Alpha        float64 // Exploration parameter
 
-	// Maps each arm to its features (A, b)
+	// Maps each arm to its disjoint model state (A, b).
 	Arms map[string]*LinUCBArmState
 	mu   sync.RWMutex
 
@@ -212,7 +221,10 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 // accepted by the configured cold-start policy.
 //
 // The context must be the utilization snapshot captured when the decision was
-// made. Cold-start execution mode still uses only DurationMs for the reward.
+// made. Utilization changes the feature vector used to update A and b, but it
+// is not subtracted from the scalar reward. The latency component of the reward
+// is based on DurationMs; any cost or energy terms remain controlled by their
+// separate configured weights.
 func (p *LinUCBDisjointPolicy) UpdateReward(
 	arm string,
 	ctx *Context,
@@ -221,20 +233,12 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	policy :=
-		string(
-			p.GetType(),
-		)
+	policy := string(p.GetType())
 
-	state, ok :=
-		p.Arms[arm]
+	state, ok := p.Arms[arm]
 
 	if !ok {
-		log.Printf(
-			"[LinUCB] Warning: Trying to update unknown arm %s",
-			arm,
-		)
-
+		log.Printf("[LinUCB] Warning: Trying to update unknown arm %s", arm)
 		panic(3)
 	}
 
@@ -285,9 +289,7 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	reward :=
 		breakdown.FinalReward
 
-	if !isFiniteNumber(
-		reward,
-	) {
+	if !isFiniteNumber(reward) {
 		recordInvalidExecutionFeedback(
 			policy,
 			p.FunctionName,
@@ -359,16 +361,16 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 
 // computeFeatures transforms raw context data into the feature vector
 // [1, sigma(u)].
-func (p *LinUCBDisjointPolicy) computeFeatures(
-	utilization float64,
-) *mat.VecDense {
+func (p *LinUCBDisjointPolicy) computeFeatures(utilization float64) *mat.VecDense {
 	bias := 1.0
 
-	// Non-linear contextual feature:
-	// 1 / (1 - utilization + epsilon)
-	epsilon := 0.01
+	// Legacy non-linear contextual feature from the previous thesis:
+	// 1 / (1 - utilization + epsilon).
+	//
+	// It amplifies differences near saturation, while the learned model decides
+	// whether that context is associated with better or worse rewards.
 	u := clampUnitInterval(utilization)
-	sigma := 1.0 / (1.0 - u + epsilon)
+	sigma := 1.0 / (1.0 - u + linUCBUtilizationEpsilon)
 
 	return mat.NewVecDense(
 		p.Dim,

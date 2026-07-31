@@ -5,16 +5,17 @@ import "sort"
 type BanditType string
 
 const (
-	UCB1                 BanditType = "UCB1"
-	UCB1UtilizationAware BanditType = "UCB1UtilizationAware"
-	LinUCB               BanditType = "LinUCB"
+	UCB1   BanditType = "UCB1"
+	LinUCB BanditType = "LinUCB"
 )
 
 // Context carries the system-state snapshot captured at decision time.
-// LinUCB uses it as contextual information.
+// LinUCB uses it to build its feature vector. The context does not directly
+// change the scalar reward returned by an execution.
 type Context struct {
 	// ArchMemUsage keeps the aggregate memory-utilization snapshot for each
-	// MAB arm/ring. The historical field name is retained for compatibility.
+	// MAB arm/machine-tag ring. The historical field name is retained for
+	// compatibility with the previous implementation.
 	ArchMemUsage map[string]float64
 
 	// ArmCostFactor keeps the normalized cost factor for each arm/tag at decision time.
