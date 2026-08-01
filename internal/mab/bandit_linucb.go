@@ -25,8 +25,9 @@ type LinUCBDisjointPolicy struct {
 	Alpha        float64 // Exploration parameter
 
 	// Maps each arm to its disjoint model state (A, b).
-	Arms map[string]*LinUCBArmState
-	mu   sync.RWMutex
+	Arms          map[string]*LinUCBArmState
+	TotalInFlight int64
+	mu            sync.RWMutex
 
 	// Dimension of the feature vector (d)
 	// Bias (1) + MemoryFeature (1) = 2
@@ -37,8 +38,9 @@ type LinUCBDisjointPolicy struct {
 // A represents the design matrix (d x d)
 // b represents the reward mapping (d x 1)
 type LinUCBArmState struct {
-	A *mat.Dense
-	b *mat.VecDense
+	A        *mat.Dense
+	b        *mat.VecDense
+	InFlight int64
 }
 
 // NewLinUCBDisjointPolicy creates a new instance of the policy.
@@ -185,6 +187,8 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 			expectedReward,
 			confidence,
 			utilization,
+			state.InFlight,
+			p.TotalInFlight,
 		)
 
 		if score > bestScore {
@@ -205,26 +209,28 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 		return ""
 	}
 
+	p.markSelectionLocked(
+		bestArm,
+	)
+
 	logMABContextualSelectArm(
 		string(p.GetType()),
 		p.FunctionName,
 		bestArm,
 		"linucb_score",
 		bestScore,
-		strings.Join(candidateArms, ","),
+		p.TotalInFlight,
+		strings.Join(
+			candidateArms,
+			",",
+		),
 	)
 
 	return bestArm
 }
 
-// UpdateReward updates A and b for the chosen arm after a feedback sample
-// accepted by the configured cold-start policy.
-//
-// The context must be the utilization snapshot captured when the decision was
-// made. Utilization changes the feature vector used to update A and b, but it
-// is not subtracted from the scalar reward. The latency component of the reward
-// is based on DurationMs; any cost or energy terms remain controlled by their
-// separate configured weights.
+// UpdateReward applies a standalone feedback sample. It does not resolve an
+// in-flight selection; production request handling uses ResolveSelection.
 func (p *LinUCBDisjointPolicy) UpdateReward(
 	arm string,
 	ctx *Context,
@@ -233,13 +239,121 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	policy := string(p.GetType())
+	p.updateRewardLocked(
+		arm,
+		ctx,
+		feedback,
+	)
+}
 
-	state, ok := p.Arms[arm]
+func (p *LinUCBDisjointPolicy) ResolveSelection(
+	selectedArm string,
+	executionArm string,
+	ctx *Context,
+	feedback *ExecutionFeedback,
+) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if !p.completeSelectionLocked(
+		selectedArm,
+	) {
+		return
+	}
+
+	if feedback == nil ||
+		executionArm == "" {
+
+		return
+	}
+
+	p.updateRewardLocked(
+		executionArm,
+		ctx,
+		*feedback,
+	)
+}
+
+func (p *LinUCBDisjointPolicy) markSelectionLocked(
+	arm string,
+) {
+	state, ok :=
+		p.Arms[arm]
 
 	if !ok {
-		log.Printf("[LinUCB] Warning: Trying to update unknown arm %s", arm)
-		panic(3)
+		return
+	}
+
+	state.InFlight++
+	p.TotalInFlight++
+
+	logMABInFlightChanged(
+		string(p.GetType()),
+		p.FunctionName,
+		arm,
+		"started",
+		state.InFlight,
+		p.TotalInFlight,
+	)
+}
+
+func (p *LinUCBDisjointPolicy) completeSelectionLocked(
+	arm string,
+) bool {
+	state, ok :=
+		p.Arms[arm]
+
+	if !ok ||
+		state.InFlight <= 0 {
+
+		logMABInFlightIgnored(
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			"no_pending_selection",
+		)
+
+		return false
+	}
+
+	state.InFlight--
+
+	if p.TotalInFlight > 0 {
+		p.TotalInFlight--
+	}
+
+	logMABInFlightChanged(
+		string(p.GetType()),
+		p.FunctionName,
+		arm,
+		"resolved",
+		state.InFlight,
+		p.TotalInFlight,
+	)
+
+	return true
+}
+
+func (p *LinUCBDisjointPolicy) updateRewardLocked(
+	arm string,
+	ctx *Context,
+	feedback ExecutionFeedback,
+) {
+	policy :=
+		string(
+			p.GetType(),
+		)
+
+	state, ok :=
+		p.Arms[arm]
+
+	if !ok {
+		log.Printf(
+			"[LinUCB] Warning: trying to update unknown arm %s",
+			arm,
+		)
+
+		return
 	}
 
 	if !validateExecutionFeedback(
@@ -261,12 +375,15 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	}
 
 	if ctx == nil {
-		log.Printf(
-			"[LinUCB] Warning: Context is nil for arm %s",
+		recordInvalidExecutionFeedback(
+			policy,
+			p.FunctionName,
 			arm,
+			"missing_decision_context",
+			feedback,
 		)
 
-		panic(4)
+		return
 	}
 
 	utilization :=
@@ -289,7 +406,9 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 	reward :=
 		breakdown.FinalReward
 
-	if !isFiniteNumber(reward) {
+	if !isFiniteNumber(
+		reward,
+	) {
 		recordInvalidExecutionFeedback(
 			policy,
 			p.FunctionName,
@@ -314,7 +433,6 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 			utilization,
 		)
 
-	// A = A + x * x^T
 	var outerProduct mat.Dense
 
 	outerProduct.Outer(
@@ -328,7 +446,6 @@ func (p *LinUCBDisjointPolicy) UpdateReward(
 		&outerProduct,
 	)
 
-	// b = b + reward * x
 	var scaledX mat.VecDense
 
 	scaledX.ScaleVec(

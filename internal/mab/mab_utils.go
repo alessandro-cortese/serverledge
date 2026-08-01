@@ -12,51 +12,129 @@ import (
 func UpdateBandit(
 	body []byte,
 	reqPath string,
-	tag string,
-	reqID string,
+	executionTag string,
+	decision DecisionRecord,
 	feedback ExecutionFeedback,
-) error { // Read the body
-	// Modified function to use machineTag parameter instead of ach
-	// Parse the body to a Response object
-	var response function.Response
-	if err := json.Unmarshal(body, &response); err != nil {
-		return fmt.Errorf("failed to unmarshal response body: %v", err)
+) (err error) {
+	resolved := false
+
+	failureReason :=
+		"feedback_processing_failed"
+
+	defer func() {
+		if resolved {
+			return
+		}
+
+		ResolveDecisionWithoutFeedback(
+			decision,
+			failureReason,
+		)
+	}()
+
+	if GlobalBanditManager == nil {
+		failureReason =
+			"bandit_manager_unavailable"
+
+		return fmt.Errorf(
+			"bandit manager is not initialized",
+		)
 	}
 
-	report := response.ExecutionReport
+	bandit :=
+		GlobalBanditManager.
+			GetBandit(
+				decision.FunctionName,
+			)
 
-	feedback.DurationMs = report.Duration * 1000.0
+	var response function.Response
 
-	feedback.ResponseTimeMs = report.ResponseTime * 1000.0
+	if err :=
+		json.Unmarshal(
+			body,
+			&response,
+		); err != nil {
 
-	feedback.InitTimeMs = report.InitTime * 1000.0
+		failureReason =
+			"malformed_response_body"
 
-	feedback.QueueingTimeMs = report.QueueingTime * 1000.0
+		return fmt.Errorf(
+			"failed to unmarshal response body: %w",
+			err,
+		)
+	}
 
-	feedback.OffloadLatencyMs = report.OffloadLatency * 1000.0
+	pathParts :=
+		strings.Split(
+			strings.Trim(
+				reqPath,
+				"/",
+			),
+			"/",
+		)
 
-	feedback.IsWarmStart = report.IsWarmStart
+	if len(pathParts) != 2 ||
+		pathParts[0] != "invoke" ||
+		pathParts[1] == "" {
 
-	feedback.ExecutionNode = report.ExecutionNode
+		failureReason =
+			"invalid_invoke_path"
+
+		return fmt.Errorf(
+			"could not extract function name from URL: %s",
+			reqPath,
+		)
+	}
+
+	functionName :=
+		pathParts[1]
+
+	if functionName !=
+		decision.FunctionName {
+
+		failureReason =
+			"function_mismatch"
+
+		return fmt.Errorf(
+			"function mismatch: decision is for %q, response path is for %q",
+			decision.FunctionName,
+			functionName,
+		)
+	}
+
+	report :=
+		response.ExecutionReport
+
+	feedback.DurationMs =
+		report.Duration * 1000.0
+
+	feedback.ResponseTimeMs =
+		report.ResponseTime * 1000.0
+
+	feedback.InitTimeMs =
+		report.InitTime * 1000.0
+
+	feedback.QueueingTimeMs =
+		report.QueueingTime * 1000.0
+
+	feedback.OffloadLatencyMs =
+		report.OffloadLatency * 1000.0
+
+	feedback.IsWarmStart =
+		report.IsWarmStart
+
+	feedback.ExecutionNode =
+		report.ExecutionNode
 
 	if feedback.NodeName == "" {
 		feedback.NodeName =
 			feedback.ExecutionNode
 	}
 
-	// get the url of the request, to extract the function name, so that we can update the related MAB.
-	pathParts := strings.Split(reqPath, "/")
-	if len(pathParts) < 3 || pathParts[len(pathParts)-2] != "invoke" {
-		return fmt.Errorf("could not extract function name from URL: %s", reqPath)
-	}
-	functionName := pathParts[len(pathParts)-1]
-
-	bandit := GlobalBanditManager.GetBandit(functionName)
-	ctx := GlobalContextStorage.RetrieveAndDelete(reqID)
-
 	if feedback.ExecutionNode != "" &&
 		feedback.NodeName != "" &&
-		feedback.ExecutionNode != feedback.NodeName {
+		feedback.ExecutionNode !=
+			feedback.NodeName {
 
 		log.Printf(
 			"[MAB] event=execution_node_mismatch function=%s node_name=%s execution_node=%s",
@@ -66,33 +144,46 @@ func UpdateBandit(
 		)
 	}
 
-	if tag == "" {
-		log.Println("Serverledge-Node-Tag header missing")
-		panic(0) // should never happen
+	if executionTag == "" {
+		failureReason =
+			"missing_execution_tag"
+
+		return fmt.Errorf(
+			"Serverledge-Node-Tag header missing",
+		)
 	}
 
 	logMABExecutionTiming(
-		string(bandit.GetType()),
+		string(
+			bandit.GetType(),
+		),
 		functionName,
-		tag,
+		executionTag,
 		feedback,
 	)
 
-	// Calculate the reward for this execution
-	if response.ExecutionReport.Duration <= 0 {
-		log.Printf("invalid execution duration: %f", response.ExecutionReport.Duration)
-		panic(1) // should never happen
+	if !ResolveDecisionWithFeedback(
+		decision,
+		executionTag,
+		feedback,
+	) {
+		failureReason =
+			"decision_resolution_failed"
+
+		return fmt.Errorf(
+			"failed to resolve MAB decision for function %q",
+			functionName,
+		)
 	}
 
-	// Reward = 1 / Duration (we don't consider cold start delay, since we want to focus on architectures' performance)
-	// durationMs := response.ExecutionReport.Duration * 1000.0 // s to ms
+	resolved = true
 
-	// finally update the reward for the bandit. This is thread safe since internally it has a mutex
-	bandit.UpdateReward(
-		tag,
-		ctx,
-		feedback,
-	)
+	if report.Duration <= 0 {
+		return fmt.Errorf(
+			"invalid execution duration: %f",
+			report.Duration,
+		)
+	}
 
 	return nil
 }

@@ -283,15 +283,18 @@ func TestColdStartExecutionRespectsActionMask(
 		selected,
 	)
 
-	bandit.UpdateReward(
+	feedback := ExecutionFeedback{
+		DurationMs:   10.0,
+		IsWarmStart:  false,
+		CostFactor:   1.0,
+		EnergyFactor: 1.0,
+	}
+
+	bandit.ResolveSelection(
+		selected,
 		selected,
 		nil,
-		ExecutionFeedback{
-			DurationMs:   10.0,
-			IsWarmStart:  false,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
-		},
+		&feedback,
 	)
 
 	assert.Zero(

@@ -84,40 +84,49 @@ func StartReverseProxy(e *echo.Echo, region string) {
 				)
 
 			if isAware {
-				// Snapshot cost and energy from the concrete node that executed
-				// the invocation. The feedback is copied into the goroutine.
-				feedback :=
-					executionFeedbackForNode(
-						nodeName,
-					)
-
-				go func(
-					data []byte,
-					path string,
-					tag string,
-					reqID string,
-					feedback mab.ExecutionFeedback,
-				) {
-					if err := mab.UpdateBandit(
-						data,
-						path,
-						tag,
-						reqID,
-						feedback,
-					); err != nil {
-
-						log.Printf(
-							"Failed to update bandit: %v",
-							err,
+				// The decision record must be retrieved before the goroutine is started.
+				// This ensures that the proxy cleanup cannot delete it in the meantime.
+				decision, hasDecision :=
+					mab.GlobalDecisionStorage.
+						RetrieveAndDelete(
+							reqID,
 						)
-					}
-				}(
-					bodyBytes,
-					reqPath,
-					machineTag,
-					reqID,
-					feedback,
-				)
+
+				if hasDecision {
+					feedback :=
+						executionFeedbackForNode(
+							nodeName,
+						)
+
+					go func(
+						data []byte,
+						path string,
+						tag string,
+						decision mab.DecisionRecord,
+						feedback mab.ExecutionFeedback,
+					) {
+						if err :=
+							mab.UpdateBandit(
+								data,
+								path,
+								tag,
+								decision,
+								feedback,
+							); err != nil {
+
+							log.Printf(
+								"Failed to update bandit: %v",
+								err,
+							)
+						}
+					}(
+						bodyBytes,
+						reqPath,
+						machineTag,
+						decision,
+						feedback,
+					)
+				}
 			}
 
 			freeMemStr := res.Header.Get("Serverledge-Free-Mem")

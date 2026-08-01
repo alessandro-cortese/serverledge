@@ -64,6 +64,13 @@ type Policy interface {
 	// InitArm initializes a new arm before it is used. So it will be easier to implement more than 2 arms for new architectures.
 	InitArm(arm string)
 
+	// ResolveSelection atomically closes one pending selection and optionally
+	// applies its execution feedback. selectedArm is the arm returned by the MAB;
+	// executionArm is the arm that actually executed the request and can differ
+	// after a load-balancer fallback. A nil feedback releases the pending
+	// selection without updating the learned model.
+	ResolveSelection(selectedArm string, executionArm string, ctx *Context, feedback *ExecutionFeedback)
+
 	// GetType returns the type of the bandit policy.
 	GetType() BanditType
 }

@@ -14,6 +14,7 @@ type ArmStats struct {
 	Count      int64   // Count is the number of valid feedback samples used to estimate this arm.
 	SumRewards float64 // SumRewards is the sum of valid rewards observed for this arm.
 	AvgReward  float64 // AvgReward is the empirical mean reward of this arm.
+	InFlight   int64
 }
 
 // UCB1Bandit is the bandit that handles decision for ONE function
@@ -24,6 +25,7 @@ type UCB1Bandit struct {
 	mu           sync.RWMutex         // Mutex per thread-safety
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
 	// Higher values lead to more exploration. Lower values lead to more exploitation.
+	TotalInFlight int64
 }
 
 func NewUCB1Bandit(
@@ -61,12 +63,10 @@ func (b *UCB1Bandit) SelectArm(ctx *Context) string {
 
 // SelectArmFrom implements UCB1 over the supplied action mask.
 //
-// allowedArms semantics:
-//   - nil: consider every arm known by the bandit;
-//   - non-nil: consider only the listed, known arms.
-//
-// Selection does not change Count or TotalCounts. Those counters are updated
-// only when UpdateReward receives a valid feedback sample.
+// Count and TotalCounts contain only completed, valid feedback samples.
+// InFlight and TotalInFlight account for selections that have not completed yet.
+// Pending selections affect exploration through Count+InFlight, but they never
+// enter AvgReward before a real reward is observed.
 func (b *UCB1Bandit) SelectArmFrom(
 	ctx *Context,
 	allowedArms []string,
@@ -74,9 +74,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	// UCB1 is intentionally context-free. The context argument is accepted
-	// because it is part of the common Policy interface, but it must not
-	// influence the selection score.
+	// Classic UCB1 is intentionally context-free.
 	_ = ctx
 
 	candidateArms := filterAllowedArms(
@@ -95,23 +93,34 @@ func (b *UCB1Bandit) SelectArmFrom(
 		return ""
 	}
 
-	minSampleCount := int64(1)
-	currentMinSample := int64(math.MaxInt64)
+	// An arm is still considered unexplored only when it has neither a
+	// completed feedback nor a pending evaluation.
 	leastTriedArm := ""
+	currentMinEffectiveCount := int64(math.MaxInt64)
 
-	// Initial exploration is restricted to the allowed action set.
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
-		if stats.Count < minSampleCount &&
-			stats.Count < currentMinSample {
+		effectiveCount :=
+			stats.Count +
+				stats.InFlight
 
-			currentMinSample = stats.Count
-			leastTriedArm = arm
+		if effectiveCount < 1 &&
+			effectiveCount < currentMinEffectiveCount {
+
+			currentMinEffectiveCount =
+				effectiveCount
+
+			leastTriedArm =
+				arm
 		}
 	}
 
 	if leastTriedArm != "" {
+		b.markSelectionLocked(
+			leastTriedArm,
+		)
+
 		logMABSelectArm(
 			string(b.GetType()),
 			b.FunctionName,
@@ -119,7 +128,11 @@ func (b *UCB1Bandit) SelectArmFrom(
 			"least_tried",
 			0.0,
 			b.TotalCounts,
-			strings.Join(candidateArms, ","),
+			b.TotalInFlight,
+			strings.Join(
+				candidateArms,
+				",",
+			),
 		)
 
 		return leastTriedArm
@@ -128,21 +141,37 @@ func (b *UCB1Bandit) SelectArmFrom(
 	bestScore := -math.MaxFloat64
 	bestArm := ""
 
-	// If every candidate has at least one sample, TotalCounts should be positive.
-	// The guard protects against manually initialized or inconsistent test states.
-	totalCounts := b.TotalCounts
-	if totalCounts < 1 {
-		totalCounts = 1
+	effectiveTotalCounts :=
+		b.TotalCounts +
+			b.TotalInFlight
+
+	if effectiveTotalCounts < 1 {
+		effectiveTotalCounts = 1
 	}
 
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
-		explorationBonus := b.c *
-			math.Sqrt(
-				math.Log(float64(totalCounts))/
-					float64(stats.Count),
-			)
+		effectiveCount :=
+			stats.Count +
+				stats.InFlight
+
+		if effectiveCount < 1 {
+			effectiveCount = 1
+		}
+
+		explorationBonus :=
+			b.c *
+				math.Sqrt(
+					math.Log(
+						float64(
+							effectiveTotalCounts,
+						),
+					)/
+						float64(
+							effectiveCount,
+						),
+				)
 
 		score :=
 			stats.AvgReward +
@@ -155,8 +184,12 @@ func (b *UCB1Bandit) SelectArmFrom(
 			score,
 			explorationBonus,
 			stats.Count,
+			stats.InFlight,
+			effectiveCount,
 			stats.AvgReward,
 			b.TotalCounts,
+			b.TotalInFlight,
+			effectiveTotalCounts,
 		)
 
 		if score > bestScore {
@@ -177,6 +210,10 @@ func (b *UCB1Bandit) SelectArmFrom(
 		return ""
 	}
 
+	b.markSelectionLocked(
+		bestArm,
+	)
+
 	logMABSelectArm(
 		string(b.GetType()),
 		b.FunctionName,
@@ -184,32 +221,143 @@ func (b *UCB1Bandit) SelectArmFrom(
 		"ucb_score",
 		bestScore,
 		b.TotalCounts,
-		strings.Join(candidateArms, ","),
+		b.TotalInFlight,
+		strings.Join(
+			candidateArms,
+			",",
+		),
 	)
 
 	return bestArm
 }
 
-// UpdateReward updates the empirical reward of an arm after a feedback sample
-// accepted by the configured cold-start policy.
-//
-// The historical reward contains execution latency, node-specific cost and
-// node-specific energy. Initialization, queueing and offloading times are not
-// included.
-//
-// Plain UCB1 does not use context during selection.
+// UpdateReward applies a standalone feedback sample. It does not resolve an
+// in-flight selection; production request handling uses ResolveSelection.
 func (b *UCB1Bandit) UpdateReward(
 	arm string,
 	ctx *Context,
 	feedback ExecutionFeedback,
 ) {
-
-	_ = ctx
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	stats, ok := b.Arms[arm]
+	b.updateRewardLocked(
+		arm,
+		ctx,
+		feedback,
+	)
+}
+
+// ResolveSelection atomically closes the selected arm's pending request and,
+// when feedback is available, updates the arm that actually executed it.
+func (b *UCB1Bandit) ResolveSelection(
+	selectedArm string,
+	executionArm string,
+	ctx *Context,
+	feedback *ExecutionFeedback,
+) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	// Un feedback può essere applicato soltanto se esiste davvero una
+	// selezione pendente da risolvere.
+	if !b.completeSelectionLocked(
+		selectedArm,
+	) {
+		return
+	}
+
+	if feedback == nil ||
+		executionArm == "" {
+
+		return
+	}
+
+	b.updateRewardLocked(
+		executionArm,
+		ctx,
+		*feedback,
+	)
+}
+
+func (b *UCB1Bandit) markSelectionLocked(
+	arm string,
+) {
+	stats, ok :=
+		b.Arms[arm]
+
 	if !ok {
+		return
+	}
+
+	stats.InFlight++
+	b.TotalInFlight++
+
+	logMABInFlightChanged(
+		string(b.GetType()),
+		b.FunctionName,
+		arm,
+		"started",
+		stats.InFlight,
+		b.TotalInFlight,
+	)
+}
+
+func (b *UCB1Bandit) completeSelectionLocked(
+	arm string,
+) bool {
+	stats, ok :=
+		b.Arms[arm]
+
+	if !ok ||
+		stats.InFlight <= 0 {
+
+		logMABInFlightIgnored(
+			string(b.GetType()),
+			b.FunctionName,
+			arm,
+			"no_pending_selection",
+		)
+
+		return false
+	}
+
+	stats.InFlight--
+
+	if b.TotalInFlight > 0 {
+		b.TotalInFlight--
+	}
+
+	logMABInFlightChanged(
+		string(b.GetType()),
+		b.FunctionName,
+		arm,
+		"resolved",
+		stats.InFlight,
+		b.TotalInFlight,
+	)
+
+	return true
+}
+
+func (b *UCB1Bandit) updateRewardLocked(
+	arm string,
+	ctx *Context,
+	feedback ExecutionFeedback,
+) {
+	_ = ctx
+
+	stats, ok :=
+		b.Arms[arm]
+
+	if !ok {
+		log.Printf(
+			"[MAB] event=unknown_feedback_arm policy=%s function=%s arm=%s\n",
+			string(b.GetType()),
+			b.FunctionName,
+			arm,
+		)
+
 		return
 	}
 
@@ -237,7 +385,9 @@ func (b *UCB1Bandit) UpdateReward(
 	}
 
 	latencyReward :=
-		-math.Log(feedback.DurationMs)
+		-math.Log(
+			feedback.DurationMs,
+		)
 
 	breakdown :=
 		buildCostBreakdown(
@@ -245,7 +395,8 @@ func (b *UCB1Bandit) UpdateReward(
 			feedback,
 		)
 
-	reward := breakdown.FinalReward
+	reward :=
+		breakdown.FinalReward
 
 	if !isFiniteNumber(
 		reward,
@@ -262,7 +413,7 @@ func (b *UCB1Bandit) UpdateReward(
 	}
 
 	logMABRewardBreakdown(
-		string(b.GetType()),
+		policy,
 		b.FunctionName,
 		arm,
 		feedback.DurationMs,
@@ -272,10 +423,14 @@ func (b *UCB1Bandit) UpdateReward(
 	stats.Count++
 	b.TotalCounts++
 
-	stats.SumRewards += reward
+	stats.SumRewards +=
+		reward
+
 	stats.AvgReward =
 		stats.SumRewards /
-			float64(stats.Count)
+			float64(
+				stats.Count,
+			)
 
 	recordAcceptedExecutionFeedback(
 		policy,
@@ -285,7 +440,7 @@ func (b *UCB1Bandit) UpdateReward(
 	)
 
 	logMABUpdateReward(
-		string(b.GetType()),
+		policy,
 		b.FunctionName,
 		arm,
 		feedback.DurationMs,
@@ -296,7 +451,6 @@ func (b *UCB1Bandit) UpdateReward(
 		b.TotalCounts,
 	)
 }
-
 func (b *UCB1Bandit) GetType() BanditType {
 	return UCB1
 }

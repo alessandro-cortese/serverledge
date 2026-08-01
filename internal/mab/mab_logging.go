@@ -43,10 +43,11 @@ func logMABSelectArm(
 	reason string,
 	score float64,
 	totalCounts int64,
+	totalInFlight int64,
 	arms string,
 ) {
 	log.Printf(
-		"%s event=select_arm ts=%d policy=%s function=%s selected_arm=%s reason=%s score=%.6f total_counts=%d arms=[%s]\n",
+		"%s event=select_arm ts=%d policy=%s function=%s selected_arm=%s reason=%s score=%.6f total_counts=%d total_in_flight=%d effective_total_counts=%d arms=[%s]\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -55,6 +56,8 @@ func logMABSelectArm(
 		reason,
 		score,
 		totalCounts,
+		totalInFlight,
+		totalCounts+totalInFlight,
 		arms,
 	)
 }
@@ -66,22 +69,29 @@ func logMABUCB1ArmScore(
 	score float64,
 	explorationBonus float64,
 	count int64,
+	inFlight int64,
+	effectiveCount int64,
 	avgReward float64,
 	totalCounts int64,
+	totalInFlight int64,
+	effectiveTotalCounts int64,
 ) {
 	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f base_score=%.6f count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d contextual=false\n",
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f count=%d in_flight=%d effective_count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d total_in_flight=%d effective_total_counts=%d contextual=false\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
 		functionName,
 		arm,
 		score,
-		score,
 		count,
+		inFlight,
+		effectiveCount,
 		avgReward,
 		explorationBonus,
 		totalCounts,
+		totalInFlight,
+		effectiveTotalCounts,
 	)
 }
 
@@ -135,10 +145,11 @@ func logMABContextualSelectArm(
 	selectedArm string,
 	reason string,
 	score float64,
+	totalInFlight int64,
 	arms string,
 ) {
 	log.Printf(
-		"%s event=select_arm ts=%d policy=%s function=%s selected_arm=%s reason=%s score=%.6f arms=[%s]\n",
+		"%s event=select_arm ts=%d policy=%s function=%s selected_arm=%s reason=%s score=%.6f total_in_flight=%d arms=[%s] contextual=true\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -146,6 +157,7 @@ func logMABContextualSelectArm(
 		selectedArm,
 		reason,
 		score,
+		totalInFlight,
 		arms,
 	)
 }
@@ -181,9 +193,11 @@ func logMABContextualArmScore(
 	expectedReward float64,
 	confidence float64,
 	utilization float64,
+	inFlight int64,
+	totalInFlight int64,
 ) {
 	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f expected_reward=%.6f confidence=%.6f contextual=true utilization=%.6f explicit_utilization_penalty=false\n",
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f expected_reward=%.6f confidence=%.6f contextual=true utilization=%.6f explicit_utilization_penalty=false in_flight=%d total_in_flight=%d\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -193,6 +207,135 @@ func logMABContextualArmScore(
 		expectedReward,
 		confidence,
 		utilization,
+		inFlight,
+		totalInFlight,
+	)
+}
+
+func logMABInFlightChanged(
+	policy string,
+	functionName string,
+	arm string,
+	action string,
+	inFlight int64,
+	totalInFlight int64,
+) {
+	log.Printf(
+		"%s event=in_flight_changed ts=%d policy=%s function=%s arm=%s action=%s in_flight=%d total_in_flight=%d\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		action,
+		inFlight,
+		totalInFlight,
+	)
+}
+
+func logMABInFlightIgnored(
+	policy string,
+	functionName string,
+	arm string,
+	reason string,
+) {
+	log.Printf(
+		"%s event=in_flight_ignored ts=%d policy=%s function=%s arm=%s reason=%s\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		reason,
+	)
+}
+
+func logMABDecisionCreated(
+	decision DecisionRecord,
+) {
+	log.Printf(
+		"%s event=decision_created ts=%d request_id=%s function=%s selected_arm=%s\n",
+		mabLogPrefix,
+		nowMillis(),
+		decision.RequestID,
+		decision.FunctionName,
+		decision.SelectedArm,
+	)
+}
+
+func logMABDecisionPlanned(
+	decision DecisionRecord,
+) {
+	log.Printf(
+		"%s event=decision_planned ts=%d request_id=%s function=%s selected_arm=%s execution_arm=%s fallback=%t fallback_reason=%s\n",
+		mabLogPrefix,
+		nowMillis(),
+		decision.RequestID,
+		decision.FunctionName,
+		decision.SelectedArm,
+		decision.ExecutionArm,
+		decision.Fallback,
+		decision.FallbackReason,
+	)
+}
+
+func logMABDecisionResolved(
+	decision DecisionRecord,
+	stats DecisionStatsSnapshot,
+) {
+	log.Printf(
+		"%s event=decision_resolved ts=%d request_id=%s function=%s selected_arm=%s execution_arm=%s fallback=%t fallback_reason=%s direct_executions=%d fallback_executions=%d cancelled_decisions=%d\n",
+		mabLogPrefix,
+		nowMillis(),
+		decision.RequestID,
+		decision.FunctionName,
+		decision.SelectedArm,
+		decision.ExecutionArm,
+		decision.Fallback,
+		decision.FallbackReason,
+		stats.DirectExecutions,
+		stats.FallbackExecutions,
+		stats.CancelledDecisions,
+	)
+}
+
+func logMABDecisionCancelled(
+	decision DecisionRecord,
+	reason string,
+	stats DecisionStatsSnapshot,
+	banditManagerAvailable bool,
+) {
+	log.Printf(
+		"%s event=decision_cancelled ts=%d request_id=%s function=%s selected_arm=%s execution_arm=%s fallback=%t fallback_reason=%s reason=%s direct_executions=%d fallback_executions=%d cancelled_decisions=%d bandit_manager_available=%t\n",
+		mabLogPrefix,
+		nowMillis(),
+		decision.RequestID,
+		decision.FunctionName,
+		decision.SelectedArm,
+		decision.ExecutionArm,
+		decision.Fallback,
+		decision.FallbackReason,
+		reason,
+		stats.DirectExecutions,
+		stats.FallbackExecutions,
+		stats.CancelledDecisions,
+		banditManagerAvailable,
+	)
+}
+
+func logMABExecutionArmMismatch(
+	decision DecisionRecord,
+	observedExecutionArm string,
+) {
+	log.Printf(
+		"%s event=execution_arm_mismatch ts=%d request_id=%s function=%s selected_arm=%s planned_execution_arm=%s observed_execution_arm=%s\n",
+		mabLogPrefix,
+		nowMillis(),
+		decision.RequestID,
+		decision.FunctionName,
+		decision.SelectedArm,
+		decision.ExecutionArm,
+		observedExecutionArm,
 	)
 }
 

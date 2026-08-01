@@ -170,13 +170,7 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	var ctx *mab.Context = nil
 
 	if b.mode == MAB {
-		// Snapshot current ring utilization plus static cost/energy profiles.
-		// The same snapshot is used for selection and for the matching reward update.
 		ctx = b.calculateSystemContext()
-		mab.GlobalContextStorage.Store(
-			reqID,
-			ctx,
-		)
 	}
 
 	// A function cannot necessarily be executed everywhere.
@@ -198,21 +192,132 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 		return nil
 	}
 
+	if b.mode == MAB {
+		mab.GlobalDecisionStorage.Store(
+			reqID,
+			mab.DecisionRecord{
+				RequestID:    reqID,
+				FunctionName: funcName,
+				SelectedArm:  targetTag,
+				Context:      ctx,
+			},
+		)
+	}
+
 	// Once we selected a tag, we use consistent hashing to select the concrete node.
 	// The Get function will cycle through the hash ring to find a suitable node.
 	// If none is found in the selected ring, we try the other compatible rings in a
 	// deterministic order to maximize chances of execution.
-	candidate := b.getCandidateFromTag(targetTag, fun)
+	candidate :=
+		b.getCandidateFromTag(
+			targetTag,
+			fun,
+		)
+
+	fallbackReason := ""
+
 	if candidate == nil {
-		candidate = b.getCandidateFromFallbackTags(targetTag, compatibleTags, fun)
+		candidate =
+			b.getCandidateFromFallbackTags(
+				targetTag,
+				compatibleTags,
+				fun,
+			)
+
+		if candidate != nil {
+			fallbackReason =
+				mab.FallbackReasonSelectedArmNoCandidate
+		}
 	}
 
 	if candidate == nil {
-		log.Printf("[LB] No candidate available for function '%s' after fallback\n", funcName)
-		setHardwareNotSupported(c, funcName)
+		if b.mode == MAB {
+			mab.CancelDecision(
+				reqID,
+				"no_candidate_after_fallback",
+			)
+		}
+
+		log.Printf(
+			"[LB] No candidate available for function '%s' after fallback\n",
+			funcName,
+		)
+
+		setHardwareNotSupported(
+			c,
+			funcName,
+		)
+
 		return nil
 	}
 
+	candidateTag :=
+		getTargetMachineTag(
+			candidate,
+		)
+
+	if candidateTag == "" {
+		if b.mode == MAB {
+			mab.CancelDecision(
+				reqID,
+				"candidate_missing_machine_tag",
+			)
+		}
+
+		log.Printf(
+			"[LB] Candidate '%s' has no machine tag for function '%s'\n",
+			candidate.Name,
+			funcName,
+		)
+
+		setHardwareNotSupported(
+			c,
+			funcName,
+		)
+
+		return nil
+	}
+
+	if b.mode == MAB {
+		if _, ok :=
+			mab.GlobalDecisionStorage.
+				SetExecutionPlan(
+					reqID,
+					candidateTag,
+					fallbackReason,
+				); !ok {
+
+			// Defensive recovery: the policy has already incremented InFlight,
+			// therefore a missing record must still close the selected arm.
+			bandit :=
+				mab.GlobalBanditManager.
+					GetBandit(
+						funcName,
+					)
+
+			bandit.ResolveSelection(
+				targetTag,
+				"",
+				ctx,
+				nil,
+			)
+
+			log.Printf(
+				"[LB][MAB] event=decision_record_missing request_id=%s function=%s selected_arm=%s execution_arm=%s\n",
+				reqID,
+				funcName,
+				targetTag,
+				candidateTag,
+			)
+
+			setHardwareNotSupported(
+				c,
+				funcName,
+			)
+
+			return nil
+		}
+	}
 	// Remove the memory that this function will use.
 	// This will then be updated again once the function is executed and the node
 	// reports its real free memory through response headers.
@@ -223,19 +328,14 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 	}
 	NodeMetrics.Update(candidate.Name, freeMemoryMB, 0, time.Now().Unix(), freeCpu)
 
-	candidateTag := ""
-	if candidate.Meta != nil {
-		if tag, ok := candidate.Meta["machine_tag"].(string); ok {
-			candidateTag = tag
-		}
-	}
-
 	log.Printf(
-		"[LB] Selected target for function '%s': target_tag=%s candidate=%s candidate_tag=%s\n",
+		"[LB] Selected target for function '%s': selected_arm=%s execution_arm=%s fallback=%t fallback_reason=%s candidate=%s\n",
 		funcName,
 		targetTag,
-		candidate.Name,
 		candidateTag,
+		targetTag != candidateTag,
+		fallbackReason,
+		candidate.Name,
 	)
 
 	return candidate
@@ -300,14 +400,22 @@ func (b *GeneralLoadBalancer) selectTargetTag(
 		}
 
 		log.Printf(
-			"[LB][MAB] event=invalid_masked_selection function=%s selected_tag=%s compatible_tags=%v fallback=rr\n",
+			"[LB][MAB] event=invalid_masked_selection function=%s selected_tag=%s compatible_tags=%v action=reject\n",
 			funcName,
 			selectedTag,
 			compatibleTags,
 		)
 
-		// Defensive fallback only. In normal operation this should not be reached.
-		return b.selectArchitectureRRFrom(compatibleTags)
+		if selectedTag != "" {
+			bandit.ResolveSelection(
+				selectedTag,
+				"",
+				ctx,
+				nil,
+			)
+		}
+
+		return ""
 
 	case RR:
 		// Round Robin baseline: only compatible tags are considered.

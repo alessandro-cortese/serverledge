@@ -1,0 +1,27 @@
+2026/08/01 10:13:16 Local node id: (ROME)6qtyLnSEhPd2fAKT9Aacjh1785571996228650346 - x86 (arch: amd64)
+2026/08/01 10:13:16 Registration for node: (ROME)6qtyLnSEhPd2fAKT9Aacjh1785571996228650346 - x86
+2026/08/01 10:13:16 Connecting to etcd
+2026/08/01 10:13:16 Connected to etcd
+2026/08/01 10:13:17 etcd connection state: READY
+2026/08/01 10:13:17 etcd: connected and ready
+2026/08/01 10:13:17 Registering to etcd: registry/ROME/x86/6qtyLnSEhPd2fAKT9Aacjh1785571996228650346
+2026/08/01 10:13:17 Configured scheduling policy: default
+2026/08/01 10:13:17 Configured offloading policy: disable
+2026/08/01 10:13:17 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/08/01 10:13:17 Scheduler started.
+2026/08/01 10:13:17 No remote area is configured; vertical offloading disabled
+2026/08/01 10:13:17 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/08/01 10:13:26 New request: creation of mab_decision_1785571995
+2026/08/01 10:13:30 Container b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1 has name /thirsty_poincare
+2026/08/01 10:13:30 [mab_decision_1785571995] Executing on container: b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1
+2026/08/01 10:13:33 Using warm b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1 for mab_decision_1785571995. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 10:13:33 [mab_decision_1785571995] Executing on container: b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1
+2026/08/01 10:13:35 Using warm b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1 for mab_decision_1785571995. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 10:13:35 [mab_decision_1785571995] Executing on container: b26e926797040b9bd6e379edcfb1f77d602b8f024f65b5481e152baf632255b1
+2026/08/01 10:13:35 Container 7f99fe903920b8b5a26f5ca7a209c434a89ed325cd313663b6964894d921cf54 has name /affectionate_bouman
+2026/08/01 10:13:35 Container a73f53920b0e6bd74913e51259badb62daefbc8c7f69637e2b9ec3ee9fdd007a has name /wizardly_rhodes
+2026/08/01 10:13:35 [mab_decision_1785571995] Executing on container: 7f99fe903920b8b5a26f5ca7a209c434a89ed325cd313663b6964894d921cf54
+2026/08/01 10:13:35 [mab_decision_1785571995] Executing on container: a73f53920b0e6bd74913e51259badb62daefbc8c7f69637e2b9ec3ee9fdd007a
+2026/08/01 10:13:37 Periodic nearby Monitoring
+2026/08/01 10:13:37 Requesting status information for 192.168.0.46:9876

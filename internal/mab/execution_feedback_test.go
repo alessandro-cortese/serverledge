@@ -230,10 +230,12 @@ func TestLinUCBRewardUsesConcreteExecutionNodeFactors(
 // It allows the body-decoding and context-retrieval path to be tested without
 // depending on the internal state of a concrete bandit implementation.
 type recordingPolicy struct {
-	updatedArm string
-	ctx        *Context
-	feedback   ExecutionFeedback
-	updates    int
+	selectedArm string
+	updatedArm  string
+	ctx         *Context
+	feedback    ExecutionFeedback
+	resolutions int
+	updates     int
 }
 
 func (p *recordingPolicy) SelectArm(
@@ -260,6 +262,30 @@ func (p *recordingPolicy) UpdateReward(
 	p.updates++
 }
 
+func (p *recordingPolicy) ResolveSelection(
+	selectedArm string,
+	executionArm string,
+	ctx *Context,
+	feedback *ExecutionFeedback,
+) {
+	p.selectedArm =
+		selectedArm
+
+	p.resolutions++
+
+	if feedback == nil ||
+		executionArm == "" {
+
+		return
+	}
+
+	p.UpdateReward(
+		executionArm,
+		ctx,
+		*feedback,
+	)
+}
+
 func (p *recordingPolicy) InitArm(
 	arm string,
 ) {
@@ -275,15 +301,13 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 	previousManager :=
 		GlobalBanditManager
 
-	previousStorage :=
-		GlobalContextStorage
+	GlobalDecisionStats.Reset()
 
 	t.Cleanup(func() {
 		GlobalBanditManager =
 			previousManager
 
-		GlobalContextStorage =
-			previousStorage
+		GlobalDecisionStats.Reset()
 	})
 
 	recorder :=
@@ -296,19 +320,11 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 			},
 		}
 
-	GlobalContextStorage =
-		&ContextStorage{}
-
 	ctx := &Context{
 		ArchMemUsage: map[string]float64{
 			"shared-ring": 0.40,
 		},
 	}
-
-	GlobalContextStorage.Store(
-		"request-1",
-		ctx,
-	)
 
 	response := function.Response{
 		Success: true,
@@ -343,7 +359,13 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 		body,
 		"/invoke/hello",
 		"shared-ring",
-		"request-1",
+		DecisionRecord{
+			RequestID:    "request-1",
+			FunctionName: "hello",
+			SelectedArm:  "shared-ring",
+			ExecutionArm: "shared-ring",
+			Context:      ctx,
+		},
 		initialFeedback,
 	)
 
@@ -436,11 +458,36 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 		1e-9,
 	)
 
-	// UpdateBandit must consume and remove the saved context.
-	assert.Nil(
+	assert.Equal(
 		t,
-		GlobalContextStorage.RetrieveAndDelete(
-			"request-1",
-		),
+		1,
+		recorder.resolutions,
 	)
+
+	assert.Equal(
+		t,
+		"shared-ring",
+		recorder.selectedArm,
+	)
+
+	stats :=
+		GlobalDecisionStats.
+			Snapshot()
+
+	assert.Equal(
+		t,
+		int64(1),
+		stats.DirectExecutions,
+	)
+
+	assert.Zero(
+		t,
+		stats.FallbackExecutions,
+	)
+
+	assert.Zero(
+		t,
+		stats.CancelledDecisions,
+	)
+
 }

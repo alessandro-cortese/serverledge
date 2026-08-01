@@ -1,0 +1,230 @@
+2026/07/31 12:01:57 Registration for node: (ROME)fuoTCLqQeWFA7DAMwQ3rZM1785492117448638727 - amd64
+2026/07/31 12:01:57 Connecting to etcd
+2026/07/31 12:01:57 Connected to etcd
+2026/07/31 12:01:57 etcd connection state: READY
+2026/07/31 12:01:57 etcd: connected and ready
+2026/07/31 12:01:57 Registering to etcd: registry/ROME/__lb/amd64/fuoTCLqQeWFA7DAMwQ3rZM1785492117448638727
+2026/07/31 12:01:57 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:01:57 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:01:57 Found 2 targets
+2026/07/31 12:01:57 Initializing with 2 targets.
+2026/07/31 12:01:57 Running ArchitectureAwareLB with 128 replicas per node in the hash rings
+2026/07/31 12:01:57 LB mode set to MAB
+2026/07/31 12:01:57 [LB][MAB] event=new_machine_tag_discovered tag=arm arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/31 12:01:57 [LB] Adding target arm
+2026/07/31 12:01:57 [LB][MAB] event=new_machine_tag_discovered tag=x86 arch=amd64 action=create_ring_and_add_mab_arm
+2026/07/31 12:01:57 [LB] Adding target x86
+⇨ http server started on [::]:8080
+2026/07/31 12:02:00 [LB]: Periodic targets update
+2026/07/31 12:02:00 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:00 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:00 Found 2 targets
+2026/07/31 12:02:02 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:02 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:02 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:02 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:02 BanditManager GetBandit: policy type: UCB1
+2026/07/31 12:02:02 [MAB] event=arm_added ts=1785492122472 policy=UCB1 function=mab_inflight_1785492111 arm=arm arms=[arm]
+2026/07/31 12:02:02 [MAB] event=arm_added ts=1785492122472 policy=UCB1 function=mab_inflight_1785492111 arm=x86 arms=[arm,x86]
+2026/07/31 12:02:02 [MAB] event=in_flight_changed ts=1785492122472 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=1 total_in_flight=1
+2026/07/31 12:02:02 [MAB] event=select_arm ts=1785492122472 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=least_tried score=0.000000 total_counts=0 total_in_flight=1 effective_total_counts=1 arms=[arm,x86]
+2026/07/31 12:02:02 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:02 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:02 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:03 [LB]: Periodic targets update
+2026/07/31 12:02:03 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:03 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:03 Found 2 targets
+2026/07/31 12:02:03 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 384 MB free
+2026/07/31 12:02:03 [MAB] event=execution_timing ts=1785492123959 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=false response_time_ms=1484.892565 duration_ms=1007.578543 init_time_ms=477.296374 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=477.314022
+2026/07/31 12:02:03 [MAB] event=in_flight_changed ts=1785492123960 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=0 total_in_flight=0
+2026/07/31 12:02:03 [MAB] event=skip_cold_start ts=1785492123960 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=1007.578543 reason=cold_start
+2026/07/31 12:02:03 [MAB] event=cold_start_stats ts=1785492123960 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=1 cold_observed=1 warm_observed=0 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=0 cold_init_time_samples=1 avg_cold_duration_ms=1007.578543 avg_warm_duration_ms=0.000000 avg_cold_init_time_ms=477.296374
+2026/07/31 12:02:04 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:04 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:04 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:04 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:04 [MAB] event=in_flight_changed ts=1785492124982 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=1 total_in_flight=1
+2026/07/31 12:02:04 [MAB] event=select_arm ts=1785492124982 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=least_tried score=0.000000 total_counts=0 total_in_flight=1 effective_total_counts=1 arms=[arm,x86]
+2026/07/31 12:02:04 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:04 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:04 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:05 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 384 MB free
+2026/07/31 12:02:05 [MAB] event=execution_timing ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=true response_time_ms=1004.208566 duration_ms=1004.077345 init_time_ms=0.108142 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.131221
+2026/07/31 12:02:05 [MAB] event=in_flight_changed ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=0 total_in_flight=0
+2026/07/31 12:02:05 [MAB] event=reward_breakdown ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm base_tag=arm architecture=arm specialization=default capabilities=[] duration_ms=1004.077345 latency_reward=-6.911824 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-6.911824
+2026/07/31 12:02:05 [MAB] event=cold_start_stats ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=2 cold_observed=1 warm_observed=1 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=1 cold_init_time_samples=1 avg_cold_duration_ms=1007.578543 avg_warm_duration_ms=1004.077345 avg_cold_init_time_ms=477.296374
+2026/07/31 12:02:05 [MAB] event=update_reward ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=1004.077345 warm_start=true reward=-6.911824 count=1 avg_reward=-6.911824 total_counts=1
+2026/07/31 12:02:06 [LB]: Periodic targets update
+2026/07/31 12:02:06 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:06 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:06 Found 2 targets
+2026/07/31 12:02:07 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:07 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:07 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:07 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:07 [MAB] event=in_flight_changed ts=1785492127007 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=1 total_in_flight=1
+2026/07/31 12:02:07 [MAB] event=select_arm ts=1785492127007 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=least_tried score=0.000000 total_counts=1 total_in_flight=1 effective_total_counts=2 arms=[arm,x86]
+2026/07/31 12:02:07 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:07 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:07 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=x86 candidate=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 candidate_tag=x86
+2026/07/31 12:02:08 [LB-Update] Node VwW6xnoQ9js5iXgV4J5dL51785492112453886226 reported 384 MB free
+2026/07/31 12:02:08 [MAB] event=execution_timing ts=1785492128528 policy=UCB1 function=mab_inflight_1785492111 arm=x86 node_name=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 execution_node=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 warm_start=false response_time_ms=1519.360929 duration_ms=1007.731247 init_time_ms=511.610177 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=511.629682
+2026/07/31 12:02:08 [MAB] event=in_flight_changed ts=1785492128528 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=0 total_in_flight=0
+2026/07/31 12:02:08 [MAB] event=skip_cold_start ts=1785492128528 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=1007.731247 reason=cold_start
+2026/07/31 12:02:08 [MAB] event=cold_start_stats ts=1785492128528 policy=UCB1 function=mab_inflight_1785492111 arm=x86 total_invocations=1 cold_observed=1 warm_observed=0 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=0 cold_init_time_samples=1 avg_cold_duration_ms=1007.731247 avg_warm_duration_ms=0.000000 avg_cold_init_time_ms=511.610177
+2026/07/31 12:02:09 [LB]: Periodic targets update
+2026/07/31 12:02:09 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:09 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:09 Found 2 targets
+2026/07/31 12:02:09 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:09 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:09 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:09 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:09 [MAB] event=in_flight_changed ts=1785492129551 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=1 total_in_flight=1
+2026/07/31 12:02:09 [MAB] event=select_arm ts=1785492129551 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=least_tried score=0.000000 total_counts=1 total_in_flight=1 effective_total_counts=2 arms=[arm,x86]
+2026/07/31 12:02:09 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:09 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:09 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=x86 candidate=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 candidate_tag=x86
+2026/07/31 12:02:10 [LB-Update] Node VwW6xnoQ9js5iXgV4J5dL51785492112453886226 reported 384 MB free
+2026/07/31 12:02:10 [MAB] event=execution_timing ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 node_name=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 execution_node=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 warm_start=true response_time_ms=1004.914921 duration_ms=1004.778245 init_time_ms=0.120998 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.136676
+2026/07/31 12:02:10 [MAB] event=in_flight_changed ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=0 total_in_flight=0
+2026/07/31 12:02:10 [MAB] event=reward_breakdown ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 base_tag=x86 architecture=x86 specialization=default capabilities=[] duration_ms=1004.778245 latency_reward=-6.912522 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-6.912522
+2026/07/31 12:02:10 [MAB] event=cold_start_stats ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 total_invocations=2 cold_observed=1 warm_observed=1 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=1 cold_init_time_samples=1 avg_cold_duration_ms=1007.731247 avg_warm_duration_ms=1004.778245 avg_cold_init_time_ms=511.610177
+2026/07/31 12:02:10 [MAB] event=update_reward ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=1004.778245 warm_start=true reward=-6.912522 count=1 avg_reward=-6.912522 total_counts=2
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.245781 count=1 in_flight=0 effective_count=1 avg_reward=-6.911824 exploration_bonus=0.666044 total_counts=2 total_in_flight=0 effective_total_counts=2 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.246478 count=1 in_flight=0 effective_count=1 avg_reward=-6.912522 exploration_bonus=0.666044 total_counts=2 total_in_flight=0 effective_total_counts=2 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=1 total_in_flight=1
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=ucb_score score=-6.245781 total_counts=2 total_in_flight=1 effective_total_counts=3 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.318903 count=1 in_flight=1 effective_count=2 avg_reward=-6.911824 exploration_bonus=0.592922 total_counts=2 total_in_flight=1 effective_total_counts=3 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.074004 count=1 in_flight=0 effective_count=1 avg_reward=-6.912522 exploration_bonus=0.838518 total_counts=2 total_in_flight=1 effective_total_counts=3 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=1 total_in_flight=2
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=ucb_score score=-6.074004 total_counts=2 total_in_flight=2 effective_total_counts=4 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=x86 candidate=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 candidate_tag=x86
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.245781 count=1 in_flight=1 effective_count=2 avg_reward=-6.911824 exploration_bonus=0.666044 total_counts=2 total_in_flight=2 effective_total_counts=4 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.246478 count=1 in_flight=1 effective_count=2 avg_reward=-6.912522 exploration_bonus=0.666044 total_counts=2 total_in_flight=2 effective_total_counts=4 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=2 total_in_flight=3
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131587 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=ucb_score score=-6.245781 total_counts=2 total_in_flight=3 effective_total_counts=5 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.325866 count=1 in_flight=2 effective_count=3 avg_reward=-6.911824 exploration_bonus=0.585958 total_counts=2 total_in_flight=3 effective_total_counts=5 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.194873 count=1 in_flight=1 effective_count=2 avg_reward=-6.912522 exploration_bonus=0.717649 total_counts=2 total_in_flight=3 effective_total_counts=5 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=2 total_in_flight=4
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=ucb_score score=-6.194873 total_counts=2 total_in_flight=4 effective_total_counts=6 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=x86 candidate=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 candidate_tag=x86
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.293567 count=1 in_flight=2 effective_count=3 avg_reward=-6.911824 exploration_bonus=0.618257 total_counts=2 total_in_flight=4 effective_total_counts=6 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.294265 count=1 in_flight=2 effective_count=3 avg_reward=-6.912522 exploration_bonus=0.618257 total_counts=2 total_in_flight=4 effective_total_counts=6 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=3 total_in_flight=5
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=ucb_score score=-6.293567 total_counts=2 total_in_flight=5 effective_total_counts=7 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.353841 count=1 in_flight=3 effective_count=4 avg_reward=-6.911824 exploration_bonus=0.557984 total_counts=2 total_in_flight=5 effective_total_counts=7 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.268218 count=1 in_flight=2 effective_count=3 avg_reward=-6.912522 exploration_bonus=0.644304 total_counts=2 total_in_flight=5 effective_total_counts=7 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=3 total_in_flight=6
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=ucb_score score=-6.268218 total_counts=2 total_in_flight=6 effective_total_counts=8 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 128 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=x86 candidate=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 candidate_tag=x86
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.335014 count=1 in_flight=3 effective_count=4 avg_reward=-6.911824 exploration_bonus=0.576811 total_counts=2 total_in_flight=6 effective_total_counts=8 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.335711 count=1 in_flight=3 effective_count=4 avg_reward=-6.912522 exploration_bonus=0.576811 total_counts=2 total_in_flight=6 effective_total_counts=8 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=started in_flight=4 total_in_flight=7
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 selected_arm=arm reason=ucb_score score=-6.335014 total_counts=2 total_in_flight=7 effective_total_counts=9 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=arm compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 128 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [LB] Selected target for function 'mab_inflight_1785492111': target_tag=arm candidate=z29XjDbZW8dPure5wtay2M1785492112454670128 candidate_tag=arm
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=arm arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tag found: function=mab_inflight_1785492111 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/07/31 12:02:11 [LB] Compatible tags for function 'mab_inflight_1785492111': [arm x86]
+2026/07/31 12:02:11 [LB][MAB] event=before_select function=mab_inflight_1785492111 compatible_tags=[arm x86] has_context=true
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=arm score=-6.381499 count=1 in_flight=4 effective_count=5 avg_reward=-6.911824 exploration_bonus=0.530325 total_counts=2 total_in_flight=7 effective_total_counts=9 contextual=false
+2026/07/31 12:02:11 [MAB] event=arm_score ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 score=-6.319601 count=1 in_flight=3 effective_count=4 avg_reward=-6.912522 exploration_bonus=0.592922 total_counts=2 total_in_flight=7 effective_total_counts=9 contextual=false
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=started in_flight=4 total_in_flight=8
+2026/07/31 12:02:11 [MAB] event=select_arm ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 selected_arm=x86 reason=ucb_score score=-6.319601 total_counts=2 total_in_flight=8 effective_total_counts=10 arms=[arm,x86]
+2026/07/31 12:02:11 [LB][MAB] event=after_select function=mab_inflight_1785492111 selected_tag=x86 compatible_tags=[arm x86]
+2026/07/31 12:02:11 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/07/31 12:02:11 [MAB] event=in_flight_changed ts=1785492131588 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=3 total_in_flight=7
+2026/07/31 12:02:11 [MAB] event=pending_selection_cancelled request_id=GXap9psvBuHTckh65dhYiY function=mab_inflight_1785492111 selected_arm=x86 reason=no_candidate_after_fallback
+2026/07/31 12:02:11 [LB] No candidate available for function 'mab_inflight_1785492111' after fallback
+2026/07/31 12:02:12 [LB]: Periodic targets update
+2026/07/31 12:02:12 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:12 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:12 Found 2 targets
+2026/07/31 12:02:14 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 0 MB free
+2026/07/31 12:02:14 [MAB] event=execution_timing ts=1785492134590 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=true response_time_ms=3002.498683 duration_ms=3002.365010 init_time_ms=0.120433 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.133673
+2026/07/31 12:02:14 [MAB] event=in_flight_changed ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=3 total_in_flight=6
+2026/07/31 12:02:14 [MAB] event=execution_timing ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 node_name=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 execution_node=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 warm_start=true response_time_ms=3002.720093 duration_ms=3002.573980 init_time_ms=0.122825 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.146113
+2026/07/31 12:02:14 [LB-Update] Node VwW6xnoQ9js5iXgV4J5dL51785492112453886226 reported 128 MB free
+2026/07/31 12:02:14 [MAB] event=reward_breakdown ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=arm base_tag=arm architecture=arm specialization=default capabilities=[] duration_ms=3002.365010 latency_reward=-8.007156 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-8.007156
+2026/07/31 12:02:14 [MAB] event=cold_start_stats ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=3 cold_observed=1 warm_observed=2 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=2 cold_init_time_samples=1 avg_cold_duration_ms=1007.578543 avg_warm_duration_ms=2003.221178 avg_cold_init_time_ms=477.296374
+2026/07/31 12:02:14 [MAB] event=update_reward ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=3002.365010 warm_start=true reward=-8.007156 count=2 avg_reward=-7.459490 total_counts=3
+2026/07/31 12:02:14 [MAB] event=in_flight_changed ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=2 total_in_flight=5
+2026/07/31 12:02:14 [MAB] event=reward_breakdown ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 base_tag=x86 architecture=x86 specialization=default capabilities=[] duration_ms=3002.573980 latency_reward=-8.007225 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-8.007225
+2026/07/31 12:02:14 [MAB] event=cold_start_stats ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 total_invocations=3 cold_observed=1 warm_observed=2 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=2 cold_init_time_samples=1 avg_cold_duration_ms=1007.731247 avg_warm_duration_ms=2003.676113 avg_cold_init_time_ms=511.610177
+2026/07/31 12:02:14 [MAB] event=update_reward ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=3002.573980 warm_start=true reward=-8.007225 count=2 avg_reward=-7.459874 total_counts=4
+2026/07/31 12:02:15 [LB-Update] Node VwW6xnoQ9js5iXgV4J5dL51785492112453886226 reported 256 MB free
+2026/07/31 12:02:15 [MAB] event=execution_timing ts=1785492135077 policy=UCB1 function=mab_inflight_1785492111 arm=x86 node_name=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 execution_node=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 warm_start=false response_time_ms=3488.582421 duration_ms=3008.717164 init_time_ms=479.850807 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=479.865257
+2026/07/31 12:02:15 [MAB] event=in_flight_changed ts=1785492135077 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=1 total_in_flight=4
+2026/07/31 12:02:15 [MAB] event=skip_cold_start ts=1785492135077 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=3008.717164 reason=cold_start
+2026/07/31 12:02:15 [MAB] event=cold_start_stats ts=1785492135077 policy=UCB1 function=mab_inflight_1785492111 arm=x86 total_invocations=4 cold_observed=2 warm_observed=2 cold_accepted=0 cold_skipped=2 invalid_feedback=0 cold_duration_samples=2 warm_duration_samples=2 cold_init_time_samples=2 avg_cold_duration_ms=2008.224205 avg_warm_duration_ms=2003.676113 avg_cold_init_time_ms=495.730492
+2026/07/31 12:02:15 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 128 MB free
+2026/07/31 12:02:15 [MAB] event=execution_timing ts=1785492135086 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=false response_time_ms=3498.268470 duration_ms=3007.452273 init_time_ms=490.800155 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=490.816197
+2026/07/31 12:02:15 [MAB] event=in_flight_changed ts=1785492135086 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=2 total_in_flight=3
+2026/07/31 12:02:15 [MAB] event=skip_cold_start ts=1785492135086 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=3007.452273 reason=cold_start
+2026/07/31 12:02:15 [MAB] event=cold_start_stats ts=1785492135086 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=4 cold_observed=2 warm_observed=2 cold_accepted=0 cold_skipped=2 invalid_feedback=0 cold_duration_samples=2 warm_duration_samples=2 cold_init_time_samples=2 avg_cold_duration_ms=2007.515408 avg_warm_duration_ms=2003.221178 avg_cold_init_time_ms=484.048264
+2026/07/31 12:02:15 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 256 MB free
+2026/07/31 12:02:15 [MAB] event=execution_timing ts=1785492135105 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=false response_time_ms=3515.725165 duration_ms=3008.215443 init_time_ms=507.492086 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=507.509722
+2026/07/31 12:02:15 [MAB] event=in_flight_changed ts=1785492135105 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=1 total_in_flight=2
+2026/07/31 12:02:15 [MAB] event=skip_cold_start ts=1785492135105 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=3008.215443 reason=cold_start
+2026/07/31 12:02:15 [MAB] event=cold_start_stats ts=1785492135105 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=5 cold_observed=3 warm_observed=2 cold_accepted=0 cold_skipped=3 invalid_feedback=0 cold_duration_samples=3 warm_duration_samples=2 cold_init_time_samples=3 avg_cold_duration_ms=2341.082086 avg_warm_duration_ms=2003.221178 avg_cold_init_time_ms=491.862872
+2026/07/31 12:02:15 [LB-Update] Node z29XjDbZW8dPure5wtay2M1785492112454670128 reported 384 MB free
+2026/07/31 12:02:15 [MAB] event=execution_timing ts=1785492135122 policy=UCB1 function=mab_inflight_1785492111 arm=arm node_name=z29XjDbZW8dPure5wtay2M1785492112454670128 execution_node=z29XjDbZW8dPure5wtay2M1785492112454670128 warm_start=false response_time_ms=3533.245952 duration_ms=3008.422140 init_time_ms=524.811245 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=524.823812
+2026/07/31 12:02:15 [MAB] event=in_flight_changed ts=1785492135122 policy=UCB1 function=mab_inflight_1785492111 arm=arm action=resolved in_flight=0 total_in_flight=1
+2026/07/31 12:02:15 [MAB] event=skip_cold_start ts=1785492135122 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=3008.422140 reason=cold_start
+2026/07/31 12:02:15 [MAB] event=cold_start_stats ts=1785492135122 policy=UCB1 function=mab_inflight_1785492111 arm=arm total_invocations=6 cold_observed=4 warm_observed=2 cold_accepted=0 cold_skipped=4 invalid_feedback=0 cold_duration_samples=4 warm_duration_samples=2 cold_init_time_samples=4 avg_cold_duration_ms=2507.917100 avg_warm_duration_ms=2003.221178 avg_cold_init_time_ms=500.099965
+2026/07/31 12:02:15 [LB-Update] Node VwW6xnoQ9js5iXgV4J5dL51785492112453886226 reported 384 MB free
+2026/07/31 12:02:15 [MAB] event=execution_timing ts=1785492135124 policy=UCB1 function=mab_inflight_1785492111 arm=x86 node_name=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 execution_node=VwW6xnoQ9js5iXgV4J5dL51785492112453886226 warm_start=false response_time_ms=3534.935954 duration_ms=3006.459517 init_time_ms=528.468216 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=528.476437
+2026/07/31 12:02:15 [MAB] event=in_flight_changed ts=1785492135124 policy=UCB1 function=mab_inflight_1785492111 arm=x86 action=resolved in_flight=0 total_in_flight=0
+2026/07/31 12:02:15 [MAB] event=skip_cold_start ts=1785492135124 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=3006.459517 reason=cold_start
+2026/07/31 12:02:15 [MAB] event=cold_start_stats ts=1785492135124 policy=UCB1 function=mab_inflight_1785492111 arm=x86 total_invocations=5 cold_observed=3 warm_observed=2 cold_accepted=0 cold_skipped=3 invalid_feedback=0 cold_duration_samples=3 warm_duration_samples=2 cold_init_time_samples=3 avg_cold_duration_ms=2340.969309 avg_warm_duration_ms=2003.676113 avg_cold_init_time_ms=506.643067
+2026/07/31 12:02:15 [LB]: Periodic targets update
+2026/07/31 12:02:15 Found target: z29XjDbZW8dPure5wtay2M1785492112454670128
+2026/07/31 12:02:15 Found target: VwW6xnoQ9js5iXgV4J5dL51785492112453886226
+2026/07/31 12:02:15 Found 2 targets

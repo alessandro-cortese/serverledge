@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/serverledge-faas/serverledge/internal/mab"
 )
 
 const proxyErrorStatusKey = "serverledge.proxy_error_status"
@@ -62,6 +63,20 @@ func proxyErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				// Write the structured error response using the status stored in the context.
 				err = writeProxyError(c, status)
 			}
+		}()
+
+		defer func() {
+			reqID :=
+				c.Request().
+					Header.
+					Get(
+						"Serverledge-MAB-Request-ID",
+					)
+
+			mab.CancelDecision(
+				reqID,
+				"proxy_completed_without_claimed_feedback",
+			)
 		}()
 
 		// Execute the proxy middleware chain, which internally calls Next() to select

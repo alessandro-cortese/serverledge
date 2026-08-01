@@ -1,0 +1,4 @@
+2026/07/31 12:02:05 [MAB] event=update_reward ts=1785492125987 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=1004.077345 warm_start=true reward=-6.911824 count=1 avg_reward=-6.911824 total_counts=1
+2026/07/31 12:02:10 [MAB] event=update_reward ts=1785492130557 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=1004.778245 warm_start=true reward=-6.912522 count=1 avg_reward=-6.912522 total_counts=2
+2026/07/31 12:02:14 [MAB] event=update_reward ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=arm duration_ms=3002.365010 warm_start=true reward=-8.007156 count=2 avg_reward=-7.459490 total_counts=3
+2026/07/31 12:02:14 [MAB] event=update_reward ts=1785492134591 policy=UCB1 function=mab_inflight_1785492111 arm=x86 duration_ms=3002.573980 warm_start=true reward=-8.007225 count=2 avg_reward=-7.459874 total_counts=4
