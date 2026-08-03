@@ -113,12 +113,21 @@ func TestBuildInvocationResourceProfileCalculatesDeltas(
 		BuildInvocationResourceProfile(
 			"container-a",
 			1,
+			true,
+			4*time.Millisecond,
 			before,
 			after,
 			time.Second,
 			2*time.Millisecond,
 			3*time.Millisecond,
 		)
+
+	assert.InDelta(
+		t,
+		4.0,
+		profile.ProfilingLockWaitMs,
+		1e-9,
+	)
 
 	require.NotNil(
 		t,
@@ -267,13 +276,15 @@ func TestBuildInvocationResourceProfileCalculatesDeltas(
 	)
 }
 
-func TestBuildInvocationResourceProfileMarksConcurrentContainerInvalid(
+func TestBuildInvocationResourceProfileMarksNonExclusiveCollectionInvalid(
 	t *testing.T,
 ) {
 	profile :=
 		BuildInvocationResourceProfile(
 			"container-a",
 			2,
+			false,
+			0,
 			ResourceSnapshot{
 				OSType: "linux",
 			},
@@ -315,20 +326,28 @@ func TestBuildInvocationResourceProfileMarksConcurrentContainerInvalid(
 func TestBuildInvocationResourceProfileRejectsRegressingCounters(
 	t *testing.T,
 ) {
+	before :=
+		ResourceSnapshot{
+			OSType: "linux",
+
+			CPUUsageTotalNs: 2_000_000_000,
+		}
+
+	after :=
+		ResourceSnapshot{
+			OSType: "linux",
+
+			CPUUsageTotalNs: 1_000_000_000,
+		}
+
 	profile :=
 		BuildInvocationResourceProfile(
 			"container-a",
 			1,
-			ResourceSnapshot{
-				OSType: "linux",
-
-				CPUUsageTotalNs: 100,
-			},
-			ResourceSnapshot{
-				OSType: "linux",
-
-				CPUUsageTotalNs: 90,
-			},
+			true,
+			0,
+			before,
+			after,
 			time.Second,
 			0,
 			0,
@@ -337,6 +356,11 @@ func TestBuildInvocationResourceProfileRejectsRegressingCounters(
 	require.NotNil(
 		t,
 		profile,
+	)
+
+	assert.True(
+		t,
+		profile.Collected,
 	)
 
 	assert.False(
@@ -376,11 +400,13 @@ func TestBuildInvocationResourceProfileSupportsBlockBytesWithoutOps(
 		BuildInvocationResourceProfile(
 			"container-a",
 			1,
+			true,
+			4*time.Millisecond,
 			before,
 			after,
 			time.Second,
-			0,
-			0,
+			2*time.Millisecond,
+			3*time.Millisecond,
 		)
 
 	require.NotNil(
@@ -417,5 +443,60 @@ func TestBuildInvocationResourceProfileSupportsBlockBytesWithoutOps(
 	assert.Zero(
 		t,
 		profile.BlockWriteOpsDelta,
+	)
+}
+
+func TestBuildInvocationResourceProfileAcceptsExclusiveCollectionWithConfiguredConcurrency(
+	t *testing.T,
+) {
+	profile :=
+		BuildInvocationResourceProfile(
+			"container-a",
+			4,
+			true,
+			10*time.Millisecond,
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			time.Second,
+			0,
+			0,
+		)
+
+	require.NotNil(
+		t,
+		profile,
+	)
+
+	assert.True(
+		t,
+		profile.Valid,
+	)
+
+	assert.True(
+		t,
+		profile.ExclusiveContainer,
+	)
+
+	assert.Equal(
+		t,
+		int16(4),
+		profile.MaxConcurrency,
+	)
+
+	assert.InDelta(
+		t,
+		10.0,
+		profile.ProfilingLockWaitMs,
+		1e-9,
+	)
+
+	assert.NotContains(
+		t,
+		profile.InvalidReason,
+		"container_concurrency_not_exclusive",
 	)
 }

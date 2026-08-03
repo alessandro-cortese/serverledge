@@ -2,6 +2,7 @@ package container
 
 import (
 	"io"
+	"sync"
 
 	"github.com/serverledge-faas/serverledge/internal/profiling"
 )
@@ -73,6 +74,12 @@ type Container struct {
 	ID             ContainerID
 	RequestsCount  int16
 	ExpirationTime int64
+
+	// profilingMu serializes the complete profiling window for this
+	// container: snapshot before, invocation, and snapshot after. It is
+	// intentionally per-container so different containers can still be
+	// profiled in parallel.
+	profilingMu sync.Mutex
 }
 
 // cf is the container factory for the node

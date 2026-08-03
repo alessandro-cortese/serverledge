@@ -64,6 +64,11 @@ type InvocationResourceProfile struct {
 	ExclusiveContainer bool
 	MaxConcurrency     int16
 
+	// ProfilingLockWaitMs is the time spent waiting for the per-container
+	// profiling critical section. It is kept separate from snapshot overhead
+	// and execution wall time.
+	ProfilingLockWaitMs float64
+
 	CPUUsageTotalDeltaNs  uint64
 	CPUUsageUserDeltaNs   uint64
 	CPUUsageKernelDeltaNs uint64
@@ -110,6 +115,8 @@ type InvocationResourceProfile struct {
 func NewInvalidInvocationResourceProfile(
 	containerID string,
 	maxConcurrency int16,
+	exclusiveContainer bool,
+	profilingLockWait time.Duration,
 	reason string,
 	startOverhead time.Duration,
 	endOverhead time.Duration,
@@ -120,8 +127,9 @@ func NewInvalidInvocationResourceProfile(
 		Valid:                    false,
 		InvalidReason:            reason,
 		ContainerID:              containerID,
-		ExclusiveContainer:       maxConcurrency <= 1,
+		ExclusiveContainer:       exclusiveContainer,
 		MaxConcurrency:           maxConcurrency,
+		ProfilingLockWaitMs:      durationMilliseconds(profilingLockWait),
 		ProfilingStartOverheadMs: durationMilliseconds(startOverhead),
 		ProfilingEndOverheadMs:   durationMilliseconds(endOverhead),
 		ProfilingTotalOverheadMs: durationMilliseconds(
@@ -135,6 +143,8 @@ func NewInvalidInvocationResourceProfile(
 func BuildInvocationResourceProfile(
 	containerID string,
 	maxConcurrency int16,
+	exclusiveContainer bool,
+	profilingLockWait time.Duration,
 	before ResourceSnapshot,
 	after ResourceSnapshot,
 	executionWallTime time.Duration,
@@ -146,9 +156,12 @@ func BuildInvocationResourceProfile(
 		Collected:          true,
 		Valid:              true,
 		ContainerID:        containerID,
-		ExclusiveContainer: maxConcurrency <= 1,
+		ExclusiveContainer: exclusiveContainer,
 		MaxConcurrency:     maxConcurrency,
-		OnlineCPUs:         after.OnlineCPUs,
+		ProfilingLockWaitMs: durationMilliseconds(
+			profilingLockWait,
+		),
+		OnlineCPUs: after.OnlineCPUs,
 
 		MemoryUsageBeforeBytes: before.MemoryUsageBytes,
 		MemoryUsageAfterBytes:  after.MemoryUsageBytes,

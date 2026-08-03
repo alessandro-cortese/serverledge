@@ -15,7 +15,7 @@ import (
 // Profiling failures never prevent the function from running. They are reported
 // through an invalid InvocationResourceProfile instead.
 func ExecuteProfiled(
-	contID ContainerID,
+	cont *Container,
 	req *executor.InvocationRequest,
 	maxConcurrency int16,
 ) (
@@ -25,6 +25,16 @@ func ExecuteProfiled(
 	*profiling.InvocationResourceProfile,
 	error,
 ) {
+	if cont == nil {
+		return nil,
+			0,
+			0,
+			nil,
+			fmt.Errorf("cannot execute on a nil container")
+	}
+
+	contID := cont.ID
+
 	if !config.GetBool(
 		config.FUNCTION_PROFILING_ENABLED,
 		false,
@@ -49,6 +59,18 @@ func ExecuteProfiled(
 			nil,
 			err
 	}
+
+	profilingLockStartedAt :=
+		time.Now()
+
+	cont.profilingMu.Lock()
+
+	profilingLockWait :=
+		time.Since(
+			profilingLockStartedAt,
+		)
+
+	defer cont.profilingMu.Unlock()
 
 	startSnapshotStartedAt :=
 		time.Now()
@@ -103,6 +125,8 @@ func ExecuteProfiled(
 			profiling.NewInvalidInvocationResourceProfile(
 				contID,
 				maxConcurrency,
+				true,
+				profilingLockWait,
 				fmt.Sprintf(
 					"snapshot_before_failed: %v",
 					beforeErr,
@@ -120,6 +144,8 @@ func ExecuteProfiled(
 			profiling.NewInvalidInvocationResourceProfile(
 				contID,
 				maxConcurrency,
+				true,
+				profilingLockWait,
 				fmt.Sprintf(
 					"snapshot_after_failed: %v",
 					afterErr,
@@ -134,6 +160,8 @@ func ExecuteProfiled(
 		profiling.BuildInvocationResourceProfile(
 			contID,
 			maxConcurrency,
+			true,
+			profilingLockWait,
 			before,
 			after,
 			executionWallTime,

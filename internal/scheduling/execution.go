@@ -52,7 +52,7 @@ func Execute(
 		executionWallTime,
 		resourceProfile,
 		err := container.ExecuteProfiled(
-		cont.ID,
+		cont,
 		&req,
 		r.Fun.MaxConcurrency,
 	)
