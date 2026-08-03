@@ -3,6 +3,8 @@ package mab
 import (
 	"testing"
 
+	"github.com/serverledge-faas/serverledge/internal/config"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -135,6 +137,11 @@ func TestResolveDecisionWithFeedbackRecordsFallback(
 		t,
 	)
 
+	viper.Set(
+		config.MAB_FALLBACK_PENALTY,
+		-12.0,
+	)
+
 	previousManager :=
 		GlobalBanditManager
 
@@ -214,10 +221,17 @@ func TestResolveDecisionWithFeedbackRecordsFallback(
 			InFlight,
 	)
 
-	assert.Zero(
+	assert.Equal(
 		t,
-		bandit.Arms["arm-a"].
-			Count,
+		int64(1),
+		bandit.Arms["arm-a"].Count,
+	)
+
+	assert.InDelta(
+		t,
+		-12.0,
+		bandit.Arms["arm-a"].AvgReward,
+		1e-9,
 	)
 
 	assert.Equal(
@@ -225,6 +239,19 @@ func TestResolveDecisionWithFeedbackRecordsFallback(
 		int64(1),
 		bandit.Arms["arm-b"].
 			Count,
+	)
+
+	assert.Equal(
+		t,
+		int64(1),
+		bandit.Arms["arm-a"].Count,
+	)
+
+	assert.InDelta(
+		t,
+		-12.0,
+		bandit.Arms["arm-a"].AvgReward,
+		1e-9,
 	)
 
 	stats :=
@@ -251,6 +278,14 @@ func TestResolveDecisionWithFeedbackRecordsFallback(
 func TestResolveDecisionWithoutFeedbackRecordsCancellation(
 	t *testing.T,
 ) {
+
+	resetExecutionFeedbackConfig(t)
+
+	viper.Set(
+		config.MAB_FALLBACK_PENALTY,
+		-12.0,
+	)
+
 	previousManager :=
 		GlobalBanditManager
 
@@ -297,7 +332,7 @@ func TestResolveDecisionWithoutFeedbackRecordsCancellation(
 
 				SelectedArm: selected,
 			},
-			"no_candidate_after_fallback",
+			DecisionFailureReasonNoCandidateAfterFallback,
 		)
 
 	require.True(
@@ -316,9 +351,23 @@ func TestResolveDecisionWithoutFeedbackRecordsCancellation(
 		bandit.TotalInFlight,
 	)
 
-	assert.Zero(
+	assert.Equal(
 		t,
+		int64(1),
 		bandit.TotalCounts,
+	)
+
+	assert.Equal(
+		t,
+		int64(1),
+		bandit.Arms["arm-a"].Count,
+	)
+
+	assert.InDelta(
+		t,
+		-12.0,
+		bandit.Arms["arm-a"].AvgReward,
+		1e-9,
 	)
 
 	stats :=

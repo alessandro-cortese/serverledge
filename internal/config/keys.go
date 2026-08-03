@@ -96,6 +96,10 @@ const MAB_COST_WEIGHT = "mab.cost.weight"
 // reward = latencyReward - energyWeight*energyFactor - ...
 const MAB_ENERGY_WEIGHT = "mab.energy.weight"
 
+// Constant synthetic reward assigned to the arm selected by the MAB when
+// that arm cannot serve the request and a fallback is required.
+const MAB_FALLBACK_PENALTY = "mab.fallback.penalty"
+
 // Controls how cold-start feedback affects MAB learning.
 //
 // Supported values:

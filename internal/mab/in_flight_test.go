@@ -99,6 +99,7 @@ func TestUCB1ValidFeedbackMovesInFlightToCount(
 		selected,
 		nil,
 		&feedback,
+		nil,
 	)
 
 	assert.Zero(
@@ -162,6 +163,7 @@ func TestUCB1ColdSkipReleasesInFlightWithoutCount(
 		selected,
 		nil,
 		&feedback,
+		nil,
 	)
 
 	assert.Zero(
@@ -219,6 +221,7 @@ func TestUCB1FallbackUpdatesActualExecutionArm(
 		"arm-b",
 		nil,
 		&feedback,
+		nil,
 	)
 
 	assert.Zero(
@@ -271,6 +274,7 @@ func TestUCB1RepeatedResolutionDoesNotApplyRewardTwice(
 		selected,
 		nil,
 		&feedback,
+		nil,
 	)
 
 	bandit.ResolveSelection(
@@ -278,6 +282,7 @@ func TestUCB1RepeatedResolutionDoesNotApplyRewardTwice(
 		selected,
 		nil,
 		&feedback,
+		nil,
 	)
 
 	assert.Equal(
@@ -324,6 +329,7 @@ func TestUCB1ConcurrentCancellationsRemainBalanced(
 			bandit.ResolveSelection(
 				selected,
 				"",
+				nil,
 				nil,
 				nil,
 			)

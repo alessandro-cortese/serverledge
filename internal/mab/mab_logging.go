@@ -339,6 +339,33 @@ func logMABExecutionArmMismatch(
 	)
 }
 
+func logMABSyntheticReward(
+	policy string,
+	functionName string,
+	arm string,
+	synthetic SyntheticReward,
+	utilization float64,
+	count int64,
+	avgReward float64,
+	totalCounts int64,
+) {
+	log.Printf(
+		"%s event=synthetic_reward ts=%d request_id=%s policy=%s function=%s arm=%s reward=%.6f reason=%s utilization=%.6f count=%d avg_reward=%.6f total_counts=%d\n",
+		mabLogPrefix,
+		nowMillis(),
+		synthetic.RequestID,
+		policy,
+		functionName,
+		arm,
+		synthetic.Value,
+		synthetic.Reason,
+		utilization,
+		count,
+		avgReward,
+		totalCounts,
+	)
+}
+
 func logMABRewardBreakdown(
 	policy string,
 	functionName string,

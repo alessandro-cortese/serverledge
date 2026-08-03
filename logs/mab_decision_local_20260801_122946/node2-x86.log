@@ -1,0 +1,29 @@
+2026/08/01 12:29:47 Local node id: (ROME)9pRfArthSJ8eWQiXWZrsR81785580187560452308 - x86 (arch: amd64)
+2026/08/01 12:29:47 Registration for node: (ROME)9pRfArthSJ8eWQiXWZrsR81785580187560452308 - x86
+2026/08/01 12:29:47 Connecting to etcd
+2026/08/01 12:29:47 Connected to etcd
+2026/08/01 12:29:47 etcd connection state: TRANSIENT_FAILURE
+2026/08/01 12:29:47 etcd: transient failure, triggering reconnect
+2026/08/01 12:29:48 etcd connection state: READY
+2026/08/01 12:29:48 etcd: connected and ready
+2026/08/01 12:29:48 Registering to etcd: registry/ROME/x86/9pRfArthSJ8eWQiXWZrsR81785580187560452308
+2026/08/01 12:29:48 Configured scheduling policy: default
+2026/08/01 12:29:48 Configured offloading policy: disable
+2026/08/01 12:29:48 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/08/01 12:29:48 Scheduler started.
+2026/08/01 12:29:48 No remote area is configured; vertical offloading disabled
+2026/08/01 12:29:48 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/08/01 12:29:57 New request: creation of mab_decision_1785580186
+2026/08/01 12:30:02 Container 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68 has name /festive_chebyshev
+2026/08/01 12:30:02 [mab_decision_1785580186] Executing on container: 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68
+2026/08/01 12:30:04 Using warm 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68 for mab_decision_1785580186. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:30:04 [mab_decision_1785580186] Executing on container: 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68
+2026/08/01 12:30:06 Using warm 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68 for mab_decision_1785580186. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:30:06 [mab_decision_1785580186] Executing on container: 29da40f02dcc4cb31d363f71517bca1585cbba8511cc0c221fb22116bf9d8e68
+2026/08/01 12:30:06 Container eca82f4ffbfcddf0bfa77e8185d58ca995ad67c68c02f612aaa645f00c8b9dd5 has name /relaxed_wiles
+2026/08/01 12:30:06 Container fc22c02e21c9220d9c9671566561ad5ca80bb959776b0cb07bcb099f0a489a07 has name /dreamy_meitner
+2026/08/01 12:30:06 [mab_decision_1785580186] Executing on container: fc22c02e21c9220d9c9671566561ad5ca80bb959776b0cb07bcb099f0a489a07
+2026/08/01 12:30:06 [mab_decision_1785580186] Executing on container: eca82f4ffbfcddf0bfa77e8185d58ca995ad67c68c02f612aaa645f00c8b9dd5
+2026/08/01 12:30:08 Periodic nearby Monitoring
+2026/08/01 12:30:08 Requesting status information for 192.168.0.46:9876

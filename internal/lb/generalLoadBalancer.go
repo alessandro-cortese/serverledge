@@ -234,7 +234,7 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 		if b.mode == MAB {
 			mab.CancelDecision(
 				reqID,
-				"no_candidate_after_fallback",
+				mab.DecisionFailureReasonNoCandidateAfterFallback,
 			)
 		}
 
@@ -299,6 +299,7 @@ func (b *GeneralLoadBalancer) Next(c echo.Context) *middleware.ProxyTarget {
 				targetTag,
 				"",
 				ctx,
+				nil,
 				nil,
 			)
 
@@ -406,14 +407,13 @@ func (b *GeneralLoadBalancer) selectTargetTag(
 			compatibleTags,
 		)
 
-		if selectedTag != "" {
-			bandit.ResolveSelection(
-				selectedTag,
-				"",
-				ctx,
-				nil,
-			)
-		}
+		bandit.ResolveSelection(
+			selectedTag,
+			"",
+			ctx,
+			nil,
+			nil,
+		)
 
 		return ""
 

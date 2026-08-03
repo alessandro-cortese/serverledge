@@ -40,6 +40,8 @@ LB_REFRESH_INTERVAL="${LB_REFRESH_INTERVAL:-3}"
 MAB_POLICY="${MAB_POLICY:-UCB1}"
 MAB_UCB1_C="${MAB_UCB1_C:-0.8}"
 
+MAB_FALLBACK_PENALTY="${MAB_FALLBACK_PENALTY:--12.0}"
+
 MAB_LINUCB_ALPHA="${MAB_LINUCB_ALPHA:-0.1}"
 
 MAB_COST_WEIGHT="${MAB_COST_WEIGHT:-0.0}"
@@ -79,6 +81,7 @@ lb.arch_awareness: true
 lb.mode: MAB
 mab.policy: ${MAB_POLICY}
 mab.ucb1.c: ${MAB_UCB1_C}
+mab.fallback.penalty: ${MAB_FALLBACK_PENALTY}
 mab.cold_start.mode: ${MAB_COLD_START_MODE}
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
 mab.cost.weight: ${MAB_COST_WEIGHT}

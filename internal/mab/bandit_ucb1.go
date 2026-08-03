@@ -11,7 +11,7 @@ import (
 
 // ArmStats maintains information about a single arm dedicated to a single function
 type ArmStats struct {
-	Count      int64   // Count is the number of valid feedback samples used to estimate this arm.
+	Count      int64   // Count is the number of accepted learning observations, including synthetic fallback penalties.
 	SumRewards float64 // SumRewards is the sum of valid rewards observed for this arm.
 	AvgReward  float64 // AvgReward is the empirical mean reward of this arm.
 	InFlight   int64
@@ -20,7 +20,7 @@ type ArmStats struct {
 // UCB1Bandit is the bandit that handles decision for ONE function
 type UCB1Bandit struct {
 	FunctionName string               // TODO: Ask if can do this
-	TotalCounts  int64                // TotalCounts is the total number of valid feedback samples observed across all arms for this function.
+	TotalCounts  int64                // TotalCounts is the total number of accepted learning observations across all arms for this function.
 	Arms         map[string]*ArmStats // Map "amd64" -> Stats, "arm64" -> Stats for each arm
 	mu           sync.RWMutex         // Mutex per thread-safety
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
@@ -255,16 +255,22 @@ func (b *UCB1Bandit) ResolveSelection(
 	executionArm string,
 	ctx *Context,
 	feedback *ExecutionFeedback,
+	selectedArmReward *SyntheticReward,
 ) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	// Un feedback può essere applicato soltanto se esiste davvero una
-	// selezione pendente da risolvere.
 	if !b.completeSelectionLocked(
 		selectedArm,
 	) {
 		return
+	}
+
+	if selectedArmReward != nil {
+		b.updateSyntheticRewardLocked(
+			selectedArm,
+			*selectedArmReward,
+		)
 	}
 
 	if feedback == nil ||
@@ -277,6 +283,64 @@ func (b *UCB1Bandit) ResolveSelection(
 		executionArm,
 		ctx,
 		*feedback,
+	)
+}
+
+func (b *UCB1Bandit) updateSyntheticRewardLocked(
+	arm string,
+	synthetic SyntheticReward,
+) {
+	stats, ok :=
+		b.Arms[arm]
+
+	if !ok {
+		log.Printf(
+			"[MAB] event=unknown_synthetic_reward_arm policy=%s function=%s arm=%s reason=%s\n",
+			string(b.GetType()),
+			b.FunctionName,
+			arm,
+			synthetic.Reason,
+		)
+
+		return
+	}
+
+	if !isFiniteNumber(
+		synthetic.Value,
+	) {
+		log.Printf(
+			"[MAB] event=invalid_synthetic_reward policy=%s function=%s arm=%s reward=%f reason=%s\n",
+			string(b.GetType()),
+			b.FunctionName,
+			arm,
+			synthetic.Value,
+			synthetic.Reason,
+		)
+
+		return
+	}
+
+	stats.Count++
+	b.TotalCounts++
+
+	stats.SumRewards +=
+		synthetic.Value
+
+	stats.AvgReward =
+		stats.SumRewards /
+			float64(
+				stats.Count,
+			)
+
+	logMABSyntheticReward(
+		string(b.GetType()),
+		b.FunctionName,
+		arm,
+		synthetic,
+		0.0,
+		stats.Count,
+		stats.AvgReward,
+		b.TotalCounts,
 	)
 }
 

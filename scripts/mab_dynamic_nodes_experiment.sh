@@ -36,6 +36,8 @@ LB_REFRESH_INTERVAL="${LB_REFRESH_INTERVAL:-3}"
 # First phase: start only these nodes.
 FIRST_NODE_CONFS=(${FIRST_NODE_CONFS:-node2-conf.yaml node6-conf.yaml})
 
+MAB_FALLBACK_PENALTY="${MAB_FALLBACK_PENALTY:--12.0}"
+
 # Second phase: add this node later.
 SECOND_NODE_CONF="${SECOND_NODE_CONF:-node1-conf.yaml}"
 
@@ -57,6 +59,7 @@ registry.area: ROME
 lb.arch_awareness: true
 lb.mode: MAB
 mab.policy: UCB1
+mab.fallback.penalty: ${MAB_FALLBACK_PENALTY}
 lb.replicas: 128
 lb.refresh_interval: ${LB_REFRESH_INTERVAL}
 EOF

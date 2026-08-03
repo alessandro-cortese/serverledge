@@ -44,6 +44,15 @@ type ExecutionFeedback struct {
 	EnergyFactor float64
 }
 
+// SyntheticReward is a policy-level learning observation that is not derived
+// from execution timing. It is used to penalize a selected arm that could not
+// serve the request and therefore forced a load-balancer fallback.
+type SyntheticReward struct {
+	RequestID string
+	Value     float64
+	Reason    string
+}
+
 // Policy is the interface that any Bandit algorithm must implement.
 type Policy interface {
 	// SelectArm chooses the best arm among all arms known by the policy.
@@ -68,8 +77,9 @@ type Policy interface {
 	// applies its execution feedback. selectedArm is the arm returned by the MAB;
 	// executionArm is the arm that actually executed the request and can differ
 	// after a load-balancer fallback. A nil feedback releases the pending
-	// selection without updating the learned model.
-	ResolveSelection(selectedArm string, executionArm string, ctx *Context, feedback *ExecutionFeedback)
+	// selection without applying real execution feedback. selectedArmReward, when
+	// present, is applied to the selected arm before processing the real feedback.
+	ResolveSelection(selectedArm string, executionArm string, ctx *Context, feedback *ExecutionFeedback, selectedArmReward *SyntheticReward)
 
 	// GetType returns the type of the bandit policy.
 	GetType() BanditType

@@ -1,0 +1,400 @@
+2026/08/01 12:21:22 Registration for node: (ROME)oYN49A4NBpf7HSZgUHArTg1785579682272257561 - amd64
+2026/08/01 12:21:22 Connecting to etcd
+2026/08/01 12:21:22 Connected to etcd
+2026/08/01 12:21:22 etcd connection state: READY
+2026/08/01 12:21:22 etcd: connected and ready
+2026/08/01 12:21:22 Registering to etcd: registry/ROME/__lb/amd64/oYN49A4NBpf7HSZgUHArTg1785579682272257561
+2026/08/01 12:21:22 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:22 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:22 Found 2 targets
+2026/08/01 12:21:22 Initializing with 2 targets.
+2026/08/01 12:21:22 Running ArchitectureAwareLB with 128 replicas per node in the hash rings
+2026/08/01 12:21:22 LB mode set to MAB
+2026/08/01 12:21:22 [LB][MAB] event=new_machine_tag_discovered tag=arm arch=amd64 action=create_ring_and_add_mab_arm
+2026/08/01 12:21:22 [LB] Adding target arm
+2026/08/01 12:21:22 [LB][MAB] event=new_machine_tag_discovered tag=x86 arch=amd64 action=create_ring_and_add_mab_arm
+2026/08/01 12:21:22 [LB] Adding target x86
+⇨ http server started on [::]:8080
+2026/08/01 12:21:25 [LB]: Periodic targets update
+2026/08/01 12:21:25 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:25 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:25 Found 2 targets
+2026/08/01 12:21:27 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:27 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:27 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:27 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:27 BanditManager GetBandit: policy type: UCB1
+2026/08/01 12:21:27 [MAB] event=arm_added ts=1785579687299 policy=UCB1 function=mab_decision_1785579676 arm=arm arms=[arm]
+2026/08/01 12:21:27 [MAB] event=arm_added ts=1785579687299 policy=UCB1 function=mab_decision_1785579676 arm=x86 arms=[arm,x86]
+2026/08/01 12:21:27 [MAB] event=in_flight_changed ts=1785579687299 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=1 total_in_flight=1
+2026/08/01 12:21:27 [MAB] event=select_arm ts=1785579687299 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=least_tried score=0.000000 total_counts=0 total_in_flight=1 effective_total_counts=1 arms=[arm,x86]
+2026/08/01 12:21:27 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:27 [MAB] event=decision_created ts=1785579687299 request_id=VauTNgNeLoemASNhydm2ME function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:27 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:27 [MAB] event=decision_planned ts=1785579687299 request_id=VauTNgNeLoemASNhydm2ME function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason=
+2026/08/01 12:21:27 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=arm execution_arm=arm fallback=false fallback_reason= candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:28 [LB]: Periodic targets update
+2026/08/01 12:21:28 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:28 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:28 Found 2 targets
+2026/08/01 12:21:28 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 384 MB free
+2026/08/01 12:21:28 [MAB] event=execution_timing ts=1785579688822 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=false response_time_ms=1521.610183 duration_ms=1007.434663 init_time_ms=514.152984 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=514.175520
+2026/08/01 12:21:28 [MAB] event=in_flight_changed ts=1785579688822 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=0 total_in_flight=0
+2026/08/01 12:21:28 [MAB] event=skip_cold_start ts=1785579688822 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=1007.434663 reason=cold_start
+2026/08/01 12:21:28 [MAB] event=cold_start_stats ts=1785579688823 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=1 cold_observed=1 warm_observed=0 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=0 cold_init_time_samples=1 avg_cold_duration_ms=1007.434663 avg_warm_duration_ms=0.000000 avg_cold_init_time_ms=514.152984
+2026/08/01 12:21:28 [MAB] event=decision_resolved ts=1785579688823 request_id=VauTNgNeLoemASNhydm2ME function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason= direct_executions=1 fallback_executions=0 cancelled_decisions=0
+2026/08/01 12:21:29 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:29 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:29 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:29 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:29 [MAB] event=in_flight_changed ts=1785579689837 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=1 total_in_flight=1
+2026/08/01 12:21:29 [MAB] event=select_arm ts=1785579689837 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=least_tried score=0.000000 total_counts=0 total_in_flight=1 effective_total_counts=1 arms=[arm,x86]
+2026/08/01 12:21:29 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:29 [MAB] event=decision_created ts=1785579689837 request_id=9yNegX9VsPLdVTt95isS4h function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:29 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:29 [MAB] event=decision_planned ts=1785579689837 request_id=9yNegX9VsPLdVTt95isS4h function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason=
+2026/08/01 12:21:29 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=arm execution_arm=arm fallback=false fallback_reason= candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:30 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 384 MB free
+2026/08/01 12:21:30 [MAB] event=execution_timing ts=1785579690842 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=true response_time_ms=1003.732667 duration_ms=1003.659950 init_time_ms=0.059052 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.072717
+2026/08/01 12:21:30 [MAB] event=in_flight_changed ts=1785579690842 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=0 total_in_flight=0
+2026/08/01 12:21:30 [MAB] event=reward_breakdown ts=1785579690842 policy=UCB1 function=mab_decision_1785579676 arm=arm base_tag=arm architecture=arm specialization=default capabilities=[] duration_ms=1003.659950 latency_reward=-6.911409 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-6.911409
+2026/08/01 12:21:30 [MAB] event=cold_start_stats ts=1785579690842 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=2 cold_observed=1 warm_observed=1 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=1 cold_init_time_samples=1 avg_cold_duration_ms=1007.434663 avg_warm_duration_ms=1003.659950 avg_cold_init_time_ms=514.152984
+2026/08/01 12:21:30 [MAB] event=update_reward ts=1785579690842 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=1003.659950 warm_start=true reward=-6.911409 count=1 avg_reward=-6.911409 total_counts=1
+2026/08/01 12:21:30 [MAB] event=decision_resolved ts=1785579690842 request_id=9yNegX9VsPLdVTt95isS4h function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason= direct_executions=2 fallback_executions=0 cancelled_decisions=0
+2026/08/01 12:21:31 [LB]: Periodic targets update
+2026/08/01 12:21:31 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:31 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:31 Found 2 targets
+2026/08/01 12:21:31 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:31 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:31 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:31 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:31 [MAB] event=in_flight_changed ts=1785579691862 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=1 total_in_flight=1
+2026/08/01 12:21:31 [MAB] event=select_arm ts=1785579691862 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=least_tried score=0.000000 total_counts=1 total_in_flight=1 effective_total_counts=2 arms=[arm,x86]
+2026/08/01 12:21:31 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:31 [MAB] event=decision_created ts=1785579691863 request_id=8TT4NaqaYJpWJCucLQQqF function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:31 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:31 [MAB] event=decision_planned ts=1785579691863 request_id=8TT4NaqaYJpWJCucLQQqF function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason=
+2026/08/01 12:21:31 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= candidate=jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:33 [LB-Update] Node jiz5jx8F6DXUccxoane6Fi1785579677273724938 reported 384 MB free
+2026/08/01 12:21:33 [MAB] event=execution_timing ts=1785579693372 policy=UCB1 function=mab_decision_1785579676 arm=x86 node_name=jiz5jx8F6DXUccxoane6Fi1785579677273724938 execution_node=jiz5jx8F6DXUccxoane6Fi1785579677273724938 warm_start=false response_time_ms=1508.942820 duration_ms=1007.847124 init_time_ms=501.071213 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=501.095696
+2026/08/01 12:21:33 [MAB] event=in_flight_changed ts=1785579693372 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=0 total_in_flight=0
+2026/08/01 12:21:33 [MAB] event=skip_cold_start ts=1785579693372 policy=UCB1 function=mab_decision_1785579676 arm=x86 duration_ms=1007.847124 reason=cold_start
+2026/08/01 12:21:33 [MAB] event=cold_start_stats ts=1785579693372 policy=UCB1 function=mab_decision_1785579676 arm=x86 total_invocations=1 cold_observed=1 warm_observed=0 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=0 cold_init_time_samples=1 avg_cold_duration_ms=1007.847124 avg_warm_duration_ms=0.000000 avg_cold_init_time_ms=501.071213
+2026/08/01 12:21:33 [MAB] event=decision_resolved ts=1785579693372 request_id=8TT4NaqaYJpWJCucLQQqF function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= direct_executions=3 fallback_executions=0 cancelled_decisions=0
+2026/08/01 12:21:34 [LB]: Periodic targets update
+2026/08/01 12:21:34 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:34 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:34 Found 2 targets
+2026/08/01 12:21:34 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:34 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:34 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:34 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:34 [MAB] event=in_flight_changed ts=1785579694387 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=1 total_in_flight=1
+2026/08/01 12:21:34 [MAB] event=select_arm ts=1785579694387 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=least_tried score=0.000000 total_counts=1 total_in_flight=1 effective_total_counts=2 arms=[arm,x86]
+2026/08/01 12:21:34 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:34 [MAB] event=decision_created ts=1785579694387 request_id=cKVSzjX6QcAtr9zuBzK99P function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:34 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:34 [MAB] event=decision_planned ts=1785579694387 request_id=cKVSzjX6QcAtr9zuBzK99P function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason=
+2026/08/01 12:21:34 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= candidate=jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:35 [LB-Update] Node jiz5jx8F6DXUccxoane6Fi1785579677273724938 reported 384 MB free
+2026/08/01 12:21:35 [MAB] event=execution_timing ts=1785579695391 policy=UCB1 function=mab_decision_1785579676 arm=x86 node_name=jiz5jx8F6DXUccxoane6Fi1785579677273724938 execution_node=jiz5jx8F6DXUccxoane6Fi1785579677273724938 warm_start=true response_time_ms=1003.049421 duration_ms=1002.961254 init_time_ms=0.073773 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.088167
+2026/08/01 12:21:35 [MAB] event=in_flight_changed ts=1785579695391 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=0 total_in_flight=0
+2026/08/01 12:21:35 [MAB] event=reward_breakdown ts=1785579695391 policy=UCB1 function=mab_decision_1785579676 arm=x86 base_tag=x86 architecture=x86 specialization=default capabilities=[] duration_ms=1002.961254 latency_reward=-6.910712 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-6.910712
+2026/08/01 12:21:35 [MAB] event=cold_start_stats ts=1785579695391 policy=UCB1 function=mab_decision_1785579676 arm=x86 total_invocations=2 cold_observed=1 warm_observed=1 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=1 cold_init_time_samples=1 avg_cold_duration_ms=1007.847124 avg_warm_duration_ms=1002.961254 avg_cold_init_time_ms=501.071213
+2026/08/01 12:21:35 [MAB] event=update_reward ts=1785579695391 policy=UCB1 function=mab_decision_1785579676 arm=x86 duration_ms=1002.961254 warm_start=true reward=-6.910712 count=1 avg_reward=-6.910712 total_counts=2
+2026/08/01 12:21:35 [MAB] event=decision_resolved ts=1785579695391 request_id=cKVSzjX6QcAtr9zuBzK99P function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= direct_executions=4 fallback_executions=0 cancelled_decisions=0
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.245365 count=1 in_flight=0 effective_count=1 avg_reward=-6.911409 exploration_bonus=0.666044 total_counts=2 total_in_flight=0 effective_total_counts=2 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.244668 count=1 in_flight=0 effective_count=1 avg_reward=-6.910712 exploration_bonus=0.666044 total_counts=2 total_in_flight=0 effective_total_counts=2 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=1 total_in_flight=1
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-6.244668 total_counts=2 total_in_flight=1 effective_total_counts=3 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696419 request_id=kwBrwBuSHp8QiaxLt6rNnm function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696419 request_id=kwBrwBuSHp8QiaxLt6rNnm function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= candidate=jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.072891 count=1 in_flight=0 effective_count=1 avg_reward=-6.911409 exploration_bonus=0.838518 total_counts=2 total_in_flight=1 effective_total_counts=3 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.317791 count=1 in_flight=1 effective_count=2 avg_reward=-6.910712 exploration_bonus=0.592922 total_counts=2 total_in_flight=1 effective_total_counts=3 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=1 total_in_flight=2
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696419 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-6.072891 total_counts=2 total_in_flight=2 effective_total_counts=4 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696419 request_id=5cNhtrfXW44Js947sgFMef function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 512 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696419 request_id=5cNhtrfXW44Js947sgFMef function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=arm execution_arm=arm fallback=false fallback_reason= candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696420 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.245365 count=1 in_flight=1 effective_count=2 avg_reward=-6.911409 exploration_bonus=0.666044 total_counts=2 total_in_flight=2 effective_total_counts=4 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696420 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.244668 count=1 in_flight=1 effective_count=2 avg_reward=-6.910712 exploration_bonus=0.666044 total_counts=2 total_in_flight=2 effective_total_counts=4 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696420 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=2 total_in_flight=3
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696420 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-6.244668 total_counts=2 total_in_flight=3 effective_total_counts=5 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696420 request_id=dqLmct6nyTDh4NgubF2h6Q function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696420 request_id=dqLmct6nyTDh4NgubF2h6Q function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= candidate=jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696421 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.193760 count=1 in_flight=1 effective_count=2 avg_reward=-6.911409 exploration_bonus=0.717649 total_counts=2 total_in_flight=3 effective_total_counts=5 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696421 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.324754 count=1 in_flight=2 effective_count=3 avg_reward=-6.910712 exploration_bonus=0.585958 total_counts=2 total_in_flight=3 effective_total_counts=5 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696421 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=2 total_in_flight=4
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696421 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-6.193760 total_counts=2 total_in_flight=4 effective_total_counts=6 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696421 request_id=WRhDnre5QEWLtTyApizWV6 function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 384 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696421 request_id=WRhDnre5QEWLtTyApizWV6 function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=arm execution_arm=arm fallback=false fallback_reason= candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.293151 count=1 in_flight=2 effective_count=3 avg_reward=-6.911409 exploration_bonus=0.618257 total_counts=2 total_in_flight=4 effective_total_counts=6 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.292455 count=1 in_flight=2 effective_count=3 avg_reward=-6.910712 exploration_bonus=0.618257 total_counts=2 total_in_flight=4 effective_total_counts=6 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=3 total_in_flight=5
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-6.292455 total_counts=2 total_in_flight=5 effective_total_counts=7 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696422 request_id=amVyFZThwDp7a4oRtaRjfS function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 128 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696422 request_id=amVyFZThwDp7a4oRtaRjfS function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= candidate=jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.267105 count=1 in_flight=2 effective_count=3 avg_reward=-6.911409 exploration_bonus=0.644304 total_counts=2 total_in_flight=5 effective_total_counts=7 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.352729 count=1 in_flight=3 effective_count=4 avg_reward=-6.910712 exploration_bonus=0.557984 total_counts=2 total_in_flight=5 effective_total_counts=7 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=3 total_in_flight=6
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-6.267105 total_counts=2 total_in_flight=6 effective_total_counts=8 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696422 request_id=pxPhzWjc3Snkc7f4UvfgHW function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 256 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696422 request_id=pxPhzWjc3Snkc7f4UvfgHW function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason=
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=arm execution_arm=arm fallback=false fallback_reason= candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.334598 count=1 in_flight=3 effective_count=4 avg_reward=-6.911409 exploration_bonus=0.576811 total_counts=2 total_in_flight=6 effective_total_counts=8 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.333901 count=1 in_flight=3 effective_count=4 avg_reward=-6.910712 exploration_bonus=0.576811 total_counts=2 total_in_flight=6 effective_total_counts=8 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=4 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696422 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-6.333901 total_counts=2 total_in_flight=7 effective_total_counts=9 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696422 request_id=SoJ4t9UrqMqnQqwcJtZUSB function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 128 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [LB] Fallback: using ring 'arm'
+2026/08/01 12:21:36 [MAB] event=decision_planned ts=1785579696422 request_id=SoJ4t9UrqMqnQqwcJtZUSB function=mab_decision_1785579676 selected_arm=x86 execution_arm=arm fallback=true fallback_reason=selected_arm_no_candidate
+2026/08/01 12:21:36 [LB] Selected target for function 'mab_decision_1785579676': selected_arm=x86 execution_arm=arm fallback=true fallback_reason=selected_arm_no_candidate candidate=BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-6.318487 count=1 in_flight=3 effective_count=4 avg_reward=-6.911409 exploration_bonus=0.592922 total_counts=2 total_in_flight=7 effective_total_counts=9 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.380387 count=1 in_flight=4 effective_count=5 avg_reward=-6.910712 exploration_bonus=0.530325 total_counts=2 total_in_flight=7 effective_total_counts=9 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=4 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-6.318487 total_counts=2 total_in_flight=8 effective_total_counts=10 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696423 request_id=CGtsSUFpda9xKkPaPMepK7 function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=3 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696423 request_id=CGtsSUFpda9xKkPaPMepK7 policy=UCB1 function=mab_decision_1785579676 arm=arm reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=2 avg_reward=-9.455704 total_counts=3
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696423 request_id=CGtsSUFpda9xKkPaPMepK7 function=mab_decision_1785579676 selected_arm=arm execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=1 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-8.912813 count=2 in_flight=3 effective_count=5 avg_reward=-9.455704 exploration_bonus=0.542891 total_counts=3 total_in_flight=7 effective_total_counts=10 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-6.367821 count=1 in_flight=4 effective_count=5 avg_reward=-6.910712 exploration_bonus=0.542891 total_counts=3 total_in_flight=7 effective_total_counts=10 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=5 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-6.367821 total_counts=3 total_in_flight=8 effective_total_counts=11 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696423 request_id=kyuNnBYATYzxhvwdikyqtA function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=4 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696423 request_id=kyuNnBYATYzxhvwdikyqtA policy=UCB1 function=mab_decision_1785579676 arm=x86 reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=2 avg_reward=-9.455356 total_counts=4
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696423 request_id=kyuNnBYATYzxhvwdikyqtA function=mab_decision_1785579676 selected_arm=x86 execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=2 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-8.901691 count=2 in_flight=3 effective_count=5 avg_reward=-9.455704 exploration_bonus=0.554013 total_counts=4 total_in_flight=7 effective_total_counts=11 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-8.949614 count=2 in_flight=4 effective_count=6 avg_reward=-9.455356 exploration_bonus=0.505743 total_counts=4 total_in_flight=7 effective_total_counts=11 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=4 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-8.901691 total_counts=4 total_in_flight=8 effective_total_counts=12 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696423 request_id=LVmd2FbAkTy3LbDQL5CpgK function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696423 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=3 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696423 request_id=LVmd2FbAkTy3LbDQL5CpgK policy=UCB1 function=mab_decision_1785579676 arm=arm reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=3 avg_reward=-10.303803 total_counts=5
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696423 request_id=LVmd2FbAkTy3LbDQL5CpgK function=mab_decision_1785579676 selected_arm=arm execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=3 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-9.788966 count=3 in_flight=3 effective_count=6 avg_reward=-10.303803 exploration_bonus=0.514837 total_counts=5 total_in_flight=7 effective_total_counts=12 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-8.940519 count=2 in_flight=4 effective_count=6 avg_reward=-9.455356 exploration_bonus=0.514837 total_counts=5 total_in_flight=7 effective_total_counts=12 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=5 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-8.940519 total_counts=5 total_in_flight=8 effective_total_counts=13 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696424 request_id=iCbD6Mk8357qkHWkojSfH3 function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=4 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696424 request_id=iCbD6Mk8357qkHWkojSfH3 policy=UCB1 function=mab_decision_1785579676 arm=x86 reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=3 avg_reward=-10.303571 total_counts=6
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696424 request_id=iCbD6Mk8357qkHWkojSfH3 function=mab_decision_1785579676 selected_arm=x86 execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=4 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-9.780740 count=3 in_flight=3 effective_count=6 avg_reward=-10.303803 exploration_bonus=0.523063 total_counts=6 total_in_flight=7 effective_total_counts=13 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-9.819309 count=3 in_flight=4 effective_count=7 avg_reward=-10.303571 exploration_bonus=0.484262 total_counts=6 total_in_flight=7 effective_total_counts=13 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=4 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-9.780740 total_counts=6 total_in_flight=8 effective_total_counts=14 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696424 request_id=xFyb4ak7xS6mY8ZA5MQkeG function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=3 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696424 request_id=xFyb4ak7xS6mY8ZA5MQkeG policy=UCB1 function=mab_decision_1785579676 arm=arm reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=4 avg_reward=-10.727852 total_counts=7
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696424 request_id=xFyb4ak7xS6mY8ZA5MQkeG function=mab_decision_1785579676 selected_arm=arm execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=5 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-10.236644 count=4 in_flight=3 effective_count=7 avg_reward=-10.727852 exploration_bonus=0.491208 total_counts=7 total_in_flight=7 effective_total_counts=14 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-9.812363 count=3 in_flight=4 effective_count=7 avg_reward=-10.303571 exploration_bonus=0.491208 total_counts=7 total_in_flight=7 effective_total_counts=14 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=5 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-9.812363 total_counts=7 total_in_flight=8 effective_total_counts=15 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696424 request_id=oVUBtEmGjg8J5L7omTKfpF function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=4 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696424 request_id=oVUBtEmGjg8J5L7omTKfpF policy=UCB1 function=mab_decision_1785579676 arm=x86 reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=4 avg_reward=-10.727678 total_counts=8
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696424 request_id=oVUBtEmGjg8J5L7omTKfpF function=mab_decision_1785579676 selected_arm=x86 execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=6 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-10.230265 count=4 in_flight=3 effective_count=7 avg_reward=-10.727852 exploration_bonus=0.497587 total_counts=8 total_in_flight=7 effective_total_counts=15 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-10.262228 count=4 in_flight=4 effective_count=8 avg_reward=-10.727678 exploration_bonus=0.465450 total_counts=8 total_in_flight=7 effective_total_counts=15 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=4 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-10.230265 total_counts=8 total_in_flight=8 effective_total_counts=16 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696424 request_id=XBFos6K4zGGGUTHAFAYXFk function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=3 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696424 request_id=XBFos6K4zGGGUTHAFAYXFk policy=UCB1 function=mab_decision_1785579676 arm=arm reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=5 avg_reward=-10.982282 total_counts=9
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696424 request_id=XBFos6K4zGGGUTHAFAYXFk function=mab_decision_1785579676 selected_arm=arm execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=7 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-10.511318 count=5 in_flight=3 effective_count=8 avg_reward=-10.982282 exploration_bonus=0.470964 total_counts=9 total_in_flight=7 effective_total_counts=16 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696424 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-10.256714 count=4 in_flight=4 effective_count=8 avg_reward=-10.727678 exploration_bonus=0.470964 total_counts=9 total_in_flight=7 effective_total_counts=16 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=started in_flight=5 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 selected_arm=x86 reason=ucb_score score=-10.256714 total_counts=9 total_in_flight=8 effective_total_counts=17 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=x86 compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696425 request_id=YbyRnNjDY3doHy76DWzVeG function=mab_decision_1785579676 selected_arm=x86
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=4 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696425 request_id=YbyRnNjDY3doHy76DWzVeG policy=UCB1 function=mab_decision_1785579676 arm=x86 reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=5 avg_reward=-10.982142 total_counts=10
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696425 request_id=YbyRnNjDY3doHy76DWzVeG function=mab_decision_1785579676 selected_arm=x86 execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=8 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=arm arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tag found: function=mab_decision_1785579676 tag=x86 arch=amd64 pattern="" ring_size=1
+2026/08/01 12:21:36 [LB] Compatible tags for function 'mab_decision_1785579676': [arm x86]
+2026/08/01 12:21:36 [LB][MAB] event=before_select function=mab_decision_1785579676 compatible_tags=[arm x86] has_context=true
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=arm score=-10.506197 count=5 in_flight=3 effective_count=8 avg_reward=-10.982282 exploration_bonus=0.476085 total_counts=10 total_in_flight=7 effective_total_counts=17 contextual=false
+2026/08/01 12:21:36 [MAB] event=arm_score ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=x86 score=-10.533285 count=5 in_flight=4 effective_count=9 avg_reward=-10.982142 exploration_bonus=0.448857 total_counts=10 total_in_flight=7 effective_total_counts=17 contextual=false
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=arm action=started in_flight=4 total_in_flight=8
+2026/08/01 12:21:36 [MAB] event=select_arm ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 selected_arm=arm reason=ucb_score score=-10.506197 total_counts=10 total_in_flight=8 effective_total_counts=18 arms=[arm,x86]
+2026/08/01 12:21:36 [LB][MAB] event=after_select function=mab_decision_1785579676 selected_tag=arm compatible_tags=[arm x86]
+2026/08/01 12:21:36 [MAB] event=decision_created ts=1785579696425 request_id=28JKBn4HPTJ6GLJF8bzoam function=mab_decision_1785579676 selected_arm=arm
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 Candidate has: 0 MB free memory. Function needs: 128 MB
+2026/08/01 12:21:36 [MAB] event=in_flight_changed ts=1785579696425 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=3 total_in_flight=7
+2026/08/01 12:21:36 [MAB] event=synthetic_reward ts=1785579696425 request_id=28JKBn4HPTJ6GLJF8bzoam policy=UCB1 function=mab_decision_1785579676 arm=arm reward=-12.000000 reason=no_candidate_after_fallback utilization=0.000000 count=6 avg_reward=-11.151901 total_counts=11
+2026/08/01 12:21:36 [MAB] event=decision_cancelled ts=1785579696425 request_id=28JKBn4HPTJ6GLJF8bzoam function=mab_decision_1785579676 selected_arm=arm execution_arm= fallback=false fallback_reason= reason=no_candidate_after_fallback direct_executions=4 fallback_executions=0 cancelled_decisions=9 bandit_manager_available=true
+2026/08/01 12:21:36 [LB] No candidate available for function 'mab_decision_1785579676' after fallback
+2026/08/01 12:21:37 [LB]: Periodic targets update
+2026/08/01 12:21:37 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:37 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:37 Found 2 targets
+2026/08/01 12:21:40 [LB]: Periodic targets update
+2026/08/01 12:21:40 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:40 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:40 Found 2 targets
+2026/08/01 12:21:40 [LB-Update] Node jiz5jx8F6DXUccxoane6Fi1785579677273724938 reported 128 MB free
+2026/08/01 12:21:40 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 0 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=x86 node_name=jiz5jx8F6DXUccxoane6Fi1785579677273724938 execution_node=jiz5jx8F6DXUccxoane6Fi1785579677273724938 warm_start=true response_time_ms=4004.448057 duration_ms=4004.254994 init_time_ms=0.170567 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.193063
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=3 total_in_flight=6
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=true response_time_ms=4004.262260 duration_ms=4004.055607 init_time_ms=0.186794 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=0.206653
+2026/08/01 12:21:40 [MAB] event=reward_breakdown ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=x86 base_tag=x86 architecture=x86 specialization=default capabilities=[] duration_ms=4004.254994 latency_reward=-8.295113 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-8.295113
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=x86 total_invocations=3 cold_observed=1 warm_observed=2 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=2 cold_init_time_samples=1 avg_cold_duration_ms=1007.847124 avg_warm_duration_ms=2503.608124 avg_cold_init_time_ms=501.071213
+2026/08/01 12:21:40 [MAB] event=update_reward ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=x86 duration_ms=4004.254994 warm_start=true reward=-8.295113 count=6 avg_reward=-10.534304 total_counts=12
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700425 request_id=kwBrwBuSHp8QiaxLt6rNnm function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= direct_executions=5 fallback_executions=0 cancelled_decisions=9
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=2 total_in_flight=5
+2026/08/01 12:21:40 [MAB] event=reward_breakdown ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=arm base_tag=arm architecture=arm specialization=default capabilities=[] duration_ms=4004.055607 latency_reward=-8.295063 cost_weight=0.000000 cost_factor=1.000000 cost_term=0.000000 energy_weight=0.000000 energy_factor=1.000000 energy_term=0.000000 final_reward=-8.295063
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=3 cold_observed=1 warm_observed=2 cold_accepted=0 cold_skipped=1 invalid_feedback=0 cold_duration_samples=1 warm_duration_samples=2 cold_init_time_samples=1 avg_cold_duration_ms=1007.434663 avg_warm_duration_ms=2503.857778 avg_cold_init_time_ms=514.152984
+2026/08/01 12:21:40 [MAB] event=update_reward ts=1785579700425 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=4004.055607 warm_start=true reward=-8.295063 count=7 avg_reward=-10.743782 total_counts=13
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700425 request_id=5cNhtrfXW44Js947sgFMef function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason= direct_executions=6 fallback_executions=0 cancelled_decisions=9
+2026/08/01 12:21:40 [LB-Update] Node jiz5jx8F6DXUccxoane6Fi1785579677273724938 reported 256 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700903 policy=UCB1 function=mab_decision_1785579676 arm=x86 node_name=jiz5jx8F6DXUccxoane6Fi1785579677273724938 execution_node=jiz5jx8F6DXUccxoane6Fi1785579677273724938 warm_start=false response_time_ms=4480.297752 duration_ms=4008.532591 init_time_ms=471.746330 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=471.765161
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700903 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=2 total_in_flight=4
+2026/08/01 12:21:40 [MAB] event=skip_cold_start ts=1785579700903 policy=UCB1 function=mab_decision_1785579676 arm=x86 duration_ms=4008.532591 reason=cold_start
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700903 policy=UCB1 function=mab_decision_1785579676 arm=x86 total_invocations=4 cold_observed=2 warm_observed=2 cold_accepted=0 cold_skipped=2 invalid_feedback=0 cold_duration_samples=2 warm_duration_samples=2 cold_init_time_samples=2 avg_cold_duration_ms=2508.189858 avg_warm_duration_ms=2503.608124 avg_cold_init_time_ms=486.408772
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700903 request_id=amVyFZThwDp7a4oRtaRjfS function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= direct_executions=7 fallback_executions=0 cancelled_decisions=9
+2026/08/01 12:21:40 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 128 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700912 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=false response_time_ms=4488.489581 duration_ms=4007.652443 init_time_ms=480.825885 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=480.837138
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700912 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=1 total_in_flight=3
+2026/08/01 12:21:40 [MAB] event=synthetic_reward ts=1785579700912 request_id=SoJ4t9UrqMqnQqwcJtZUSB policy=UCB1 function=mab_decision_1785579676 arm=x86 reward=-12.000000 reason=selected_arm_no_candidate utilization=0.000000 count=7 avg_reward=-10.743689 total_counts=14
+2026/08/01 12:21:40 [MAB] event=skip_cold_start ts=1785579700912 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=4007.652443 reason=cold_start
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700912 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=4 cold_observed=2 warm_observed=2 cold_accepted=0 cold_skipped=2 invalid_feedback=0 cold_duration_samples=2 warm_duration_samples=2 cold_init_time_samples=2 avg_cold_duration_ms=2507.543553 avg_warm_duration_ms=2503.857778 avg_cold_init_time_ms=497.489435
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700912 request_id=SoJ4t9UrqMqnQqwcJtZUSB function=mab_decision_1785579676 selected_arm=x86 execution_arm=arm fallback=true fallback_reason=selected_arm_no_candidate direct_executions=7 fallback_executions=1 cancelled_decisions=9
+2026/08/01 12:21:40 [LB-Update] Node jiz5jx8F6DXUccxoane6Fi1785579677273724938 reported 384 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700919 policy=UCB1 function=mab_decision_1785579676 arm=x86 node_name=jiz5jx8F6DXUccxoane6Fi1785579677273724938 execution_node=jiz5jx8F6DXUccxoane6Fi1785579677273724938 warm_start=false response_time_ms=4496.700386 duration_ms=4006.962004 init_time_ms=489.726917 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=489.738382
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700919 policy=UCB1 function=mab_decision_1785579676 arm=x86 action=resolved in_flight=0 total_in_flight=2
+2026/08/01 12:21:40 [MAB] event=skip_cold_start ts=1785579700919 policy=UCB1 function=mab_decision_1785579676 arm=x86 duration_ms=4006.962004 reason=cold_start
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700919 policy=UCB1 function=mab_decision_1785579676 arm=x86 total_invocations=5 cold_observed=3 warm_observed=2 cold_accepted=0 cold_skipped=3 invalid_feedback=0 cold_duration_samples=3 warm_duration_samples=2 cold_init_time_samples=3 avg_cold_duration_ms=3007.780573 avg_warm_duration_ms=2503.608124 avg_cold_init_time_ms=487.514820
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700919 request_id=dqLmct6nyTDh4NgubF2h6Q function=mab_decision_1785579676 selected_arm=x86 execution_arm=x86 fallback=false fallback_reason= direct_executions=8 fallback_executions=1 cancelled_decisions=9
+2026/08/01 12:21:40 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 256 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700931 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=false response_time_ms=4509.313376 duration_ms=4007.393279 init_time_ms=501.906927 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=501.920097
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700931 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=1 total_in_flight=1
+2026/08/01 12:21:40 [MAB] event=skip_cold_start ts=1785579700932 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=4007.393279 reason=cold_start
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700932 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=5 cold_observed=3 warm_observed=2 cold_accepted=0 cold_skipped=3 invalid_feedback=0 cold_duration_samples=3 warm_duration_samples=2 cold_init_time_samples=3 avg_cold_duration_ms=3007.493462 avg_warm_duration_ms=2503.857778 avg_cold_init_time_ms=498.961932
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700932 request_id=WRhDnre5QEWLtTyApizWV6 function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason= direct_executions=9 fallback_executions=1 cancelled_decisions=9
+2026/08/01 12:21:40 [LB-Update] Node BD8CYbyatxTrBA8xAcUGZM1785579677273559808 reported 384 MB free
+2026/08/01 12:21:40 [MAB] event=execution_timing ts=1785579700938 policy=UCB1 function=mab_decision_1785579676 arm=arm node_name=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 execution_node=BD8CYbyatxTrBA8xAcUGZM1785579677273559808 warm_start=false response_time_ms=4514.943964 duration_ms=4006.417634 init_time_ms=508.516564 queueing_time_ms=0.000000 offload_latency_ms=0.000000 response_minus_duration_ms=508.526330
+2026/08/01 12:21:40 [MAB] event=in_flight_changed ts=1785579700938 policy=UCB1 function=mab_decision_1785579676 arm=arm action=resolved in_flight=0 total_in_flight=0
+2026/08/01 12:21:40 [MAB] event=skip_cold_start ts=1785579700938 policy=UCB1 function=mab_decision_1785579676 arm=arm duration_ms=4006.417634 reason=cold_start
+2026/08/01 12:21:40 [MAB] event=cold_start_stats ts=1785579700938 policy=UCB1 function=mab_decision_1785579676 arm=arm total_invocations=6 cold_observed=4 warm_observed=2 cold_accepted=0 cold_skipped=4 invalid_feedback=0 cold_duration_samples=4 warm_duration_samples=2 cold_init_time_samples=4 avg_cold_duration_ms=3257.224505 avg_warm_duration_ms=2503.857778 avg_cold_init_time_ms=501.350590
+2026/08/01 12:21:40 [MAB] event=decision_resolved ts=1785579700938 request_id=pxPhzWjc3Snkc7f4UvfgHW function=mab_decision_1785579676 selected_arm=arm execution_arm=arm fallback=false fallback_reason= direct_executions=10 fallback_executions=1 cancelled_decisions=9
+2026/08/01 12:21:43 [LB]: Periodic targets update
+2026/08/01 12:21:43 Found target: BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:43 Found target: jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:43 Found 2 targets

@@ -1,0 +1,29 @@
+2026/08/01 12:21:17 Local node id: (ROME)jiz5jx8F6DXUccxoane6Fi1785579677273724938 - x86 (arch: amd64)
+2026/08/01 12:21:17 Registration for node: (ROME)jiz5jx8F6DXUccxoane6Fi1785579677273724938 - x86
+2026/08/01 12:21:17 Connecting to etcd
+2026/08/01 12:21:17 Connected to etcd
+2026/08/01 12:21:17 etcd connection state: TRANSIENT_FAILURE
+2026/08/01 12:21:17 etcd: transient failure, triggering reconnect
+2026/08/01 12:21:18 etcd connection state: READY
+2026/08/01 12:21:18 etcd: connected and ready
+2026/08/01 12:21:18 Registering to etcd: registry/ROME/x86/jiz5jx8F6DXUccxoane6Fi1785579677273724938
+2026/08/01 12:21:18 Configured scheduling policy: default
+2026/08/01 12:21:18 Configured offloading policy: disable
+2026/08/01 12:21:18 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/08/01 12:21:18 Scheduler started.
+2026/08/01 12:21:18 No remote area is configured; vertical offloading disabled
+2026/08/01 12:21:18 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/08/01 12:21:27 New request: creation of mab_decision_1785579676
+2026/08/01 12:21:31 Container 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734 has name /focused_benz
+2026/08/01 12:21:32 [mab_decision_1785579676] Executing on container: 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734
+2026/08/01 12:21:34 Using warm 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734 for mab_decision_1785579676. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:21:34 [mab_decision_1785579676] Executing on container: 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734
+2026/08/01 12:21:36 Using warm 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734 for mab_decision_1785579676. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: 25523254cf84b65b7fd715b1e16d71ec1304a5b5ad653bf8786a9e80dbf12734
+2026/08/01 12:21:36 Container 35dd930556900049900a1942fc95602ac94207dfffd25d36fff51de0a2891241 has name /quizzical_ritchie
+2026/08/01 12:21:36 Container 10e9d9a239f5b9ccfde13d58a7d419a720c40f3a4df51e1130a3251c1a768363 has name /focused_chandrasekhar
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: 10e9d9a239f5b9ccfde13d58a7d419a720c40f3a4df51e1130a3251c1a768363
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: 35dd930556900049900a1942fc95602ac94207dfffd25d36fff51de0a2891241
+2026/08/01 12:21:38 Periodic nearby Monitoring
+2026/08/01 12:21:38 Requesting status information for 192.168.0.46:9876

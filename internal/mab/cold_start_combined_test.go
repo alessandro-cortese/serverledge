@@ -295,6 +295,7 @@ func TestColdStartExecutionRespectsActionMask(
 		selected,
 		nil,
 		&feedback,
+		nil,
 	)
 
 	assert.Zero(

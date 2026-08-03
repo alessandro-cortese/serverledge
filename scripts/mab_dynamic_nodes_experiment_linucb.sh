@@ -37,6 +37,8 @@ LB_REFRESH_INTERVAL="${LB_REFRESH_INTERVAL:-3}"
 # LinUCB parameters.
 MAB_LINUCB_ALPHA="${MAB_LINUCB_ALPHA:-0.1}"
 
+MAB_FALLBACK_PENALTY="${MAB_FALLBACK_PENALTY:--12.0}"
+
 # First phase: start only these nodes.
 FIRST_NODE_CONFS=(${FIRST_NODE_CONFS:-node2-conf.yaml node6-conf.yaml})
 
@@ -61,6 +63,7 @@ registry.area: ROME
 lb.arch_awareness: true
 lb.mode: MAB
 mab.policy: LinUCB
+mab.fallback.penalty: ${MAB_FALLBACK_PENALTY}
 mab.linucb.alpha: ${MAB_LINUCB_ALPHA}
 lb.replicas: 128
 lb.refresh_interval: ${LB_REFRESH_INTERVAL}

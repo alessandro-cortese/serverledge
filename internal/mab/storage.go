@@ -13,6 +13,10 @@ const (
 	// execution tag returned by the node differs from the selected arm and no
 	// more specific fallback reason was recorded by the load balancer.
 	FallbackReasonObservedExecutionDiffers = "observed_execution_differs_from_selected"
+
+	// DecisionFailureReasonNoCandidateAfterFallback indicates that neither the
+	// selected ring nor any compatible fallback ring could serve the request.
+	DecisionFailureReasonNoCandidateAfterFallback = "no_candidate_after_fallback"
 )
 
 // DecisionRecord tracks the complete lifecycle of one MAB decision.
@@ -232,10 +236,6 @@ func ResolveDecisionWithoutFeedback(
 	decision DecisionRecord,
 	reason string,
 ) bool {
-	if reason != "" {
-		decision.FallbackReason =
-			reason
-	}
 
 	resolved := false
 
@@ -251,6 +251,10 @@ func ResolveDecisionWithoutFeedback(
 			"",
 			decision.Context,
 			nil,
+			fallbackSyntheticReward(
+				decision,
+				reason,
+			),
 		)
 
 		resolved = true
@@ -325,6 +329,10 @@ func ResolveDecisionWithFeedback(
 		decision.ExecutionArm,
 		decision.Context,
 		&feedback,
+		fallbackSyntheticReward(
+			decision,
+			decision.FallbackReason,
+		),
 	)
 
 	stats :=

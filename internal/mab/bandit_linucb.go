@@ -251,6 +251,7 @@ func (p *LinUCBDisjointPolicy) ResolveSelection(
 	executionArm string,
 	ctx *Context,
 	feedback *ExecutionFeedback,
+	selectedArmReward *SyntheticReward,
 ) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -259,6 +260,14 @@ func (p *LinUCBDisjointPolicy) ResolveSelection(
 		selectedArm,
 	) {
 		return
+	}
+
+	if selectedArmReward != nil {
+		p.updateSyntheticRewardLocked(
+			selectedArm,
+			ctx,
+			*selectedArmReward,
+		)
 	}
 
 	if feedback == nil ||
@@ -271,6 +280,101 @@ func (p *LinUCBDisjointPolicy) ResolveSelection(
 		executionArm,
 		ctx,
 		*feedback,
+	)
+}
+
+func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
+	arm string,
+	ctx *Context,
+	synthetic SyntheticReward,
+) {
+	state, ok :=
+		p.Arms[arm]
+
+	if !ok {
+		log.Printf(
+			"[MAB] event=unknown_synthetic_reward_arm policy=%s function=%s arm=%s reason=%s\n",
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			synthetic.Reason,
+		)
+
+		return
+	}
+
+	if ctx == nil {
+		log.Printf(
+			"[MAB] event=invalid_synthetic_reward policy=%s function=%s arm=%s reason=missing_decision_context synthetic_reason=%s\n",
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			synthetic.Reason,
+		)
+
+		return
+	}
+
+	if !isFiniteNumber(
+		synthetic.Value,
+	) {
+		log.Printf(
+			"[MAB] event=invalid_synthetic_reward policy=%s function=%s arm=%s reward=%f reason=%s\n",
+			string(p.GetType()),
+			p.FunctionName,
+			arm,
+			synthetic.Value,
+			synthetic.Reason,
+		)
+
+		return
+	}
+
+	utilization :=
+		armUtilization(
+			ctx,
+			arm,
+		)
+
+	x :=
+		p.computeFeatures(
+			utilization,
+		)
+
+	var outerProduct mat.Dense
+
+	outerProduct.Outer(
+		1.0,
+		x,
+		x,
+	)
+
+	state.A.Add(
+		state.A,
+		&outerProduct,
+	)
+
+	var scaledX mat.VecDense
+
+	scaledX.ScaleVec(
+		synthetic.Value,
+		x,
+	)
+
+	state.b.AddVec(
+		state.b,
+		&scaledX,
+	)
+
+	logMABSyntheticReward(
+		string(p.GetType()),
+		p.FunctionName,
+		arm,
+		synthetic,
+		utilization,
+		0,
+		0.0,
+		0,
 	)
 }
 

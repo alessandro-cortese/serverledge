@@ -1,0 +1,27 @@
+2026/08/01 12:22:17 Local node id: (ROME)XmDUtVTWFwAXEQ39pPiiS61785579737867667810 - x86 (arch: amd64)
+2026/08/01 12:22:17 Registration for node: (ROME)XmDUtVTWFwAXEQ39pPiiS61785579737867667810 - x86
+2026/08/01 12:22:17 Connecting to etcd
+2026/08/01 12:22:17 Connected to etcd
+2026/08/01 12:22:18 etcd connection state: READY
+2026/08/01 12:22:18 etcd: connected and ready
+2026/08/01 12:22:18 Registering to etcd: registry/ROME/x86/XmDUtVTWFwAXEQ39pPiiS61785579737867667810
+2026/08/01 12:22:18 Configured scheduling policy: default
+2026/08/01 12:22:18 Configured offloading policy: disable
+2026/08/01 12:22:18 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/08/01 12:22:18 Scheduler started.
+2026/08/01 12:22:18 No remote area is configured; vertical offloading disabled
+2026/08/01 12:22:18 UDP server up and listening on port 9877
+⇨ http server started on [::]:1324
+2026/08/01 12:22:27 New request: creation of mab_decision_1785579737
+2026/08/01 12:22:32 Container 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685 has name /boring_mahavira
+2026/08/01 12:22:32 [mab_decision_1785579737] Executing on container: 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685
+2026/08/01 12:22:34 Using warm 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685 for mab_decision_1785579737. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:22:34 [mab_decision_1785579737] Executing on container: 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685
+2026/08/01 12:22:36 Using warm 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685 for mab_decision_1785579737. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:22:36 [mab_decision_1785579737] Executing on container: 386c6e926259e33e142cd924c189d7b4023f33f44852c5d3f854c7c329cf8685
+2026/08/01 12:22:37 Container d85dddf06a871388b47168d93eecdfd4d264270692e25531a5cd1a80c707ff5b has name /gifted_meitner
+2026/08/01 12:22:37 Container c0a07f956d951e16f647a7e057edfecdc709be74310de691b7565b823dc5ab9c has name /friendly_jemison
+2026/08/01 12:22:37 [mab_decision_1785579737] Executing on container: d85dddf06a871388b47168d93eecdfd4d264270692e25531a5cd1a80c707ff5b
+2026/08/01 12:22:37 [mab_decision_1785579737] Executing on container: c0a07f956d951e16f647a7e057edfecdc709be74310de691b7565b823dc5ab9c
+2026/08/01 12:22:38 Periodic nearby Monitoring
+2026/08/01 12:22:38 Requesting status information for 192.168.0.46:9876

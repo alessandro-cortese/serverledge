@@ -267,6 +267,7 @@ func (p *recordingPolicy) ResolveSelection(
 	executionArm string,
 	ctx *Context,
 	feedback *ExecutionFeedback,
+	selectedArmReward *SyntheticReward,
 ) {
 	p.selectedArm =
 		selectedArm

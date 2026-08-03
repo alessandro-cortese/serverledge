@@ -1,0 +1,30 @@
+2026/08/01 12:21:17 Local node id: (ROME)BD8CYbyatxTrBA8xAcUGZM1785579677273559808 - arm (arch: amd64)
+2026/08/01 12:21:17 Registration for node: (ROME)BD8CYbyatxTrBA8xAcUGZM1785579677273559808 - arm
+2026/08/01 12:21:17 Connecting to etcd
+2026/08/01 12:21:17 Connected to etcd
+2026/08/01 12:21:17 etcd connection state: TRANSIENT_FAILURE
+2026/08/01 12:21:17 etcd: transient failure, triggering reconnect
+2026/08/01 12:21:18 etcd connection state: READY
+2026/08/01 12:21:18 etcd: connected and ready
+2026/08/01 12:21:18 Registering to etcd: registry/ROME/arm/BD8CYbyatxTrBA8xAcUGZM1785579677273559808
+2026/08/01 12:21:18 Configured scheduling policy: default
+2026/08/01 12:21:18 Configured offloading policy: disable
+2026/08/01 12:21:18 Current resources: [CPUs: 0.000000/32.000000 - Mem: 0(+0 warm)/512]
+2026/08/01 12:21:18 Scheduler started.
+2026/08/01 12:21:18 No remote area is configured; vertical offloading disabled
+2026/08/01 12:21:18 UDP server up and listening on port 9876
+⇨ http server started on [::]:1323
+2026/08/01 12:21:27 Container 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108 has name /infallible_ellis
+2026/08/01 12:21:27 [mab_decision_1785579676] Executing on container: 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108
+2026/08/01 12:21:29 Using warm 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108 for mab_decision_1785579676. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:21:29 [mab_decision_1785579676] Executing on container: 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108
+2026/08/01 12:21:36 Using warm 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108 for mab_decision_1785579676. Now: [CPUs: 0.000000/32.000000 - Mem: 128(+0 warm)/512]
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: 2c6824eb3893a45b9a0578343b021da51d7afd62b55a193a9f5e7ccaa141b108
+2026/08/01 12:21:36 Container c4f458fcd02546aa1b5c131dff8fa2e83cc2d6fb2482200c4d9062d56a99c250 has name /youthful_boyd
+2026/08/01 12:21:36 Container a7ad3bb9d65452d326ae985f51133e2b14eae8e42f2051cd3e0fcaf3bff089fd has name /objective_murdock
+2026/08/01 12:21:36 Container a6d9b3c1fe003e99d66ea0cc3f1512d3d108d5010e97e6414c0366e37bf18b70 has name /romantic_chandrasekhar
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: a6d9b3c1fe003e99d66ea0cc3f1512d3d108d5010e97e6414c0366e37bf18b70
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: c4f458fcd02546aa1b5c131dff8fa2e83cc2d6fb2482200c4d9062d56a99c250
+2026/08/01 12:21:36 [mab_decision_1785579676] Executing on container: a7ad3bb9d65452d326ae985f51133e2b14eae8e42f2051cd3e0fcaf3bff089fd
+2026/08/01 12:21:38 Periodic nearby Monitoring
+2026/08/01 12:21:38 Requesting status information for 192.168.0.46:9877
