@@ -45,19 +45,59 @@ func Execute(
 	}
 
 	t0 := time.Now()
+
 	initTime := t0.Sub(r.Arrival).Seconds()
 
 	response,
 		invocationWait,
 		executionWallTime,
 		resourceProfile,
-		err := container.ExecuteProfiled(
-		cont,
-		&req,
-		r.Fun.MaxConcurrency,
-	)
+		executionErr :=
+		container.ExecuteProfiled(
+			cont,
+			&req,
+			r.Fun.MaxConcurrency,
+			isWarm,
+		)
 
+	// Record timing and placement for both successful and failed invocations.
+	// This keeps the raw dataset auditable.
 	r.ResourceProfile = resourceProfile
+	r.IsWarmStart = isWarm
+
+	r.Duration =
+		executionWallTime.Seconds() -
+			invocationWait.Seconds()
+
+	r.ResponseTime =
+		time.Since(r.Arrival).Seconds()
+
+	// Initializing containers may require invocation retries. InitTime is
+	// retained even when cold samples are excluded from warm clustering.
+	r.InitTime =
+		initTime +
+			invocationWait.Seconds()
+
+	r.ExecutionArea = node.LocalNode.Area
+	r.ExecutionNode = node.LocalNode.Key
+
+	executionSucceeded :=
+		executionErr == nil &&
+			response != nil &&
+			response.Success
+
+	executionErrorText := ""
+
+	switch {
+	case executionErr != nil:
+		executionErrorText = executionErr.Error()
+
+	case response == nil:
+		executionErrorText = "missing_invocation_result"
+
+	case !response.Success:
+		executionErrorText = "function_execution_failed"
+	}
 
 	profiling.LogInvocationResourceProfile(
 		r.Id(),
@@ -68,8 +108,76 @@ func Execute(
 		resourceProfile,
 	)
 
-	if err != nil {
-		logs, errLog := container.GetLog(cont.ID)
+	sampleTiming :=
+		profiling.InvocationTiming{}
+
+	if isWarm {
+		sampleTiming.DurationMs =
+			r.Duration * 1000.0
+
+		sampleTiming.ResponseTimeMs =
+			r.ResponseTime * 1000.0
+
+		sampleTiming.QueueingTimeMs =
+			r.QueueingTime * 1000.0
+
+		sampleTiming.OffloadLatencyMs =
+			r.OffloadLatency * 1000.0
+
+		sampleTiming.InvocationWaitMs =
+			float64(invocationWait) /
+				float64(time.Millisecond)
+
+		sampleTiming.ExecutionWallTimeMs =
+			float64(executionWallTime) /
+				float64(time.Millisecond)
+	} else {
+		// Per le invocazioni cold conserviamo soltanto il tempo
+		// di inizializzazione, come stabilito per la profilazione.
+		sampleTiming.InitTimeMs =
+			r.InitTime * 1000.0
+	}
+
+	sample :=
+		profiling.BuildInvocationSample(
+			profiling.InvocationSampleInput{
+				RequestID:    r.Id(),
+				FunctionName: r.Fun.Name,
+				MachineTag:   node.LocalNode.MachineTag,
+				NodeName:     node.LocalNode.Key,
+				ContainerID:  cont.ID,
+
+				WarmStart:          isWarm,
+				ExecutionSucceeded: executionSucceeded,
+				ExecutionError:     executionErrorText,
+
+				Timing:  sampleTiming,
+				Profile: resourceProfile,
+			},
+		)
+
+	// The completion notification is sent before the deferred export runs.
+	// Consequently a filesystem write cannot keep the container unavailable.
+	defer func() {
+		if err :=
+			profiling.ExportInvocationSample(
+				sample,
+			); err != nil {
+
+			log.Printf(
+				"[PROFILING] event=sample_export_failed request_id=%q function=%s error=%q",
+				r.Id(),
+				r.Fun.Name,
+				err.Error(),
+			)
+		}
+	}()
+
+	if executionErr != nil {
+		logs, errLog :=
+			container.GetLog(
+				cont.ID,
+			)
 
 		if errLog == nil {
 			fmt.Println(logs)
@@ -91,11 +199,13 @@ func Execute(
 			"[%s] Execution failed on container %v: %v ",
 			r,
 			cont.ID,
-			err,
+			executionErr,
 		)
 	}
 
-	if !response.Success {
+	if response == nil ||
+		!response.Success {
+
 		completions <- &completionNotification{
 			funcName:  r.Fun.Name,
 			offloaded: r.offloaded,
@@ -112,23 +222,6 @@ func Execute(
 
 	r.Result = response.Result
 	r.Output = response.Output
-	r.IsWarmStart = isWarm
-
-	r.Duration =
-		executionWallTime.Seconds() -
-			invocationWait.Seconds()
-
-	r.ResponseTime =
-		time.Since(r.Arrival).Seconds()
-
-	// Initializing containers may require invocation retries,
-	// adding latency to InitTime.
-	r.InitTime =
-		initTime +
-			invocationWait.Seconds()
-
-	r.ExecutionArea = node.LocalNode.Area
-	r.ExecutionNode = node.LocalNode.Key
 
 	completions <- &completionNotification{
 		funcName:  r.Fun.Name,

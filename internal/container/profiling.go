@@ -18,6 +18,7 @@ func ExecuteProfiled(
 	cont *Container,
 	req *executor.InvocationRequest,
 	maxConcurrency int16,
+	collectResourceProfile bool,
 ) (
 	*executor.InvocationResult,
 	time.Duration,
@@ -35,12 +36,9 @@ func ExecuteProfiled(
 
 	contID := cont.ID
 
-	if !config.GetBool(
-		config.FUNCTION_PROFILING_ENABLED,
-		false,
-	) {
-		executionStartedAt :=
-			time.Now()
+	if !config.GetBool(config.FUNCTION_PROFILING_ENABLED, false) || !collectResourceProfile {
+
+		executionStartedAt := time.Now()
 
 		response, invocationWait, err :=
 			Execute(

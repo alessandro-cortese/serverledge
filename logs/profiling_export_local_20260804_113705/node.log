@@ -1,0 +1,27 @@
+2026/08/04 11:37:06 Local node id: (PROFILE_EXPORT_TEST)profiling-export-node-20260804_113705 - profiling-test (arch: amd64)
+2026/08/04 11:37:06 Registration for node: (PROFILE_EXPORT_TEST)profiling-export-node-20260804_113705 - profiling-test
+2026/08/04 11:37:06 Connecting to etcd
+2026/08/04 11:37:06 Connected to etcd
+2026/08/04 11:37:06 etcd connection state: READY
+2026/08/04 11:37:06 etcd: connected and ready
+2026/08/04 11:37:06 Registering to etcd: registry/PROFILE_EXPORT_TEST/profiling-test/profiling-export-node-20260804_113705
+2026/08/04 11:37:06 Configured scheduling policy: default
+2026/08/04 11:37:06 Configured offloading policy: disable
+2026/08/04 11:37:06 Current resources: [CPUs: 0.000000/8.000000 - Mem: 0(+0 warm)/768]
+2026/08/04 11:37:06 Scheduler started.
+2026/08/04 11:37:06 No remote area is configured; vertical offloading disabled
+2026/08/04 11:37:06 UDP server up and listening on port 9899
+⇨ http server started on [::]:1333
+2026/08/04 11:37:06 New request: creation of profiling_export_20260804_113705
+2026/08/04 11:37:07 Container 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb has name /elegant_ritchie
+2026/08/04 11:37:07 [profiling_export_20260804_113705] Executing on container: 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb
+2026/08/04 11:37:08 Using warm 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb for profiling_export_20260804_113705. Now: [CPUs: 0.000000/8.000000 - Mem: 128(+0 warm)/768]
+2026/08/04 11:37:08 [profiling_export_20260804_113705] Executing on container: 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb
+2026/08/04 11:37:09 [PROFILING] event=invocation_resource_profile ts=1785836229509 request_id="profiling_export_20260804_113705--test496723328" function=profiling_export_20260804_113705 machine_tag=profiling-test node=profiling-export-node-20260804_113705 container_id=58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb warm_start=true collected=true valid=true invalid_reason="" exclusive_container=true max_concurrency=1 profiling_lock_wait_ms=0.000093 execution_wall_time_ms=1002.858481 profiling_start_overhead_ms=5.961086 profiling_end_overhead_ms=3.635797 profiling_total_overhead_ms=9.596883 cpu_total_delta_ns=2296000 cpu_user_delta_ns=2242000 cpu_kernel_delta_ns=53000 cpu_throttled_time_delta_ns=0 cpu_throttled_periods_delta=0 online_cpus=32 utilized_cpus=0.002289 memory_before_bytes=18272256 memory_after_bytes=18776064 memory_delta_bytes=503808 memory_limit_bytes=134217728 page_faults_available=true page_faults_delta=0 major_page_faults_available=true major_page_faults_delta=0 block_io_available=true block_io_bytes_available=true block_io_ops_available=false block_read_bytes_delta=0 block_write_bytes_delta=0 block_read_ops_delta=0 block_write_ops_delta=0 network_available=true network_rx_bytes_delta=2208 network_tx_bytes_delta=555 pids_before=1 pids_after=1
+2026/08/04 11:37:09 Using warm 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb for profiling_export_20260804_113705. Now: [CPUs: 0.000000/8.000000 - Mem: 128(+0 warm)/768]
+2026/08/04 11:37:09 [profiling_export_20260804_113705] Executing on container: 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb
+2026/08/04 11:37:09 [PROFILING] event=invocation_resource_profile ts=1785836229534 request_id="profiling_export_20260804_113705--test526451544" function=profiling_export_20260804_113705 machine_tag=profiling-test node=profiling-export-node-20260804_113705 container_id=58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb warm_start=true collected=true valid=true invalid_reason="" exclusive_container=true max_concurrency=1 profiling_lock_wait_ms=0.000364 execution_wall_time_ms=2.940379 profiling_start_overhead_ms=2.775795 profiling_end_overhead_ms=2.137807 profiling_total_overhead_ms=4.913602 cpu_total_delta_ns=1532000 cpu_user_delta_ns=620000 cpu_kernel_delta_ns=913000 cpu_throttled_time_delta_ns=0 cpu_throttled_periods_delta=0 online_cpus=32 utilized_cpus=0.521021 memory_before_bytes=18276352 memory_after_bytes=18481152 memory_delta_bytes=204800 memory_limit_bytes=134217728 page_faults_available=true page_faults_delta=0 major_page_faults_available=true major_page_faults_delta=0 block_io_available=true block_io_bytes_available=true block_io_ops_available=false block_read_bytes_delta=0 block_write_bytes_delta=0 block_read_ops_delta=0 block_write_ops_delta=0 network_available=true network_rx_bytes_delta=697 network_tx_bytes_delta=546 pids_before=1 pids_after=1
+2026/08/04 11:37:09 Invocation failed: [[profiling_export_20260804_113705] Rq-profiling_export_20260804_113705--test526451544] Function execution failed 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb
+Got interrupt signal. Terminating...
+2026/08/04 11:37:09 Shutting down ALL containers
+2026/08/04 11:37:09 Removing container with ID 58e259f32b343ce3c78dc725054aadad3bcec4e96a7d21a7ed6b96a269ae1dbb

@@ -141,6 +141,12 @@ const METRICS_LOAD_JSON_FILE = "metrics.load.json.file"
 // two Docker statistics reads.
 const FUNCTION_PROFILING_ENABLED = "profiling.enabled"
 
+// Enables append-only JSON Lines export for per-invocation profiling samples.
+const FUNCTION_PROFILING_EXPORT_ENABLED = "profiling.export.enabled"
+
+// Output path for the versioned profiling JSONL dataset.
+const FUNCTION_PROFILING_EXPORT_PATH = "profiling.export.path"
+
 // Scheduling policy to use
 // Possible values: "qosaware", "default", "cloudonly"
 const SCHEDULING_POLICY = "scheduler.policy"
