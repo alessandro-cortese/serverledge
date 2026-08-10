@@ -1,0 +1,20 @@
+etcd.address: "127.0.0.1:2379"
+
+api.ip: "127.0.0.1"
+api.port: 1333
+
+registry.area: PROFILE_TEST
+registry.node.id: profiling-node-20260804_120501
+registry.udp.port: 9899
+
+node.machine_tag: profiling-test
+
+container.pool.memory: 768
+container.pool.cpus: 8
+container.expiration: 600
+
+factory.images.refresh: false
+
+profiling.enabled: true
+
+scheduler.queue.capacity: 0

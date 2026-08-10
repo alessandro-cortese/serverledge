@@ -208,7 +208,7 @@ if len(samples) != 3:
     failures.append(f"attesi 3 campioni, trovati {len(samples)}")
 
 for index, sample in enumerate(samples, start=1):
-    if sample.get("schema_version") != 1:
+    if sample.get("schema_version") != 2:
         failures.append(f"campione {index}: schema_version non valido")
     if sample.get("function_name") != function_name:
         failures.append(f"campione {index}: function_name non valido")
@@ -249,6 +249,8 @@ else:
 
     if sample.get("profile") not in (None, {}):
         failures.append("cold: il profilo risorse deve essere assente")
+    if sample.get("node_environment") not in (None, {}):
+        failures.append("cold: il profilo del nodo deve essere assente")
     if eligibility.get("resource_clustering") is not False:
         failures.append("cold: resource_clustering deve essere false")
     if eligibility.get("cold_start_analysis") is not True:
@@ -263,7 +265,9 @@ else:
         failures.append("cold: init_time_ms non valido")
 
 if len(warm_success) != 1:
-    failures.append(f"atteso 1 campione warm riuscito, trovati {len(warm_success)}")
+    failures.append(
+        f"atteso 1 campione warm riuscito, trovati {len(warm_success)}"
+    )
 else:
     sample = warm_success[0]
     eligibility = sample.get("eligibility", {})
@@ -272,7 +276,7 @@ else:
     if not isinstance(profile, dict):
         failures.append("warm: profilo risorse assente")
     else:
-        # InvocationResourceProfile al momento usa i nomi Go esportati.
+        # InvocationResourceProfile usa i nomi Go esportati.
         for key, expected in (
             ("Enabled", True),
             ("Collected", True),
@@ -280,15 +284,82 @@ else:
             ("ExclusiveContainer", True),
         ):
             if profile.get(key) is not expected:
-                failures.append(f"warm: {key}={profile.get(key)!r}, atteso {expected!r}")
+                failures.append(
+                    f"warm: {key}={profile.get(key)!r}, "
+                    f"atteso {expected!r}"
+                )
+
+    node_environment = sample.get("node_environment")
+
+    if not isinstance(node_environment, dict):
+        failures.append("warm: node_environment assente")
+    else:
+        for key, expected in (
+            ("Collected", True),
+            ("CPUAvailable", True),
+            ("MemoryAvailable", True),
+            ("VMStatAvailable", True),
+        ):
+            if node_environment.get(key) is not expected:
+                failures.append(
+                    f"warm node_environment: "
+                    f"{key}={node_environment.get(key)!r}, "
+                    f"atteso {expected!r}"
+                )
+
+        available_cpus = node_environment.get(
+            "AvailableCPUs"
+        )
+
+        if (
+            not isinstance(available_cpus, int)
+            or available_cpus <= 0
+        ):
+            failures.append(
+                "warm node_environment: "
+                "AvailableCPUs non valido"
+            )
+
+        cpu_total_ticks = node_environment.get(
+            "CPUTotalDeltaTicks"
+        )
+
+        if (
+            not isinstance(cpu_total_ticks, int)
+            or cpu_total_ticks <= 0
+        ):
+            failures.append(
+                "warm node_environment: "
+                "CPUTotalDeltaTicks non valido"
+            )
+
+        total_memory_after = node_environment.get(
+            "TotalMemoryAfterBytes"
+        )
+
+        if (
+            not isinstance(total_memory_after, int)
+            or total_memory_after <= 0
+        ):
+            failures.append(
+                "warm node_environment: "
+                "TotalMemoryAfterBytes non valido"
+            )
 
     if eligibility.get("resource_clustering") is not True:
-        failures.append("warm: resource_clustering deve essere true")
-    if eligibility.get("cold_start_analysis") is not False:
-        failures.append("warm: cold_start_analysis deve essere false")
-    if eligibility.get("performance_analysis") is not True:
-        failures.append("warm: performance_analysis deve essere true")
+        failures.append(
+            "warm: resource_clustering deve essere true"
+        )
 
+    if eligibility.get("cold_start_analysis") is not False:
+        failures.append(
+            "warm: cold_start_analysis deve essere false"
+        )
+
+    if eligibility.get("performance_analysis") is not True:
+        failures.append(
+            "warm: performance_analysis deve essere true"
+        )
 if len(failed) != 1:
     failures.append(f"atteso 1 campione fallito, trovati {len(failed)}")
 else:
@@ -305,7 +376,7 @@ else:
         failures.append("failed: exclusion_reasons non contiene execution_failed")
 
 print("============================================================")
-print("VALIDAZIONE MODIFICA 07")
+print("VALIDAZIONE")
 print("============================================================")
 print(f"file:                   {path}")
 print(f"righe JSON valide:      {len(samples)}")
@@ -321,11 +392,31 @@ if failures:
     sys.exit(1)
 
 print()
-print("[PASS] Ogni invocazione ha prodotto una sola riga JSON valida.")
-print("[PASS] Il cold start conserva InitTime ma non il profilo risorse.")
-print("[PASS] Il warm riuscito è eleggibile per il clustering.")
-print("[PASS] L'esecuzione fallita è conservata ma non è eleggibile.")
-print("[PASS] Metadati, schema ed eligibility sono presenti.")
+print()
+print(
+    "[PASS] Ogni invocazione ha prodotto "
+    "una sola riga JSON valida."
+)
+print(
+    "[PASS] Il cold start conserva InitTime "
+    "ma non i profili di risorse."
+)
+print(
+    "[PASS] Il warm riuscito è eleggibile "
+    "per il clustering."
+)
+print(
+    "[PASS] Il warm contiene metriche "
+    "node-scoped valide da /proc."
+)
+print(
+    "[PASS] L'esecuzione fallita è conservata "
+    "ma non è eleggibile."
+)
+print(
+    "[PASS] Metadati, schema ed eligibility "
+    "sono presenti."
+)
 PY
 
 echo

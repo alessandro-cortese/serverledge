@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const InvocationSampleSchemaVersion = 1
+const InvocationSampleSchemaVersion = 2
 
 // InvocationTiming contains the timing dimensions associated with one
 // invocation. Values are expressed in milliseconds to make the exported
@@ -33,9 +33,9 @@ type InvocationEligibility struct {
 
 // InvocationSample is the versioned raw record written to the JSONL dataset.
 //
-// Profile deliberately contains the complete InvocationResourceProfile.
-// Therefore metrics added later from /proc, /sys, cgroups or Kepler will
-// automatically be included in subsequent JSONL records.
+// Profile contains container-scoped Docker/cgroup metrics, while
+// NodeEnvironment contains node-scoped procfs metrics observed during the
+// same warm invocation interval. The two scopes remain intentionally separate.
 type InvocationSample struct {
 	SchemaVersion int   `json:"schema_version"`
 	TimestampMs   int64 `json:"timestamp_ms"`
@@ -50,9 +50,10 @@ type InvocationSample struct {
 	ExecutionSucceeded bool   `json:"execution_succeeded"`
 	ExecutionError     string `json:"execution_error,omitempty"`
 
-	Timing      InvocationTiming           `json:"timing"`
-	Profile     *InvocationResourceProfile `json:"profile,omitempty"`
-	Eligibility InvocationEligibility      `json:"eligibility"`
+	Timing          InvocationTiming           `json:"timing"`
+	Profile         *InvocationResourceProfile `json:"profile,omitempty"`
+	NodeEnvironment *NodeResourceProfile       `json:"node_environment,omitempty"`
+	Eligibility     InvocationEligibility      `json:"eligibility"`
 }
 
 // InvocationSampleInput contains the values required to build one raw sample.
@@ -69,8 +70,9 @@ type InvocationSampleInput struct {
 	ExecutionSucceeded bool
 	ExecutionError     string
 
-	Timing  InvocationTiming
-	Profile *InvocationResourceProfile
+	Timing          InvocationTiming
+	Profile         *InvocationResourceProfile
+	NodeEnvironment *NodeResourceProfile
 }
 
 // BuildInvocationSample builds one raw, versioned profiling record and assigns
@@ -107,6 +109,7 @@ func BuildInvocationSample(
 		ExecutionError:     input.ExecutionError,
 		Timing:             input.Timing,
 		Profile:            input.Profile,
+		NodeEnvironment:    input.NodeEnvironment,
 		Eligibility: buildInvocationEligibility(
 			input.WarmStart,
 			input.ExecutionSucceeded,

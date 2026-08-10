@@ -10,10 +10,10 @@ import (
 )
 
 // ExecuteProfiled invokes a function and, when profiling is enabled, surrounds
-// the invocation with two Docker statistics snapshots.
+// the invocation with Docker/container and procfs/node snapshots.
 //
 // Profiling failures never prevent the function from running. They are reported
-// through an invalid InvocationResourceProfile instead.
+// through invalid or partially collected profiles instead.
 func ExecuteProfiled(
 	cont *Container,
 	req *executor.InvocationRequest,
@@ -24,6 +24,7 @@ func ExecuteProfiled(
 	time.Duration,
 	time.Duration,
 	*profiling.InvocationResourceProfile,
+	*profiling.NodeResourceProfile,
 	error,
 ) {
 	if cont == nil {
@@ -31,16 +32,27 @@ func ExecuteProfiled(
 			0,
 			0,
 			nil,
-			fmt.Errorf("cannot execute on a nil container")
+			nil,
+			fmt.Errorf(
+				"cannot execute on a nil container",
+			)
 	}
 
-	contID := cont.ID
+	contID :=
+		cont.ID
 
-	if !config.GetBool(config.FUNCTION_PROFILING_ENABLED, false) || !collectResourceProfile {
+	if !config.GetBool(
+		config.FUNCTION_PROFILING_ENABLED,
+		false,
+	) ||
+		!collectResourceProfile {
 
-		executionStartedAt := time.Now()
+		executionStartedAt :=
+			time.Now()
 
-		response, invocationWait, err :=
+		response,
+			invocationWait,
+			err :=
 			Execute(
 				contID,
 				req,
@@ -54,6 +66,7 @@ func ExecuteProfiled(
 		return response,
 			invocationWait,
 			executionWallTime,
+			nil,
 			nil,
 			err
 	}
@@ -70,23 +83,42 @@ func ExecuteProfiled(
 
 	defer cont.profilingMu.Unlock()
 
-	startSnapshotStartedAt :=
+	// Lo snapshot del nodo viene eseguito per primo, così il relativo
+	// intervallo contiene anche l'intervallo degli snapshot del container.
+	// Entrambi gli snapshot finali vengono comunque completati prima di
+	// rilasciare il mutex di profilazione del container.
+	nodeStartSnapshotStartedAt :=
 		time.Now()
 
-	before, beforeErr :=
+	nodeBefore,
+		nodeBeforeErr :=
+		profiling.ReadNodeResourceSnapshot()
+
+	nodeStartOverhead :=
+		time.Since(
+			nodeStartSnapshotStartedAt,
+		)
+
+	containerStartSnapshotStartedAt :=
+		time.Now()
+
+	containerBefore,
+		containerBeforeErr :=
 		cf.GetResourceSnapshot(
 			contID,
 		)
 
-	startOverhead :=
+	containerStartOverhead :=
 		time.Since(
-			startSnapshotStartedAt,
+			containerStartSnapshotStartedAt,
 		)
 
 	executionStartedAt :=
 		time.Now()
 
-	response, invocationWait, executionErr :=
+	response,
+		invocationWait,
+		executionErr :=
 		Execute(
 			contID,
 			req,
@@ -97,29 +129,43 @@ func ExecuteProfiled(
 			executionStartedAt,
 		)
 
-	var after profiling.ResourceSnapshot
-	var afterErr error
-	var endOverhead time.Duration
+	var containerAfter profiling.ResourceSnapshot
+	var containerAfterErr error
+	var containerEndOverhead time.Duration
 
-	if beforeErr == nil {
-		endSnapshotStartedAt :=
+	if containerBeforeErr == nil {
+		containerEndSnapshotStartedAt :=
 			time.Now()
 
-		after, afterErr =
+		containerAfter,
+			containerAfterErr =
 			cf.GetResourceSnapshot(
 				contID,
 			)
 
-		endOverhead =
+		containerEndOverhead =
 			time.Since(
-				endSnapshotStartedAt,
+				containerEndSnapshotStartedAt,
 			)
 	}
 
-	if beforeErr != nil {
-		return response,
-			invocationWait,
-			executionWallTime,
+	nodeEndSnapshotStartedAt :=
+		time.Now()
+
+	nodeAfter,
+		nodeAfterErr :=
+		profiling.ReadNodeResourceSnapshot()
+
+	nodeEndOverhead :=
+		time.Since(
+			nodeEndSnapshotStartedAt,
+		)
+
+	var resourceProfile *profiling.InvocationResourceProfile
+
+	switch {
+	case containerBeforeErr != nil:
+		resourceProfile =
 			profiling.NewInvalidInvocationResourceProfile(
 				contID,
 				maxConcurrency,
@@ -127,18 +173,14 @@ func ExecuteProfiled(
 				profilingLockWait,
 				fmt.Sprintf(
 					"snapshot_before_failed: %v",
-					beforeErr,
+					containerBeforeErr,
 				),
-				startOverhead,
-				endOverhead,
-			),
-			executionErr
-	}
+				containerStartOverhead,
+				containerEndOverhead,
+			)
 
-	if afterErr != nil {
-		return response,
-			invocationWait,
-			executionWallTime,
+	case containerAfterErr != nil:
+		resourceProfile =
 			profiling.NewInvalidInvocationResourceProfile(
 				contID,
 				maxConcurrency,
@@ -146,30 +188,67 @@ func ExecuteProfiled(
 				profilingLockWait,
 				fmt.Sprintf(
 					"snapshot_after_failed: %v",
-					afterErr,
+					containerAfterErr,
 				),
-				startOverhead,
-				endOverhead,
-			),
-			executionErr
+				containerStartOverhead,
+				containerEndOverhead,
+			)
+
+	default:
+		resourceProfile =
+			profiling.BuildInvocationResourceProfile(
+				contID,
+				maxConcurrency,
+				true,
+				profilingLockWait,
+				containerBefore,
+				containerAfter,
+				executionWallTime,
+				containerStartOverhead,
+				containerEndOverhead,
+			)
 	}
 
-	profile :=
-		profiling.BuildInvocationResourceProfile(
-			contID,
-			maxConcurrency,
-			true,
-			profilingLockWait,
-			before,
-			after,
-			executionWallTime,
-			startOverhead,
-			endOverhead,
-		)
+	var nodeProfile *profiling.NodeResourceProfile
+
+	switch {
+	case nodeBeforeErr != nil:
+		nodeProfile =
+			profiling.NewInvalidNodeResourceProfile(
+				fmt.Sprintf(
+					"node_snapshot_before_failed: %v",
+					nodeBeforeErr,
+				),
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
+
+	case nodeAfterErr != nil:
+		nodeProfile =
+			profiling.NewInvalidNodeResourceProfile(
+				fmt.Sprintf(
+					"node_snapshot_after_failed: %v",
+					nodeAfterErr,
+				),
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
+
+	default:
+		nodeProfile =
+			profiling.BuildNodeResourceProfile(
+				nodeBefore,
+				nodeAfter,
+				executionWallTime,
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
+	}
 
 	return response,
 		invocationWait,
 		executionWallTime,
-		profile,
+		resourceProfile,
+		nodeProfile,
 		executionErr
 }

@@ -52,6 +52,7 @@ func Execute(
 		invocationWait,
 		executionWallTime,
 		resourceProfile,
+		nodeEnvironment,
 		executionErr :=
 		container.ExecuteProfiled(
 			cont,
@@ -151,8 +152,9 @@ func Execute(
 				ExecutionSucceeded: executionSucceeded,
 				ExecutionError:     executionErrorText,
 
-				Timing:  sampleTiming,
-				Profile: resourceProfile,
+				Timing:          sampleTiming,
+				Profile:         resourceProfile,
+				NodeEnvironment: nodeEnvironment,
 			},
 		)
 
