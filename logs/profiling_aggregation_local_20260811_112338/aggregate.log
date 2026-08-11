@@ -1,0 +1,3 @@
+raw_samples=12 eligible_samples=10 ignored_samples=2 groups=1 profiles=1 samples_per_profile=10
+[built] function=profiling_aggregation_20260811_112338 machine_tag=profiling-test cpus=1 memory_mb=128 eligible=10 selected=10
+output=/home/ale/Documenti/GitHub/serverledge/logs/profiling_aggregation_local_20260811_112338/function-profiles.jsonl

@@ -35,6 +35,10 @@ func TestBuildInvocationSampleMarksWarmValidProfileForClustering(
 
 				NodeName: "node-a",
 
+				ConfiguredCPUs: 1.5,
+
+				ConfiguredMemoryMB: 512,
+
 				WarmStart: true,
 
 				ExecutionSucceeded: true,
@@ -67,6 +71,21 @@ func TestBuildInvocationSampleMarksWarmValidProfileForClustering(
 		t,
 		"container-a",
 		sample.ContainerID,
+	)
+
+	assert.InDelta(
+		t,
+		1.5,
+		sample.FunctionConfiguration.
+			ConfiguredCPUs,
+		1e-9,
+	)
+
+	assert.Equal(
+		t,
+		int64(512),
+		sample.FunctionConfiguration.
+			ConfiguredMemoryMB,
 	)
 
 	assert.True(

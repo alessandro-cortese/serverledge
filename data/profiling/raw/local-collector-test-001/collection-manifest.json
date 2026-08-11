@@ -1,0 +1,28 @@
+{
+  "collected_at_utc": "2026-08-11T14:50:50.137130+00:00",
+  "experiment_id": "local-collector-test-001",
+  "invocation_sample_schema_version": 3,
+  "node_count": 2,
+  "nodes": [
+    {
+      "dataset": "profiling-aggregation-node-20260811_112338/profiling-samples.jsonl",
+      "machine_tag": "profiling-test",
+      "node_name": "profiling-aggregation-node-20260811_112338",
+      "remote_path": "/home/ale/Documenti/GitHub/serverledge/logs/profiling_aggregation_local_20260811_112338/profiling-samples.jsonl",
+      "sample_count": 12,
+      "sha256": "89f4cb7f0fc34e624cb165ba7c7707b45e14df41178dbe40298500ae7462b87f",
+      "ssh_target": "ale@127.0.0.1"
+    },
+    {
+      "dataset": "profiling-aggregation-node-20260811_153404/profiling-samples.jsonl",
+      "machine_tag": "profiling-test",
+      "node_name": "profiling-aggregation-node-20260811_153404",
+      "remote_path": "/home/ale/Documenti/GitHub/serverledge/logs/profiling_aggregation_local_20260811_153404/profiling-samples.jsonl",
+      "sample_count": 12,
+      "sha256": "3275f4899f13a692ef07785b108011bbc82cdeafcecc7889d7ff8ead5a9e0205",
+      "ssh_target": "ale@127.0.0.1"
+    }
+  ],
+  "schema_version": 1,
+  "total_sample_count": 24
+}

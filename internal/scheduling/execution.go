@@ -148,6 +148,9 @@ func Execute(
 				NodeName:     node.LocalNode.Key,
 				ContainerID:  cont.ID,
 
+				ConfiguredCPUs:     r.Fun.CPUDemand,
+				ConfiguredMemoryMB: r.Fun.MemoryMB,
+
 				WarmStart:          isWarm,
 				ExecutionSucceeded: executionSucceeded,
 				ExecutionError:     executionErrorText,

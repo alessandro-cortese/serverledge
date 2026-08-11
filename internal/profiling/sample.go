@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const InvocationSampleSchemaVersion = 2
+const InvocationSampleSchemaVersion = 3
 
 // InvocationTiming contains the timing dimensions associated with one
 // invocation. Values are expressed in milliseconds to make the exported
@@ -18,6 +18,14 @@ type InvocationTiming struct {
 	OffloadLatencyMs    float64 `json:"offload_latency_ms,omitempty"`
 	InvocationWaitMs    float64 `json:"invocation_wait_ms,omitempty"`
 	ExecutionWallTimeMs float64 `json:"execution_wall_time_ms,omitempty"`
+}
+
+// InvocationFunctionConfiguration records the resource allocation requested
+// for the function. These values are metadata and are not automatically used
+// as clustering features.
+type InvocationFunctionConfiguration struct {
+	ConfiguredCPUs     float64 `json:"configured_cpus"`
+	ConfiguredMemoryMB int64   `json:"configured_memory_mb"`
 }
 
 // InvocationEligibility keeps the raw sample and the decisions about which
@@ -46,6 +54,8 @@ type InvocationSample struct {
 	NodeName     string `json:"node_name"`
 	ContainerID  string `json:"container_id"`
 
+	FunctionConfiguration InvocationFunctionConfiguration `json:"function_configuration"`
+
 	WarmStart          bool   `json:"warm_start"`
 	ExecutionSucceeded bool   `json:"execution_succeeded"`
 	ExecutionError     string `json:"execution_error,omitempty"`
@@ -65,6 +75,9 @@ type InvocationSampleInput struct {
 	MachineTag   string
 	NodeName     string
 	ContainerID  string
+
+	ConfiguredCPUs     float64
+	ConfiguredMemoryMB int64
 
 	WarmStart          bool
 	ExecutionSucceeded bool
@@ -97,13 +110,19 @@ func BuildInvocationSample(
 	}
 
 	return InvocationSample{
-		SchemaVersion:      InvocationSampleSchemaVersion,
-		TimestampMs:        timestamp.UnixMilli(),
-		RequestID:          input.RequestID,
-		FunctionName:       input.FunctionName,
-		MachineTag:         input.MachineTag,
-		NodeName:           input.NodeName,
-		ContainerID:        containerID,
+		SchemaVersion: InvocationSampleSchemaVersion,
+		TimestampMs:   timestamp.UnixMilli(),
+		RequestID:     input.RequestID,
+		FunctionName:  input.FunctionName,
+		MachineTag:    input.MachineTag,
+		NodeName:      input.NodeName,
+		ContainerID:   containerID,
+
+		FunctionConfiguration: InvocationFunctionConfiguration{
+			ConfiguredCPUs:     input.ConfiguredCPUs,
+			ConfiguredMemoryMB: input.ConfiguredMemoryMB,
+		},
+
 		WarmStart:          input.WarmStart,
 		ExecutionSucceeded: input.ExecutionSucceeded,
 		ExecutionError:     input.ExecutionError,

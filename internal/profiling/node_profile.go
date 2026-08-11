@@ -125,6 +125,12 @@ type NodeResourceProfile struct {
 	AvailableMemoryAfterBytes   uint64
 	AvailableMemoryAverageBytes uint64
 
+	PageFaultsBefore uint64
+	PageFaultsAfter  uint64
+
+	MajorPageFaultsBefore uint64
+	MajorPageFaultsAfter  uint64
+
 	PageFaultsDelta      uint64
 	MajorPageFaultsDelta uint64
 
@@ -500,6 +506,18 @@ func BuildNodeResourceProfile(
 	}
 
 	if profile.VMStatAvailable {
+		profile.PageFaultsBefore =
+			before.VMStat.PageFaults
+
+		profile.PageFaultsAfter =
+			after.VMStat.PageFaults
+
+		profile.MajorPageFaultsBefore =
+			before.VMStat.MajorPageFaults
+
+		profile.MajorPageFaultsAfter =
+			after.VMStat.MajorPageFaults
+
 		var ok bool
 
 		profile.PageFaultsDelta, ok =

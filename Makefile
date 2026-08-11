@@ -1,6 +1,6 @@
 BIN=bin
 GO=go
-all: serverledge executor serverledge-cli lb
+all: serverledge executor serverledge-cli serverledge-profiling lb
 
 serverledge:
 	$(GO) build -o $(BIN)/$@ cmd/$@/main.go
@@ -10,6 +10,9 @@ lb:
 
 serverledge-cli:
 	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/cli/main.go
+
+serverledge-profiling:
+	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/profiling/main.go
 
 executor:
 	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/$@/executor.go
@@ -41,7 +44,7 @@ test:
 unit-test:
 	go test -v -short ./internal/container/... ./internal/lb/...
 
-.PHONY: serverledge serverledge-cli lb executor test unit-test integration-test images
+.PHONY: serverledge serverledge-cli serverledge-profiling lb executor test unit-test integration-test images
 
 clean:
 	@test -n "$(BIN)" && [ -d "$(BIN)" ] && rm -rf $(BIN) || { echo "Invalid BIN directory: $(BIN)"; exit 1; } && go clean -testcache

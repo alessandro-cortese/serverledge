@@ -357,9 +357,6 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 		profile.CPUAvailable,
 	)
 
-	// I delta user e nice grezzi sono rispettivamente 30 e 4.
-	// Guest e guest_nice sono già inclusi nei due contatori Linux e vengono
-	// sottratti per rendere le categorie esportate mutuamente esclusive.
 	assert.Equal(
 		t,
 		uint64(28),
@@ -428,8 +425,32 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 
 	assert.Equal(
 		t,
+		uint64(1000),
+		profile.PageFaultsBefore,
+	)
+
+	assert.Equal(
+		t,
+		uint64(1040),
+		profile.PageFaultsAfter,
+	)
+
+	assert.Equal(
+		t,
 		uint64(40),
 		profile.PageFaultsDelta,
+	)
+
+	assert.Equal(
+		t,
+		uint64(10),
+		profile.MajorPageFaultsBefore,
+	)
+
+	assert.Equal(
+		t,
+		uint64(12),
+		profile.MajorPageFaultsAfter,
 	)
 
 	assert.Equal(
@@ -538,7 +559,7 @@ func TestBuildInvocationSamplePreservesNodeEnvironment(
 
 	assert.Equal(
 		t,
-		2,
+		InvocationSampleSchemaVersion,
 		sample.SchemaVersion,
 	)
 }
