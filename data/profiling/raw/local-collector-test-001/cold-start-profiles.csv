@@ -1,0 +1,3 @@
+csv_schema_version,experiment_id,cold_start_profile_schema_version,function_name,machine_tag,configured_cpus,configured_memory_mb,sample_count,init_time_mean_ms,init_time_median_ms
+1,local-collector-test-001,1,profiling_aggregation_20260811_112338,profiling-test,1,128,1,465.94666399999994,465.94666399999994
+1,local-collector-test-001,1,profiling_aggregation_20260811_153404,profiling-test,1,128,1,468.063721,468.063721

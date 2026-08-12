@@ -12,7 +12,7 @@ serverledge-cli:
 	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/cli/main.go
 
 serverledge-profiling:
-	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/profiling/main.go
+	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ ./cmd/profiling
 
 executor:
 	CGO_ENABLED=0 $(GO) build -o $(BIN)/$@ cmd/$@/executor.go

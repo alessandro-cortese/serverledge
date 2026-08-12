@@ -60,6 +60,21 @@ func main() {
 			os.Args[2:],
 		)
 
+	case "export-csv":
+		runExportCSV(
+			os.Args[2:],
+		)
+
+	case "aggregate-cold":
+		runAggregateCold(
+			os.Args[2:],
+		)
+
+	case "export-cold-csv":
+		runExportColdCSV(
+			os.Args[2:],
+		)
+
 	case "help",
 		"-h",
 		"--help":
@@ -130,51 +145,16 @@ func runAggregate(
 	// Use either explicitly listed input files or one collection directory.
 	// Mixing the two forms is rejected to avoid accidentally loading the same
 	// raw dataset twice.
-	if len(inputPaths) > 0 &&
-		strings.TrimSpace(
+	resolvedInputs, err :=
+		resolveInvocationSampleInputs(
+			inputPaths,
 			*inputDir,
-		) != "" {
+		)
 
+	if err != nil {
 		log.Fatal(
-			"use either --input or --input-dir, not both",
+			err,
 		)
-	}
-
-	resolvedInputs := make(
-		[]string,
-		0,
-		len(inputPaths),
-	)
-
-	if len(inputPaths) > 0 {
-		resolvedInputs = append(
-			resolvedInputs,
-			inputPaths...,
-		)
-	} else if strings.TrimSpace(
-		*inputDir,
-	) != "" {
-
-		discovered, err :=
-			profiling.DiscoverInvocationSampleDatasets(
-				*inputDir,
-			)
-
-		if err != nil {
-			log.Fatal(
-				err,
-			)
-		}
-
-		resolvedInputs = append(
-			resolvedInputs,
-			discovered...,
-		)
-	} else {
-		// Preserve the behavior of the original single-node command.
-		resolvedInputs = []string{
-			profiling.DefaultInvocationSampleExportPath,
-		}
 	}
 
 	samples, err :=
@@ -285,6 +265,18 @@ func printUsage() {
 	)
 
 	fmt.Println(
-		"  aggregate    build FunctionProfile records from one or more raw InvocationSample JSONL datasets",
+		"  aggregate        build FunctionProfile records from one or more raw InvocationSample JSONL datasets",
+	)
+
+	fmt.Println(
+		"  export-csv       export separate mean and median CSV datasets from FunctionProfile JSONL",
+	)
+
+	fmt.Println(
+		"  aggregate-cold   build ColdStartProfile records from raw InvocationSample JSONL datasets",
+	)
+
+	fmt.Println(
+		"  export-cold-csv  export a cold-start CSV dataset from ColdStartProfile JSONL",
 	)
 }

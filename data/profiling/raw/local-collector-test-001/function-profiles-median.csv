@@ -1,0 +1,3 @@
+csv_schema_version,experiment_id,aggregation,function_profile_schema_version,function_name,machine_tag,configured_cpus,configured_memory_mb,sample_count,page_faults_delta,utilized_cpus,free_memory_mb,cpu_user_delta_ms,cpu_kernel_delta_ms,framework_runtime_ms
+1,local-collector-test-001,median,1,profiling_aggregation_20260811_112338,profiling-test,1,128,10,6.5,0.0018445399444390871,302.908203125,1.138,0.958,2.7241264999999997
+1,local-collector-test-001,median,1,profiling_aggregation_20260811_153404,profiling-test,1,128,10,3.5,0.0020949873319519993,303.849609375,1.125,0.926,3.1744515
