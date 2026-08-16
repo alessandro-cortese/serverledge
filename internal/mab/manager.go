@@ -35,62 +35,76 @@ func (bm *BanditManager) AddArmToAll(arm string) {
 	}
 }
 
-// GetBandit returns (or creates) the bandit for a given function for all known architectures
+// GetBandit returns (or creates) the bandit for a given function for all known architectures.
 func (bm *BanditManager) GetBandit(functionName string) Policy {
 	bm.mu.Lock()
 	defer bm.mu.Unlock()
 
-	if _, exists := bm.bandits[functionName]; !exists {
-		// Read policy from config
-		policyType := config.GetString(config.MAB_POLICY, "UCB1")
-		log.Printf("BanditManager GetBandit: policy type: %s\n", policyType)
+	if bandit, exists := bm.bandits[functionName]; exists {
+		return bandit
+	}
 
-		configuredPolicy :=
-			config.GetString(
-				config.MAB_POLICY,
-				string(UCB1),
+	newBandit := bm.newBanditLocked(functionName)
+	bm.bandits[functionName] = newBandit
+
+	return newBandit
+}
+
+// newBanditLocked builds a policy initialized with every architecture currently
+// known by the manager. The caller must hold bm.mu for writing.
+//
+// Keeping construction in a single helper is important for runtime transfer:
+// the target policy can be fully initialized with a donor prior before it is
+// published in bm.bandits and becomes visible to request handling.
+func (bm *BanditManager) newBanditLocked(functionName string) Policy {
+	configuredPolicy :=
+		config.GetString(
+			config.MAB_POLICY,
+			string(UCB1),
+		)
+
+	log.Printf(
+		"BanditManager newBandit: policy type: %s\n",
+		configuredPolicy,
+	)
+
+	normalizedPolicy :=
+		strings.ToLower(
+			strings.TrimSpace(
+				configuredPolicy,
+			),
+		)
+
+	var newBandit Policy
+
+	switch normalizedPolicy {
+	case "linucb":
+		alpha :=
+			config.GetFloat(
+				config.MAB_LINUCB_ALPHA,
+				0.1,
 			)
 
-		normalizedPolicy :=
-			strings.ToLower(
-				strings.TrimSpace(
-					configuredPolicy,
+		newBandit =
+			NewLinUCBDisjointPolicy(
+				functionName,
+				alpha,
+			)
+
+	default:
+		newBandit =
+			NewUCB1Bandit(
+				functionName,
+				config.GetFloat(
+					config.MAB_UCB1_C,
+					0.8,
 				),
 			)
-
-		var newBandit Policy
-
-		switch normalizedPolicy {
-		case "linucb":
-			alpha :=
-				config.GetFloat(
-					config.MAB_LINUCB_ALPHA,
-					0.1,
-				)
-
-			newBandit =
-				NewLinUCBDisjointPolicy(
-					functionName,
-					alpha,
-				)
-
-		default:
-			newBandit =
-				NewUCB1Bandit(
-					functionName,
-					config.GetFloat(
-						config.MAB_UCB1_C,
-						0.8,
-					),
-				)
-		}
-
-		// Init arm of all known architectures
-		for _, arm := range bm.knownArms {
-			newBandit.InitArm(arm)
-		}
-
-		bm.bandits[functionName] = newBandit
 	}
-	return bm.bandits[functionName]
+
+	for _, arm := range bm.knownArms {
+		newBandit.InitArm(arm)
+	}
+
+	return newBandit
 }

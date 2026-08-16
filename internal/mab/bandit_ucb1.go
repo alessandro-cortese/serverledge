@@ -12,9 +12,32 @@ import (
 // ArmStats maintains information about a single arm dedicated to a single function
 type ArmStats struct {
 	Count      int64   // Count is the number of accepted learning observations, including synthetic fallback penalties.
-	SumRewards float64 // SumRewards is the sum of valid rewards observed for this arm.
-	AvgReward  float64 // AvgReward is the empirical mean reward of this arm.
+	SumRewards float64 // SumRewards contains accepted live learning rewards (real + synthetic), excluding prior evidence.
+	AvgReward  float64 // AvgReward is the accepted live mean; selection combines it with weak prior evidence when present.
 	InFlight   int64
+
+	// Real* tracks only accepted execution feedback.
+	//
+	// These values are deliberately kept separate from Count/SumRewards/
+	// AvgReward because the live UCB1 state also includes synthetic fallback
+	// penalties. Transfer learning must be able to export function knowledge
+	// without treating those penalties as intrinsic observations of the
+	// function.
+	RealCount      int64
+	RealSumRewards float64
+	RealAvgReward  float64
+
+	// SyntheticCount is diagnostic only.
+	//
+	// Synthetic observations continue to affect the live UCB1 statistics
+	// exactly as before, but they are excluded from transferable knowledge.
+	SyntheticCount int64
+
+	// Prior* contains donor-derived weak statistical evidence applied before
+	// the target function starts learning. Prior state influences selection,
+	// but it is never counted as real or synthetic target experience.
+	PriorObservationWeight float64
+	PriorRewardSum         float64
 }
 
 // UCB1Bandit is the bandit that handles decision for ONE function
@@ -26,6 +49,10 @@ type UCB1Bandit struct {
 	c            float64              // Exploration parameter C (usually sqrt(2) ~= 1.41, but can be tuned)
 	// Higher values lead to more exploration. Lower values lead to more exploitation.
 	TotalInFlight int64
+
+	// PriorDonorFunctionName is provenance only. It is populated when a weak
+	// prior is applied and does not participate directly in the UCB1 formula.
+	PriorDonorFunctionName string
 }
 
 func NewUCB1Bandit(
@@ -63,10 +90,15 @@ func (b *UCB1Bandit) SelectArm(ctx *Context) string {
 
 // SelectArmFrom implements UCB1 over the supplied action mask.
 //
-// Count and TotalCounts contain only completed, valid feedback samples.
+// Count and TotalCounts contain accepted learning observations, including
+// synthetic fallback penalties.
+//
+// RealCount/RealSumRewards/RealAvgReward separately track only accepted
+// execution feedback for future transfer learning.
+//
 // InFlight and TotalInFlight account for selections that have not completed yet.
 // Pending selections affect exploration through Count+InFlight, but they never
-// enter AvgReward before a real reward is observed.
+// enter AvgReward before a learning observation is accepted.
 func (b *UCB1Bandit) SelectArmFrom(
 	ctx *Context,
 	allowedArms []string,
@@ -93,19 +125,19 @@ func (b *UCB1Bandit) SelectArmFrom(
 		return ""
 	}
 
-	// An arm is still considered unexplored only when it has neither a
-	// completed feedback nor a pending evaluation.
+	// An arm is unexplored only when neither live observations, pending
+	// evaluations nor weak prior evidence are available. Prior weight can be
+	// fractional, therefore the zero check cannot rely on an integer count.
 	leastTriedArm := ""
-	currentMinEffectiveCount := int64(math.MaxInt64)
+	currentMinEffectiveCount := math.MaxFloat64
 
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
 		effectiveCount :=
-			stats.Count +
-				stats.InFlight
+			b.effectiveArmObservationWeightLocked(stats)
 
-		if effectiveCount < 1 &&
+		if effectiveCount <= 0.0 &&
 			effectiveCount < currentMinEffectiveCount {
 
 			currentMinEffectiveCount =
@@ -141,40 +173,44 @@ func (b *UCB1Bandit) SelectArmFrom(
 	bestScore := -math.MaxFloat64
 	bestArm := ""
 
-	effectiveTotalCounts :=
-		b.TotalCounts +
-			b.TotalInFlight
+	totalPriorObservationWeight :=
+		b.totalPriorObservationWeightLocked()
 
-	if effectiveTotalCounts < 1 {
-		effectiveTotalCounts = 1
+	effectiveTotalCounts :=
+		float64(b.TotalCounts) +
+			totalPriorObservationWeight +
+			float64(
+				b.TotalInFlight,
+			)
+
+	if effectiveTotalCounts < 1.0 {
+		effectiveTotalCounts = 1.0
 	}
 
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
 		effectiveCount :=
-			stats.Count +
-				stats.InFlight
+			b.effectiveArmObservationWeightLocked(stats)
 
-		if effectiveCount < 1 {
-			effectiveCount = 1
+		if effectiveCount <= 0.0 {
+			effectiveCount = 1.0
 		}
+
+		effectiveAvgReward :=
+			b.effectiveArmAverageRewardLocked(stats)
 
 		explorationBonus :=
 			b.c *
 				math.Sqrt(
 					math.Log(
-						float64(
-							effectiveTotalCounts,
-						),
+						effectiveTotalCounts,
 					)/
-						float64(
-							effectiveCount,
-						),
+						effectiveCount,
 				)
 
 		score :=
-			stats.AvgReward +
+			effectiveAvgReward +
 				explorationBonus
 
 		logMABUCB1ArmScore(
@@ -185,10 +221,12 @@ func (b *UCB1Bandit) SelectArmFrom(
 			explorationBonus,
 			stats.Count,
 			stats.InFlight,
+			stats.PriorObservationWeight,
 			effectiveCount,
-			stats.AvgReward,
+			effectiveAvgReward,
 			b.TotalCounts,
 			b.TotalInFlight,
+			totalPriorObservationWeight,
 			effectiveTotalCounts,
 		)
 
@@ -321,6 +359,7 @@ func (b *UCB1Bandit) updateSyntheticRewardLocked(
 	}
 
 	stats.Count++
+	stats.SyntheticCount++
 	b.TotalCounts++
 
 	stats.SumRewards +=
@@ -485,6 +524,7 @@ func (b *UCB1Bandit) updateRewardLocked(
 	)
 
 	stats.Count++
+	stats.RealCount++
 	b.TotalCounts++
 
 	stats.SumRewards +=
@@ -494,6 +534,15 @@ func (b *UCB1Bandit) updateRewardLocked(
 		stats.SumRewards /
 			float64(
 				stats.Count,
+			)
+
+	stats.RealSumRewards +=
+		reward
+
+	stats.RealAvgReward =
+		stats.RealSumRewards /
+			float64(
+				stats.RealCount,
 			)
 
 	recordAcceptedExecutionFeedback(
@@ -515,6 +564,52 @@ func (b *UCB1Bandit) updateRewardLocked(
 		b.TotalCounts,
 	)
 }
+
+func (b *UCB1Bandit) effectiveArmObservationWeightLocked(
+	stats *ArmStats,
+) float64 {
+	return float64(stats.Count) +
+		stats.PriorObservationWeight +
+		float64(stats.InFlight)
+}
+
+func (b *UCB1Bandit) effectiveArmAverageRewardLocked(
+	stats *ArmStats,
+) float64 {
+	// Preserve the historical UCB1 state exactly when no transfer prior is
+	// present. AvgReward remains the authoritative live mean maintained by the
+	// existing update path.
+	if stats.PriorObservationWeight <= 0.0 {
+		return stats.AvgReward
+	}
+
+	completedWeight :=
+		float64(stats.Count) +
+			stats.PriorObservationWeight
+
+	if completedWeight <= 0.0 {
+		return 0.0
+	}
+
+	liveRewardSum :=
+		stats.AvgReward *
+			float64(stats.Count)
+
+	return (liveRewardSum + stats.PriorRewardSum) /
+		completedWeight
+}
+
+func (b *UCB1Bandit) totalPriorObservationWeightLocked() float64 {
+	total := 0.0
+
+	for _, stats := range b.Arms {
+		total +=
+			stats.PriorObservationWeight
+	}
+
+	return total
+}
+
 func (b *UCB1Bandit) GetType() BanditType {
 	return UCB1
 }

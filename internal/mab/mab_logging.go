@@ -70,14 +70,16 @@ func logMABUCB1ArmScore(
 	explorationBonus float64,
 	count int64,
 	inFlight int64,
-	effectiveCount int64,
+	priorObservationWeight float64,
+	effectiveCount float64,
 	avgReward float64,
 	totalCounts int64,
 	totalInFlight int64,
-	effectiveTotalCounts int64,
+	totalPriorObservationWeight float64,
+	effectiveTotalCounts float64,
 ) {
 	log.Printf(
-		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f count=%d in_flight=%d effective_count=%d avg_reward=%.6f exploration_bonus=%.6f total_counts=%d total_in_flight=%d effective_total_counts=%d contextual=false\n",
+		"%s event=arm_score ts=%d policy=%s function=%s arm=%s score=%.6f count=%d in_flight=%d prior_observation_weight=%.6f effective_count=%.6f avg_reward=%.6f exploration_bonus=%.6f total_counts=%d total_in_flight=%d total_prior_observation_weight=%.6f effective_total_counts=%.6f contextual=false\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -86,11 +88,13 @@ func logMABUCB1ArmScore(
 		score,
 		count,
 		inFlight,
+		priorObservationWeight,
 		effectiveCount,
 		avgReward,
 		explorationBonus,
 		totalCounts,
 		totalInFlight,
+		totalPriorObservationWeight,
 		effectiveTotalCounts,
 	)
 }
@@ -519,5 +523,70 @@ func logMABColdStartStats(
 		stats.AvgColdDurationMs,
 		stats.AvgWarmDurationMs,
 		stats.AvgColdInitTimeMs,
+	)
+}
+
+func logMABRuntimeTransfer(
+	result RuntimeTransferResult,
+) {
+	log.Printf(
+		"%s event=runtime_transfer ts=%d target_function=%s donor_function=%s policy=%s applied=%t reason=%s prior_has_prior=%t source_real_observations=%d transferred_arms=%d skipped_arms=%d\n",
+		mabLogPrefix,
+		nowMillis(),
+		result.TargetFunctionName,
+		result.DonorFunctionName,
+		string(result.Policy),
+		result.Applied,
+		result.Reason,
+		result.Prior.HasPrior,
+		result.Prior.SourceRealObservationCount,
+		result.Prior.TransferredArmCount,
+		result.Prior.SkippedArmCount,
+	)
+}
+
+func logMABSelectionRuntimeTransfer(
+	result SelectionRuntimeTransferResult,
+) {
+	selectionReason :=
+		result.SelectionReason
+
+	if selectionReason == "" {
+		selectionReason =
+			"none"
+	}
+
+	selectedDonor :=
+		result.SelectedDonorFunctionName
+
+	if selectedDonor == "" {
+		selectedDonor =
+			"none"
+	}
+
+	runtimeReason :=
+		result.RuntimeReason
+
+	if runtimeReason == "" {
+		runtimeReason =
+			"none"
+	}
+
+	log.Printf(
+		"%s event=selection_runtime_transfer ts=%d selection_run_id=%s target_function=%s selection_status=%s selection_reason=%s selected_donor=%s transfer_attempted=%t transfer_applied=%t runtime_reason=%s prior_has_prior=%t source_real_observations=%d transferred_arms=%d skipped_arms=%d\n",
+		mabLogPrefix,
+		nowMillis(),
+		result.SelectionRunID,
+		result.TargetFunctionName,
+		result.SelectionStatus,
+		selectionReason,
+		selectedDonor,
+		result.TransferAttempted,
+		result.TransferApplied,
+		runtimeReason,
+		result.Prior.HasPrior,
+		result.Prior.SourceRealObservationCount,
+		result.Prior.TransferredArmCount,
+		result.Prior.SkippedArmCount,
 	)
 }

@@ -32,6 +32,10 @@ type LinUCBDisjointPolicy struct {
 	// Dimension of the feature vector (d)
 	// Bias (1) + MemoryFeature (1) = 2
 	Dim int
+
+	// PriorDonorFunctionName records the donor used to initialize this target.
+	// The value is provenance only and does not change the LinUCB formula.
+	PriorDonorFunctionName string
 }
 
 // LinUCBArmState holds the matrix A and vector b for a specific arm.
@@ -41,6 +45,33 @@ type LinUCBArmState struct {
 	A        *mat.Dense
 	b        *mat.VecDense
 	InFlight int64
+
+	// RealAContribution and RealBContribution contain only the additive
+	// contribution produced by accepted execution feedback.
+	//
+	// They deliberately exclude:
+	//   - the identity regularizer used to initialize A;
+	//   - synthetic fallback penalties.
+	//
+	// A and b above remain the live LinUCB model and continue to include every
+	// accepted learning observation exactly as before.
+	RealAContribution    *mat.Dense
+	RealBContribution    *mat.VecDense
+	RealObservationCount int64
+
+	// SyntheticObservationCount is diagnostic only.
+	//
+	// Synthetic fallback observations continue to update the live A and b but
+	// are excluded from the transferable contextual knowledge.
+	SyntheticObservationCount int64
+
+	// Prior* contains donor-derived weak contextual evidence applied before the
+	// target function starts learning. It contributes to the live A and b used
+	// for selection, but it is deliberately excluded from Real* so that a
+	// received prior can never be re-exported as target experience.
+	PriorAContribution     *mat.Dense
+	PriorBContribution     *mat.VecDense
+	PriorObservationWeight float64
 }
 
 // NewLinUCBDisjointPolicy creates a new instance of the policy.
@@ -71,9 +102,39 @@ func (p *LinUCBDisjointPolicy) InitArm(arm string) {
 	// Initialize b as Zero Vector (d)
 	b := mat.NewVecDense(p.Dim, nil)
 
+	realAContribution :=
+		mat.NewDense(
+			p.Dim,
+			p.Dim,
+			nil,
+		)
+
+	realBContribution :=
+		mat.NewVecDense(
+			p.Dim,
+			nil,
+		)
+
+	priorAContribution :=
+		mat.NewDense(
+			p.Dim,
+			p.Dim,
+			nil,
+		)
+
+	priorBContribution :=
+		mat.NewVecDense(
+			p.Dim,
+			nil,
+		)
+
 	p.Arms[arm] = &LinUCBArmState{
-		A: A,
-		b: b,
+		A:                  A,
+		b:                  b,
+		RealAContribution:  realAContribution,
+		RealBContribution:  realBContribution,
+		PriorAContribution: priorAContribution,
+		PriorBContribution: priorBContribution,
 	}
 
 	logMABArmAdded(
@@ -366,6 +427,8 @@ func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
 		&scaledX,
 	)
 
+	state.SyntheticObservationCount++
+
 	logMABSyntheticReward(
 		string(p.GetType()),
 		p.FunctionName,
@@ -561,6 +624,18 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 		state.b,
 		&scaledX,
 	)
+
+	state.RealAContribution.Add(
+		state.RealAContribution,
+		&outerProduct,
+	)
+
+	state.RealBContribution.AddVec(
+		state.RealBContribution,
+		&scaledX,
+	)
+
+	state.RealObservationCount++
 
 	recordAcceptedExecutionFeedback(
 		policy,

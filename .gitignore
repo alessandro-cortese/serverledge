@@ -8,3 +8,9 @@ default.etcd
 
 # Local profiling infrastructure.
 scripts/profiling-nodes.local.conf
+
+# Offline profiling / clustering Python environment.
+analysis/requirements.txt
+.venv-analysis/
+analysis/
+data/
