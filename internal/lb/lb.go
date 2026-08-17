@@ -49,6 +49,7 @@ func StartReverseProxy(e *echo.Echo, region string) {
 	// includes the memory freed by the function, once it's executed.
 	proxyConfig := middleware.ProxyConfig{
 		Balancer: balancer,
+		Skipper:  transferControlProxySkipper,
 
 		// We use ModifyResponse to process these headers
 		ModifyResponse: func(res *http.Response) error {

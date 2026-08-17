@@ -108,6 +108,10 @@ const MAB_FALLBACK_PENALTY = "mab.fallback.penalty"
 //     queueing and offloading overheads.
 const MAB_COLD_START_MODE = "mab.cold_start.mode"
 
+// Enables the experimental load-balancer control endpoint used to initialize
+// a fresh target MAB from a donor-selection artifact. Disabled by default.
+const MAB_TRANSFER_CONTROL_ENABLED = "mab.transfer.control.enabled"
+
 // port for udp status listener
 const LISTEN_UDP_PORT = "registry.udp.port"
 

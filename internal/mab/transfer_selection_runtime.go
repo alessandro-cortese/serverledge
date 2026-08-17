@@ -70,20 +70,67 @@ type SelectedDonorArtifact struct {
 // A donor may be selected by similarity but still fail to produce a weak
 // prior when its runtime MAB has insufficient real observations.
 type SelectionRuntimeTransferResult struct {
-	SelectionRunID string
+	SelectionRunID string `json:"selection_run_id"`
 
-	TargetFunctionName string
+	TargetFunctionName string `json:"target_function_name"`
 
-	SelectionStatus string
-	SelectionReason string
+	SelectionStatus string `json:"selection_status"`
+	SelectionReason string `json:"selection_reason"`
 
-	SelectedDonorFunctionName string
+	SelectedDonorFunctionName string `json:"selected_donor_function_name,omitempty"`
 
-	TransferAttempted bool
-	TransferApplied   bool
-	RuntimeReason     string
+	TransferAttempted bool   `json:"transfer_attempted"`
+	TransferApplied   bool   `json:"transfer_applied"`
+	RuntimeReason     string `json:"runtime_reason"`
 
-	Prior WeakMABPrior
+	Prior WeakMABPrior `json:"prior"`
+}
+
+// DecodeDonorSelectionArtifact decodes and validates one JSON artifact produced
+// by similarity_selection.py. It is used both by the file-based integration and
+// by the experimental load-balancer control API, which receives the artifact
+// directly in the request body.
+func DecodeDonorSelectionArtifact(
+	content []byte,
+) (
+	DonorSelectionArtifact,
+	error,
+) {
+	if len(bytes.TrimSpace(content)) == 0 {
+		return DonorSelectionArtifact{},
+			fmt.Errorf(
+				"donor selection artifact cannot be empty",
+			)
+	}
+
+	var artifact DonorSelectionArtifact
+
+	if err :=
+		json.Unmarshal(
+			content,
+			&artifact,
+		); err != nil {
+
+		return DonorSelectionArtifact{},
+			fmt.Errorf(
+				"decode donor selection artifact: %w",
+				err,
+			)
+	}
+
+	if err :=
+		validateDonorSelectionArtifact(
+			artifact,
+		); err != nil {
+
+		return DonorSelectionArtifact{},
+			fmt.Errorf(
+				"invalid donor selection artifact: %w",
+				err,
+			)
+	}
+
+	return artifact, nil
 }
 
 // LoadDonorSelectionArtifact reads and validates one JSON artifact produced by
@@ -119,30 +166,15 @@ func LoadDonorSelectionArtifact(
 			)
 	}
 
-	var artifact DonorSelectionArtifact
-
-	if err :=
-		json.Unmarshal(
+	artifact, err :=
+		DecodeDonorSelectionArtifact(
 			content,
-			&artifact,
-		); err != nil {
+		)
 
+	if err != nil {
 		return DonorSelectionArtifact{},
 			fmt.Errorf(
-				"decode donor selection artifact %q: %w",
-				path,
-				err,
-			)
-	}
-
-	if err :=
-		validateDonorSelectionArtifact(
-			artifact,
-		); err != nil {
-
-		return DonorSelectionArtifact{},
-			fmt.Errorf(
-				"invalid donor selection artifact %q: %w",
+				"load donor selection artifact %q: %w",
 				path,
 				err,
 			)
@@ -151,17 +183,41 @@ func LoadDonorSelectionArtifact(
 	return artifact, nil
 }
 
-// InitializeTargetFromDonorSelectionFile connects the JSON produced by the
-// similarity pipeline to the runtime donor->target initialization introduced
-// in 10C.1.
-//
-// targetFunctionName remains an explicit argument so that a stale or wrongly
-// routed artifact cannot initialize another function by accident.
-//
-// The donor identity, instead, is taken exclusively from the selection JSON.
+// InitializeTargetFromDonorSelectionFile connects a selection JSON stored on
+// disk to the runtime donor->target initialization.
 func (bm *BanditManager) InitializeTargetFromDonorSelectionFile(
 	targetFunctionName string,
 	selectionArtifactPath string,
+	priorConfig WeakMABPriorConfig,
+) (
+	SelectionRuntimeTransferResult,
+	error,
+) {
+	artifact, err :=
+		LoadDonorSelectionArtifact(
+			selectionArtifactPath,
+		)
+
+	if err != nil {
+		return SelectionRuntimeTransferResult{},
+			err
+	}
+
+	return bm.InitializeTargetFromDonorSelectionArtifact(
+		targetFunctionName,
+		artifact,
+		priorConfig,
+	)
+}
+
+// InitializeTargetFromDonorSelectionArtifact performs the same runtime
+// integration as InitializeTargetFromDonorSelectionFile but receives an
+// already decoded selection artifact. This is the control surface needed by
+// the experimental bootstrap workflow: the shell script can send the JSON to
+// the running load balancer without relying on a shared filesystem path.
+func (bm *BanditManager) InitializeTargetFromDonorSelectionArtifact(
+	targetFunctionName string,
+	artifact DonorSelectionArtifact,
 	priorConfig WeakMABPriorConfig,
 ) (
 	SelectionRuntimeTransferResult,
@@ -195,14 +251,16 @@ func (bm *BanditManager) InitializeTargetFromDonorSelectionFile(
 			err
 	}
 
-	artifact, err :=
-		LoadDonorSelectionArtifact(
-			selectionArtifactPath,
-		)
+	if err :=
+		validateDonorSelectionArtifact(
+			artifact,
+		); err != nil {
 
-	if err != nil {
 		return SelectionRuntimeTransferResult{},
-			err
+			fmt.Errorf(
+				"invalid donor selection artifact: %w",
+				err,
+			)
 	}
 
 	if artifact.Query.FunctionName !=

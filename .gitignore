@@ -14,3 +14,4 @@ analysis/requirements.txt
 .venv-analysis/
 analysis/
 data/
+logs/

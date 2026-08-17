@@ -62,5 +62,6 @@ func main() {
 	registerTerminationHandler(e)
 
 	mab.InitBanditManager()
+	lb.RegisterTransferControlRoutes(e)
 	lb.StartReverseProxy(e, myArea)
 }
