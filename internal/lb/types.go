@@ -47,8 +47,6 @@ type NodeMetric struct {
 	LastUpdate    int64
 	TotalCPU      float64
 	FreeCPU       float64
-	CostFactor    float64
-	EnergyFactor  float64
 }
 
 type NodeMetricCache struct {
@@ -87,42 +85,12 @@ func (c *NodeMetricCache) Update(nodeName string, freeMemMB int64, totalMemMB in
 		totalMemMB = curr.TotalMemoryMB
 	}
 
-	costFactor := 1.0
-	energyFactor := 1.0
-	if ok {
-		if curr.CostFactor > 0 {
-			costFactor = curr.CostFactor
-		}
-		if curr.EnergyFactor > 0 {
-			energyFactor = curr.EnergyFactor
-		}
-	}
-
 	c.metrics[nodeName] = NodeMetric{
 		TotalMemoryMB: totalMemMB,
 		FreeMemoryMB:  freeMemMB,
 		LastUpdate:    updateTime,
 		FreeCPU:       freeCpu,
-		CostFactor:    costFactor,
-		EnergyFactor:  energyFactor,
 	}
-}
-
-func (c *NodeMetricCache) UpdateCostProfile(nodeName string, costFactor float64, energyFactor float64) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	if costFactor <= 0 {
-		costFactor = 1.0
-	}
-	if energyFactor <= 0 {
-		energyFactor = 1.0
-	}
-
-	curr := c.metrics[nodeName]
-	curr.CostFactor = costFactor
-	curr.EnergyFactor = energyFactor
-	c.metrics[nodeName] = curr
 }
 
 func (c *NodeMetricCache) GetFreeMemory(nodeName string) int64 {

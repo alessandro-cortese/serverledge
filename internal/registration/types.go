@@ -16,12 +16,10 @@ type NodeRegistration struct {
 	APIPort        int
 	UDPPort        int
 	IsLoadBalancer bool
-	CostFactor     float64
-	EnergyFactor   float64
 }
 
 type StatusInformation struct {
-	AvailableWarmContainers map[string]int // <k, v> = <function name, warm container number>
+	AvailableWarmContainers map[string]int
 	TotalMemory             int64
 	AvailableMemory         int64
 	FreeMemory              int64
@@ -29,7 +27,5 @@ type StatusInformation struct {
 	UsedCPU                 float64
 	Coordinates             vivaldi.Coordinate
 	LoadAvg                 []float64
-	LastUpdateTime          int64 // timestamp of last update of this information
-	CostFactor              float64
-	EnergyFactor            float64
+	LastUpdateTime          int64
 }

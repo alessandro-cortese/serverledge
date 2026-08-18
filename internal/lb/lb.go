@@ -95,9 +95,9 @@ func StartReverseProxy(e *echo.Echo, region string) {
 
 				if hasDecision {
 					feedback :=
-						executionFeedbackForNode(
-							nodeName,
-						)
+						mab.ExecutionFeedback{
+							NodeName: nodeName,
+						}
 
 					go func(
 						data []byte,
@@ -193,20 +193,9 @@ func getTargets(region string) ([]*middleware.ProxyTarget, error) {
 			machineTag = target.Arch
 		}
 
-		costFactor := target.CostFactor
-		if costFactor <= 0 {
-			costFactor = 1.0
-		}
-		energyFactor := target.EnergyFactor
-		if energyFactor <= 0 {
-			energyFactor = 1.0
-		}
-
 		targetMeta := echo.Map{
-			"arch":          target.Arch,
-			"machine_tag":   machineTag,
-			"cost_factor":   costFactor,
-			"energy_factor": energyFactor,
+			"arch":        target.Arch,
+			"machine_tag": machineTag,
 		}
 
 		targets = append(targets, &middleware.ProxyTarget{
@@ -250,7 +239,6 @@ func updateTargets(balancer middleware.ProxyBalancer, region string) {
 						availableMemoryMb := nodeInfo.AvailableMemory
 						freeCpu := nodeInfo.TotalCPU - nodeInfo.UsedCPU
 						NodeMetrics.Update(curr.Name, availableMemoryMb, totalMemory, nodeInfo.LastUpdateTime, freeCpu)
-						NodeMetrics.UpdateCostProfile(curr.Name, nodeInfo.CostFactor, nodeInfo.EnergyFactor)
 					}
 
 				}
@@ -274,7 +262,6 @@ func updateTargets(balancer middleware.ProxyBalancer, region string) {
 					availableMemoryMb := nodeInfo.AvailableMemory
 					freeCpu := nodeInfo.TotalCPU - nodeInfo.UsedCPU
 					NodeMetrics.Update(curr.Name, availableMemoryMb, totalMemory, nodeInfo.LastUpdateTime, freeCpu)
-					NodeMetrics.UpdateCostProfile(curr.Name, nodeInfo.CostFactor, nodeInfo.EnergyFactor)
 				}
 			}
 		}
@@ -312,47 +299,4 @@ func GetSingleTargetInfo(target *middleware.ProxyTarget) *registration.StatusInf
 	}
 
 	return &statusInfo
-}
-
-// executionFeedbackForNode snapshots the structural cost and energy factors
-// of the concrete node selected by the hash ring. These values are used in the
-// permanent reward update and must not be replaced by an average over the ring.
-func executionFeedbackForNode(
-	nodeName string,
-) mab.ExecutionFeedback {
-	feedback := mab.ExecutionFeedback{
-		NodeName:     nodeName,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
-	}
-
-	if nodeName == "" {
-		return feedback
-	}
-
-	metric, ok :=
-		NodeMetrics.GetMetric(
-			nodeName,
-		)
-
-	if !ok {
-		log.Printf(
-			"[MAB] event=node_profile_missing node_name=%s using_default_factors=true",
-			nodeName,
-		)
-
-		return feedback
-	}
-
-	if metric.CostFactor > 0 {
-		feedback.CostFactor =
-			metric.CostFactor
-	}
-
-	if metric.EnergyFactor > 0 {
-		feedback.EnergyFactor =
-			metric.EnergyFactor
-	}
-
-	return feedback
 }

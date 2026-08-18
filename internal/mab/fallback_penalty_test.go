@@ -141,10 +141,6 @@ func TestFallbackPenaltyAppliesWhenActualColdFeedbackIsSkipped(
 				DurationMs: 10.0,
 
 				IsWarmStart: false,
-
-				CostFactor: 1.0,
-
-				EnergyFactor: 1.0,
 			},
 		)
 
@@ -245,10 +241,6 @@ func TestLinUCBFallbackPenaltyUpdatesSelectedAndActualModels(
 				DurationMs: 10.0,
 
 				IsWarmStart: true,
-
-				CostFactor: 1.0,
-
-				EnergyFactor: 1.0,
 			},
 		)
 

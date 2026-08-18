@@ -35,11 +35,9 @@ func TestColdStartStatsSeparateObservedAcceptedSkippedAndInvalid(
 		arm,
 		nil,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			InitTimeMs:   100.0,
-			IsWarmStart:  false,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			InitTimeMs:  100.0,
+			IsWarmStart: false,
 		},
 	)
 
@@ -55,11 +53,9 @@ func TestColdStartStatsSeparateObservedAcceptedSkippedAndInvalid(
 		arm,
 		nil,
 		ExecutionFeedback{
-			DurationMs:   20.0,
-			InitTimeMs:   200.0,
-			IsWarmStart:  false,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  20.0,
+			InitTimeMs:  200.0,
+			IsWarmStart: false,
 		},
 	)
 
@@ -68,11 +64,9 @@ func TestColdStartStatsSeparateObservedAcceptedSkippedAndInvalid(
 		arm,
 		nil,
 		ExecutionFeedback{
-			DurationMs:   5.0,
-			InitTimeMs:   1.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  5.0,
+			InitTimeMs:  1.0,
+			IsWarmStart: true,
 		},
 	)
 
@@ -88,11 +82,9 @@ func TestColdStartStatsSeparateObservedAcceptedSkippedAndInvalid(
 		arm,
 		nil,
 		ExecutionFeedback{
-			DurationMs:   0.0,
-			InitTimeMs:   300.0,
-			IsWarmStart:  false,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  0.0,
+			InitTimeMs:  300.0,
+			IsWarmStart: false,
 		},
 	)
 

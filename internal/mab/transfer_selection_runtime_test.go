@@ -43,10 +43,6 @@ func TestSelectionArtifactRuntimeTransferUCB1UsesSelectedDonor(
 				DurationMs: 10.0,
 
 				IsWarmStart: true,
-
-				CostFactor: 1.0,
-
-				EnergyFactor: 1.0,
 			},
 		)
 	}
@@ -194,10 +190,6 @@ func TestSelectionArtifactRuntimeTransferLinUCBUsesSelectedDonor(
 				DurationMs: 12.0,
 
 				IsWarmStart: true,
-
-				CostFactor: 1.0,
-
-				EnergyFactor: 1.0,
 			},
 		)
 	}

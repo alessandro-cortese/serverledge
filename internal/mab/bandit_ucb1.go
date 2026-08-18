@@ -492,14 +492,8 @@ func (b *UCB1Bandit) updateRewardLocked(
 			feedback.DurationMs,
 		)
 
-	breakdown :=
-		buildCostBreakdown(
-			latencyReward,
-			feedback,
-		)
-
 	reward :=
-		breakdown.FinalReward
+		latencyReward
 
 	if !isFiniteNumber(
 		reward,
@@ -520,7 +514,7 @@ func (b *UCB1Bandit) updateRewardLocked(
 		b.FunctionName,
 		arm,
 		feedback.DurationMs,
-		breakdown,
+		reward,
 	)
 
 	stats.Count++

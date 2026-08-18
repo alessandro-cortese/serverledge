@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestColdStartExecutionUsesConcreteNodeFactors(
+func TestColdStartExecutionUsesLatencyReward(
 	t *testing.T,
 ) {
 	resetExecutionFeedbackConfig(t)
@@ -22,19 +22,9 @@ func TestColdStartExecutionUsesConcreteNodeFactors(
 		),
 	)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.5,
-	)
-
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.25,
-	)
-
 	bandit :=
 		NewUCB1Bandit(
-			"cold-node-factor-test",
+			"cold-latency-reward-test",
 			0.0,
 		)
 
@@ -51,15 +41,11 @@ func TestColdStartExecutionUsesConcreteNodeFactors(
 			IsWarmStart:   false,
 			NodeName:      "expensive-node",
 			ExecutionNode: "expensive-node",
-			CostFactor:    3.0,
-			EnergyFactor:  2.0,
 		},
 	)
 
 	expectedReward :=
-		-math.Log(10.0) -
-			0.5*3.0 -
-			0.25*2.0
+		-math.Log(10.0)
 
 	stats, ok :=
 		bandit.Arms[arm]
@@ -82,7 +68,7 @@ func TestColdStartExecutionUsesConcreteNodeFactors(
 	snapshot :=
 		GlobalColdStartStats.
 			Snapshot(
-				"cold-node-factor-test",
+				"cold-latency-reward-test",
 				arm,
 			)
 
@@ -104,7 +90,7 @@ func TestColdStartExecutionUsesConcreteNodeFactors(
 	)
 }
 
-func TestColdStartSkipIgnoresConcreteNodeFactors(
+func TestColdStartSkipDoesNotUpdateReward(
 	t *testing.T,
 ) {
 	resetExecutionFeedbackConfig(t)
@@ -116,19 +102,9 @@ func TestColdStartSkipIgnoresConcreteNodeFactors(
 		),
 	)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.5,
-	)
-
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.25,
-	)
-
 	bandit :=
 		NewUCB1Bandit(
-			"cold-skip-factor-test",
+			"cold-skip-test",
 			0.0,
 		)
 
@@ -140,11 +116,9 @@ func TestColdStartSkipIgnoresConcreteNodeFactors(
 		arm,
 		nil,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			InitTimeMs:   400.0,
-			IsWarmStart:  false,
-			CostFactor:   3.0,
-			EnergyFactor: 2.0,
+			DurationMs:  10.0,
+			InitTimeMs:  400.0,
+			IsWarmStart: false,
 		},
 	)
 
@@ -161,7 +135,7 @@ func TestColdStartSkipIgnoresConcreteNodeFactors(
 	snapshot :=
 		GlobalColdStartStats.
 			Snapshot(
-				"cold-skip-factor-test",
+				"cold-skip-test",
 				arm,
 			)
 
@@ -221,11 +195,9 @@ func TestColdStartExecutionLinUCBUsesDecisionContext(
 		arm,
 		ctx,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			InitTimeMs:   300.0,
-			IsWarmStart:  false,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			InitTimeMs:  300.0,
+			IsWarmStart: false,
 		},
 	)
 
@@ -284,10 +256,8 @@ func TestColdStartExecutionRespectsActionMask(
 	)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   10.0,
-		IsWarmStart:  false,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  10.0,
+		IsWarmStart: false,
 	}
 
 	bandit.ResolveSelection(

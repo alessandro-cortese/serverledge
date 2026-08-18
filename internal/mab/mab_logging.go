@@ -375,7 +375,7 @@ func logMABRewardBreakdown(
 	functionName string,
 	arm string,
 	durationMs float64,
-	breakdown CostBreakdown,
+	reward float64,
 ) {
 	info := ParseMachineTag(arm)
 	capabilities :=
@@ -385,7 +385,7 @@ func logMABRewardBreakdown(
 		)
 
 	log.Printf(
-		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f cost_weight=%.6f cost_factor=%.6f cost_term=%.6f energy_weight=%.6f energy_factor=%.6f energy_term=%.6f final_reward=%.6f\n",
+		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f final_reward=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -396,14 +396,8 @@ func logMABRewardBreakdown(
 		info.Specialization,
 		capabilities,
 		durationMs,
-		breakdown.LatencyReward,
-		breakdown.CostWeight,
-		breakdown.CostFactor,
-		breakdown.CostTerm,
-		breakdown.EnergyWeight,
-		breakdown.EnergyFactor,
-		breakdown.EnergyTerm,
-		breakdown.FinalReward,
+		reward,
+		reward,
 	)
 }
 
@@ -461,7 +455,7 @@ func logMABInvalidExecutionFeedback(
 	feedback ExecutionFeedback,
 ) {
 	log.Printf(
-		"%s event=invalid_execution_feedback ts=%d policy=%s function=%s arm=%s reason=%s warm_start=%t duration_ms=%.6f response_time_ms=%.6f init_time_ms=%.6f queueing_time_ms=%.6f offload_latency_ms=%.6f cost_factor=%.6f energy_factor=%.6f\n",
+		"%s event=invalid_execution_feedback ts=%d policy=%s function=%s arm=%s reason=%s warm_start=%t duration_ms=%.6f response_time_ms=%.6f init_time_ms=%.6f queueing_time_ms=%.6f offload_latency_ms=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -474,8 +468,6 @@ func logMABInvalidExecutionFeedback(
 		feedback.InitTimeMs,
 		feedback.QueueingTimeMs,
 		feedback.OffloadLatencyMs,
-		feedback.CostFactor,
-		feedback.EnergyFactor,
 	)
 }
 

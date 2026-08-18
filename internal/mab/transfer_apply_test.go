@@ -105,10 +105,8 @@ func TestUCB1RealFeedbackDominatesSeparatelyFromAppliedPrior(
 		"x86",
 		nil,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			IsWarmStart: true,
 		},
 	)
 
@@ -327,10 +325,8 @@ func TestLinUCBRealFeedbackRemainsOnlyTransferableKnowledgeAfterPrior(
 		"x86",
 		ctx,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			IsWarmStart: true,
 		},
 	)
 
@@ -436,10 +432,8 @@ func TestApplyWeakPriorRejectsNonFreshTarget(
 		"x86",
 		nil,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			IsWarmStart: true,
 		},
 	)
 

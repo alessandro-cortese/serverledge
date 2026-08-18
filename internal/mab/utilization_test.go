@@ -4,7 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/serverledge-faas/serverledge/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -117,15 +116,6 @@ func TestLinUCBRewardHasNoExplicitUtilizationPenalty(
 ) {
 	resetMABConfigAfterTest(t)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.0,
-	)
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.0,
-	)
-
 	const (
 		arm       = "shared-ring"
 		duration  = 100.0
@@ -147,10 +137,8 @@ func TestLinUCBRewardHasNoExplicitUtilizationPenalty(
 	highBandit.InitArm(arm)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   duration,
-		IsWarmStart:  true,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  duration,
+		IsWarmStart: true,
 	}
 
 	lowContext := &Context{
@@ -211,15 +199,6 @@ func TestLinUCBLearnsContextDependentSelectionWithoutExplicitPenalty(
 ) {
 	resetMABConfigAfterTest(t)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.0,
-	)
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.0,
-	)
-
 	bandit := NewLinUCBDisjointPolicy(
 		"linucb-context-dependent-selection-test",
 		0.0,
@@ -237,10 +216,8 @@ func TestLinUCBLearnsContextDependentSelectionWithoutExplicitPenalty(
 		durationMs float64,
 	) ExecutionFeedback {
 		return ExecutionFeedback{
-			DurationMs:   durationMs,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  durationMs,
+			IsWarmStart: true,
 		}
 	}
 
@@ -255,7 +232,7 @@ func TestLinUCBLearnsContextDependentSelectionWithoutExplicitPenalty(
 		}
 	}
 
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		bandit.UpdateReward(
 			contextSensitiveArm,
 			contextForArm(

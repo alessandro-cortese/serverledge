@@ -88,10 +88,8 @@ func TestUCB1ValidFeedbackMovesInFlightToCount(
 		)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   10.0,
-		IsWarmStart:  true,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  10.0,
+		IsWarmStart: true,
 	}
 
 	bandit.ResolveSelection(
@@ -152,10 +150,8 @@ func TestUCB1ColdSkipReleasesInFlightWithoutCount(
 		)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   10.0,
-		IsWarmStart:  false,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  10.0,
+		IsWarmStart: false,
 	}
 
 	bandit.ResolveSelection(
@@ -210,10 +206,8 @@ func TestUCB1FallbackUpdatesActualExecutionArm(
 		)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   10.0,
-		IsWarmStart:  true,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  10.0,
+		IsWarmStart: true,
 	}
 
 	bandit.ResolveSelection(
@@ -263,10 +257,8 @@ func TestUCB1RepeatedResolutionDoesNotApplyRewardTwice(
 		)
 
 	feedback := ExecutionFeedback{
-		DurationMs:   10.0,
-		IsWarmStart:  true,
-		CostFactor:   1.0,
-		EnergyFactor: 1.0,
+		DurationMs:  10.0,
+		IsWarmStart: true,
 	}
 
 	bandit.ResolveSelection(

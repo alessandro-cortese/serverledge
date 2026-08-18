@@ -35,10 +35,8 @@ func TestRuntimeTransferUCB1WorksWithSingleLocalArm(
 			"x86-local",
 			nil,
 			ExecutionFeedback{
-				DurationMs:   10.0,
-				IsWarmStart:  true,
-				CostFactor:   1.0,
-				EnergyFactor: 1.0,
+				DurationMs:  10.0,
+				IsWarmStart: true,
 			},
 		)
 	}
@@ -146,10 +144,8 @@ func TestRuntimeTransferUCB1WorksWithSingleLocalArm(
 		"x86-local",
 		nil,
 		ExecutionFeedback{
-			DurationMs:   20.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  20.0,
+			IsWarmStart: true,
 		},
 	)
 
@@ -214,10 +210,8 @@ func TestRuntimeTransferLinUCBWorksWithSingleLocalArm(
 			"x86-local",
 			ctx,
 			ExecutionFeedback{
-				DurationMs:   12.0,
-				IsWarmStart:  true,
-				CostFactor:   1.0,
-				EnergyFactor: 1.0,
+				DurationMs:  12.0,
+				IsWarmStart: true,
 			},
 		)
 	}
@@ -509,10 +503,8 @@ func TestRuntimeTransferPolicyMismatchDoesNotPublishTarget(
 		"x86-local",
 		nil,
 		ExecutionFeedback{
-			DurationMs:   10.0,
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  10.0,
+			IsWarmStart: true,
 		},
 	)
 

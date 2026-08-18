@@ -564,14 +564,8 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 			feedback.DurationMs,
 		)
 
-	breakdown :=
-		buildCostBreakdown(
-			latencyReward,
-			feedback,
-		)
-
 	reward :=
-		breakdown.FinalReward
+		latencyReward
 
 	if !isFiniteNumber(
 		reward,
@@ -592,7 +586,7 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 		p.FunctionName,
 		arm,
 		feedback.DurationMs,
-		breakdown,
+		reward,
 	)
 
 	x :=

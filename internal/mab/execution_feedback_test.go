@@ -5,7 +5,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/serverledge-faas/serverledge/internal/config"
 	"github.com/serverledge-faas/serverledge/internal/function"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -26,24 +25,14 @@ func resetExecutionFeedbackConfig(
 	})
 }
 
-func TestUCB1RewardUsesConcreteExecutionNodeFactors(
+func TestUCB1RewardDependsOnlyOnDuration(
 	t *testing.T,
 ) {
 	resetExecutionFeedbackConfig(t)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.5,
-	)
-
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.25,
-	)
-
 	bandit :=
 		NewUCB1Bandit(
-			"node-specific-reward-test",
+			"latency-only-reward-test",
 			0.0,
 		)
 
@@ -51,44 +40,32 @@ func TestUCB1RewardUsesConcreteExecutionNodeFactors(
 
 	bandit.InitArm(arm)
 
-	cheapFeedback := ExecutionFeedback{
+	firstFeedback := ExecutionFeedback{
 		DurationMs:    10.0,
 		IsWarmStart:   true,
-		NodeName:      "cheap-node",
-		ExecutionNode: "cheap-node",
-		CostFactor:    1.0,
-		EnergyFactor:  1.0,
+		NodeName:      "node-a",
+		ExecutionNode: "node-a",
 	}
 
-	expensiveFeedback := ExecutionFeedback{
+	secondFeedback := ExecutionFeedback{
 		DurationMs:    10.0,
 		IsWarmStart:   true,
-		NodeName:      "expensive-node",
-		ExecutionNode: "expensive-node",
-		CostFactor:    3.0,
-		EnergyFactor:  2.0,
+		NodeName:      "node-b",
+		ExecutionNode: "node-b",
 	}
 
-	latencyReward :=
+	expectedReward :=
 		-math.Log(10.0)
-
-	expectedCheapReward :=
-		latencyReward -
-			0.5*1.0 -
-			0.25*1.0
-
-	expectedExpensiveReward :=
-		latencyReward -
-			0.5*3.0 -
-			0.25*2.0
 
 	bandit.UpdateReward(
 		arm,
 		nil,
-		cheapFeedback,
+		firstFeedback,
 	)
 
-	stats, ok := bandit.Arms[arm]
+	stats, ok :=
+		bandit.Arms[arm]
+
 	require.True(t, ok)
 
 	require.Equal(
@@ -99,7 +76,7 @@ func TestUCB1RewardUsesConcreteExecutionNodeFactors(
 
 	assert.InDelta(
 		t,
-		expectedCheapReward,
+		expectedReward,
 		stats.AvgReward,
 		1e-9,
 	)
@@ -107,7 +84,7 @@ func TestUCB1RewardUsesConcreteExecutionNodeFactors(
 	bandit.UpdateReward(
 		arm,
 		nil,
-		expensiveFeedback,
+		secondFeedback,
 	)
 
 	require.Equal(
@@ -124,47 +101,27 @@ func TestUCB1RewardUsesConcreteExecutionNodeFactors(
 
 	assert.InDelta(
 		t,
-		expectedCheapReward+
-			expectedExpensiveReward,
+		2.0*expectedReward,
 		stats.SumRewards,
 		1e-9,
 	)
 
-	expectedAverageReward :=
-		(expectedCheapReward + expectedExpensiveReward) / 2.0
-
 	assert.InDelta(
 		t,
-		expectedAverageReward,
+		expectedReward,
 		stats.AvgReward,
 		1e-9,
 	)
-
-	assert.Less(
-		t,
-		expectedExpensiveReward,
-		expectedCheapReward,
-	)
 }
 
-func TestLinUCBRewardUsesConcreteExecutionNodeFactors(
+func TestLinUCBRewardDependsOnlyOnDuration(
 	t *testing.T,
 ) {
 	resetExecutionFeedbackConfig(t)
 
-	viper.Set(
-		config.MAB_COST_WEIGHT,
-		0.5,
-	)
-
-	viper.Set(
-		config.MAB_ENERGY_WEIGHT,
-		0.25,
-	)
-
 	bandit :=
 		NewLinUCBDisjointPolicy(
-			"linucb-node-specific-reward-test",
+			"linucb-latency-only-reward-test",
 			0.1,
 		)
 
@@ -181,16 +138,12 @@ func TestLinUCBRewardUsesConcreteExecutionNodeFactors(
 	feedback := ExecutionFeedback{
 		DurationMs:    10.0,
 		IsWarmStart:   true,
-		NodeName:      "expensive-node",
-		ExecutionNode: "expensive-node",
-		CostFactor:    3.0,
-		EnergyFactor:  2.0,
+		NodeName:      "node-a",
+		ExecutionNode: "node-a",
 	}
 
 	expectedReward :=
-		-math.Log(10.0) -
-			0.5*3.0 -
-			0.25*2.0
+		-math.Log(10.0)
 
 	features :=
 		bandit.computeFeatures(
@@ -203,27 +156,20 @@ func TestLinUCBRewardUsesConcreteExecutionNodeFactors(
 		feedback,
 	)
 
-	state, ok := bandit.Arms[arm]
+	state, ok :=
+		bandit.Arms[arm]
+
 	require.True(t, ok)
 
-	// The LinUCB b vector starts from zero. After one update:
-	//
-	//     b = reward * x
-	assert.InDelta(
-		t,
-		expectedReward*
-			features.AtVec(0),
-		state.b.AtVec(0),
-		1e-9,
-	)
-
-	assert.InDelta(
-		t,
-		expectedReward*
-			features.AtVec(1),
-		state.b.AtVec(1),
-		1e-9,
-	)
+	for i := 0; i < bandit.Dim; i++ {
+		assert.InDelta(
+			t,
+			expectedReward*
+				features.AtVec(i),
+			state.b.AtVec(i),
+			1e-9,
+		)
+	}
 }
 
 // recordingPolicy captures the values passed by UpdateBandit.
@@ -351,9 +297,7 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 	)
 
 	initialFeedback := ExecutionFeedback{
-		NodeName:     "node-a",
-		CostFactor:   2.5,
-		EnergyFactor: 1.7,
+		NodeName: "node-a",
 	}
 
 	err = UpdateBandit(
@@ -443,20 +387,6 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 		t,
 		"node-a",
 		recorder.feedback.ExecutionNode,
-	)
-
-	assert.InDelta(
-		t,
-		2.5,
-		recorder.feedback.CostFactor,
-		1e-9,
-	)
-
-	assert.InDelta(
-		t,
-		1.7,
-		recorder.feedback.EnergyFactor,
-		1e-9,
 	)
 
 	assert.Equal(

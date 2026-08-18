@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/serverledge-faas/serverledge/internal/client"
-	"github.com/serverledge-faas/serverledge/internal/config"
 	"github.com/serverledge-faas/serverledge/internal/container"
 	"github.com/serverledge-faas/serverledge/internal/function"
 	"github.com/serverledge-faas/serverledge/internal/node"
@@ -338,8 +337,6 @@ func GetServerStatus(c echo.Context) error {
 		Coordinates:             coords,
 		LoadAvg:                 loadAvgValues,
 		LastUpdateTime:          time.Now().Unix(),
-		CostFactor:              config.GetFloat(config.NODE_COST_FACTOR, 1.0),
-		EnergyFactor:            config.GetFloat(config.NODE_ENERGY_FACTOR, 1.0),
 	}
 
 	return c.JSON(http.StatusOK, response)

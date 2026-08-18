@@ -54,32 +54,6 @@ func validateExecutionFeedback(
 		)
 
 		return false
-
-	case !isFiniteNumber(
-		feedback.CostFactor,
-	):
-		recordInvalidExecutionFeedback(
-			policy,
-			functionName,
-			arm,
-			"non_finite_cost_factor",
-			feedback,
-		)
-
-		return false
-
-	case !isFiniteNumber(
-		feedback.EnergyFactor,
-	):
-		recordInvalidExecutionFeedback(
-			policy,
-			functionName,
-			arm,
-			"non_finite_energy_factor",
-			feedback,
-		)
-
-		return false
 	}
 
 	return true

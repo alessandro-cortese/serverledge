@@ -4,7 +4,6 @@ import (
 	"log"
 	"math/rand"
 	"regexp"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -588,12 +587,6 @@ func (b *GeneralLoadBalancer) AddTarget(t *middleware.ProxyTarget) bool {
 		return false
 	}
 
-	NodeMetrics.UpdateCostProfile(
-		t.Name,
-		getTargetCostFactor(t),
-		getTargetEnergyFactor(t),
-	)
-
 	nodeInfo := GetSingleTargetInfo(t)
 	// Every time we add a node, we set the information about its available memory.
 	if nodeInfo != nil {
@@ -607,11 +600,6 @@ func (b *GeneralLoadBalancer) AddTarget(t *middleware.ProxyTarget) bool {
 			nodeInfo.TotalCPU-nodeInfo.UsedCPU,
 		)
 
-		NodeMetrics.UpdateCostProfile(
-			t.Name,
-			firstPositiveFloat64(nodeInfo.CostFactor, getTargetCostFactor(t)),
-			firstPositiveFloat64(nodeInfo.EnergyFactor, getTargetEnergyFactor(t)),
-		)
 	}
 
 	if _, exists := b.rings[tag]; !exists {
@@ -729,63 +717,6 @@ func getTargetArch(t *middleware.ProxyTarget) string {
 	}
 
 	return ""
-}
-
-func firstPositiveFloat64(values ...float64) float64 {
-	for _, value := range values {
-		if value > 0 {
-			return value
-		}
-	}
-	return 1.0
-}
-
-func getTargetCostFactor(t *middleware.ProxyTarget) float64 {
-	if t == nil || t.Meta == nil {
-		return 1.0
-	}
-
-	switch value := t.Meta["cost_factor"].(type) {
-	case float64:
-		return firstPositiveFloat64(value)
-	case float32:
-		return firstPositiveFloat64(float64(value))
-	case int:
-		return firstPositiveFloat64(float64(value))
-	case int64:
-		return firstPositiveFloat64(float64(value))
-	case string:
-		parsed, err := strconv.ParseFloat(value, 64)
-		if err == nil {
-			return firstPositiveFloat64(parsed)
-		}
-	}
-
-	return 1.0
-}
-
-func getTargetEnergyFactor(t *middleware.ProxyTarget) float64 {
-	if t == nil || t.Meta == nil {
-		return 1.0
-	}
-
-	switch value := t.Meta["energy_factor"].(type) {
-	case float64:
-		return firstPositiveFloat64(value)
-	case float32:
-		return firstPositiveFloat64(float64(value))
-	case int:
-		return firstPositiveFloat64(float64(value))
-	case int64:
-		return firstPositiveFloat64(float64(value))
-	case string:
-		parsed, err := strconv.ParseFloat(value, 64)
-		if err == nil {
-			return firstPositiveFloat64(parsed)
-		}
-	}
-
-	return 1.0
 }
 
 func containsString(values []string, target string) bool {

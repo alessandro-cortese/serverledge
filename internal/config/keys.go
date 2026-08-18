@@ -3,14 +3,6 @@ package config
 // the machine tag used to associate the node with the correct ring
 const MACHINE_TAG = "node.machine_tag"
 
-// Relative monetary/capacity cost declared by a node.
-// It is used by MAB cost-aware rewards and is expected to be normalized.
-const NODE_COST_FACTOR = "node.cost_factor"
-
-// Relative energy cost declared by a node.
-// It is used by MAB cost-aware rewards and is expected to be normalized.
-const NODE_ENERGY_FACTOR = "node.energy_factor"
-
 // used to specify the type of architecture on which to run
 const FUNCTION_TAG_PATTERN = "function.tag_pattern"
 
@@ -88,14 +80,6 @@ const MAB_UCB1_C = "mab.ucb1.c"
 // Aplha value for the LinUCB policy
 const MAB_LINUCB_ALPHA = "mab.linucb.alpha"
 
-// Weight for the cost component in the MAB reward.
-// reward = latencyReward - costWeight*costFactor - ...
-const MAB_COST_WEIGHT = "mab.cost.weight"
-
-// Weight for the energy component in the MAB reward.
-// reward = latencyReward - energyWeight*energyFactor - ...
-const MAB_ENERGY_WEIGHT = "mab.energy.weight"
-
 // Constant synthetic reward assigned to the arm selected by the MAB when
 // that arm cannot serve the request and a fallback is required.
 const MAB_FALLBACK_PENALTY = "mab.fallback.penalty"
@@ -150,6 +134,18 @@ const FUNCTION_PROFILING_EXPORT_ENABLED = "profiling.export.enabled"
 
 // Output path for the versioned profiling JSONL dataset.
 const FUNCTION_PROFILING_EXPORT_PATH = "profiling.export.path"
+
+// Enables optional Kepler-based energy profiling.
+//
+// Kepler metrics remain observability data in the first integration stage and
+// do not directly modify MAB rewards or contextual features.
+const FUNCTION_PROFILING_KEPLER_ENABLED = "profiling.kepler.enabled"
+
+// Prometheus exposition endpoint exported by the node-local Kepler instance.
+const FUNCTION_PROFILING_KEPLER_URL = "profiling.kepler.url"
+
+// HTTP timeout used when reading the Kepler metrics endpoint.
+const FUNCTION_PROFILING_KEPLER_TIMEOUT_MS = "profiling.kepler.timeout_ms"
 
 // Scheduling policy to use
 // Possible values: "qosaware", "default", "cloudonly"

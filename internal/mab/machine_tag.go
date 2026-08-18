@@ -4,13 +4,6 @@ import (
 	"log"
 	"regexp"
 	"strings"
-
-	"github.com/serverledge-faas/serverledge/internal/config"
-)
-
-const (
-	defaultCostFactor   = 1.0
-	defaultEnergyFactor = 1.0
 )
 
 type MachineTagInfo struct {
@@ -19,17 +12,6 @@ type MachineTagInfo struct {
 	Architecture   string
 	Specialization string
 	Capabilities   []string
-}
-
-type CostBreakdown struct {
-	LatencyReward float64
-	CostWeight    float64
-	CostFactor    float64
-	CostTerm      float64
-	EnergyWeight  float64
-	EnergyFactor  float64
-	EnergyTerm    float64
-	FinalReward   float64
 }
 
 // ParseMachineTag parses tags such as:
@@ -256,62 +238,4 @@ func normalizeMachineTagPattern(pattern string) string {
 	escaped := regexp.QuoteMeta(pattern)
 	escaped = strings.ReplaceAll(escaped, `\*`, ".*")
 	return "^" + escaped + "$"
-}
-
-func defaultIfNonPositive(value float64, fallback float64) float64 {
-	if value <= 0 {
-		return fallback
-	}
-	return value
-}
-
-func buildCostBreakdown(
-	latencyReward float64,
-	feedback ExecutionFeedback,
-) CostBreakdown {
-	costWeight := config.GetFloat(
-		config.MAB_COST_WEIGHT,
-		0.0,
-	)
-
-	energyWeight := config.GetFloat(
-		config.MAB_ENERGY_WEIGHT,
-		0.0,
-	)
-
-	// Cost and energy refer to the concrete execution node, not to an average
-	// of all nodes that belong to the same machine-tag ring.
-	costFactor := defaultIfNonPositive(
-		feedback.CostFactor,
-		defaultCostFactor,
-	)
-
-	energyFactor := defaultIfNonPositive(
-		feedback.EnergyFactor,
-		defaultEnergyFactor,
-	)
-
-	costTerm :=
-		costWeight *
-			costFactor
-
-	energyTerm :=
-		energyWeight *
-			energyFactor
-
-	finalReward :=
-		latencyReward -
-			costTerm -
-			energyTerm
-
-	return CostBreakdown{
-		LatencyReward: latencyReward,
-		CostWeight:    costWeight,
-		CostFactor:    costFactor,
-		CostTerm:      costTerm,
-		EnergyWeight:  energyWeight,
-		EnergyFactor:  energyFactor,
-		EnergyTerm:    energyTerm,
-		FinalReward:   finalReward,
-	}
 }

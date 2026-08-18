@@ -17,17 +17,10 @@ type Context struct {
 	// MAB arm/machine-tag ring. The historical field name is retained for
 	// compatibility with the previous implementation.
 	ArchMemUsage map[string]float64
-
-	// ArmCostFactor keeps the normalized cost factor for each arm/tag at decision time.
-	// ArmCostFactor map[string]float64
-
-	// ArmEnergyFactor keeps the normalized energy factor for each arm/tag at decision time.
-	// ArmEnergyFactor map[string]float64
 }
 
 // ExecutionFeedback contains the measurements associated with the node that
-// actually executed an invocation. Cost and energy are node-level structural
-// properties and must not be replaced with averages computed over the arm/ring.
+// actually executed an invocation.
 type ExecutionFeedback struct {
 	DurationMs       float64
 	ResponseTimeMs   float64
@@ -39,9 +32,6 @@ type ExecutionFeedback struct {
 
 	NodeName      string
 	ExecutionNode string
-
-	CostFactor   float64
-	EnergyFactor float64
 }
 
 // SyntheticReward is a policy-level learning observation that is not derived

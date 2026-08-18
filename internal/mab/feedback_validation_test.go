@@ -4,8 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/serverledge-faas/serverledge/internal/config"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -56,10 +54,8 @@ func TestUCB1RejectsInvalidDurationFeedback(
 					arm,
 					nil,
 					ExecutionFeedback{
-						DurationMs:   test.duration,
-						IsWarmStart:  true,
-						CostFactor:   1.0,
-						EnergyFactor: 1.0,
+						DurationMs:  test.duration,
+						IsWarmStart: true,
 					},
 				)
 
@@ -132,10 +128,8 @@ func TestLinUCBRejectsInvalidDurationFeedback(
 		arm,
 		ctx,
 		ExecutionFeedback{
-			DurationMs:   math.NaN(),
-			IsWarmStart:  true,
-			CostFactor:   1.0,
-			EnergyFactor: 1.0,
+			DurationMs:  math.NaN(),
+			IsWarmStart: true,
 		},
 	)
 
@@ -192,8 +186,6 @@ func TestInvalidObservabilityMetricsDoNotBlockValidReward(
 			QueueingTimeMs:   math.Inf(1),
 			OffloadLatencyMs: -2.0,
 			IsWarmStart:      true,
-			CostFactor:       1.0,
-			EnergyFactor:     1.0,
 		},
 	)
 
@@ -214,82 +206,4 @@ func TestInvalidObservabilityMetricsDoNotBlockValidReward(
 		stats.AvgReward,
 		1e-9,
 	)
-}
-
-func TestNonFiniteNodeFactorsRejectFeedback(
-	t *testing.T,
-) {
-	tests := []struct {
-		name         string
-		costFactor   float64
-		energyFactor float64
-	}{
-		{
-			name:         "nan cost factor",
-			costFactor:   math.NaN(),
-			energyFactor: 1.0,
-		},
-		{
-			name:         "infinite energy factor",
-			costFactor:   1.0,
-			energyFactor: math.Inf(1),
-		},
-	}
-
-	for _, test := range tests {
-
-		t.Run(
-			test.name,
-			func(t *testing.T) {
-				resetExecutionFeedbackConfig(t)
-
-				viper.Set(
-					config.MAB_COST_WEIGHT,
-					0.5,
-				)
-
-				viper.Set(
-					config.MAB_ENERGY_WEIGHT,
-					0.5,
-				)
-
-				bandit :=
-					NewUCB1Bandit(
-						"invalid-factor-test",
-						0.0,
-					)
-
-				const arm = "shared-ring"
-
-				bandit.InitArm(arm)
-
-				bandit.UpdateReward(
-					arm,
-					nil,
-					ExecutionFeedback{
-						DurationMs:   10.0,
-						IsWarmStart:  true,
-						CostFactor:   test.costFactor,
-						EnergyFactor: test.energyFactor,
-					},
-				)
-
-				assert.Zero(
-					t,
-					bandit.Arms[arm].Count,
-				)
-
-				assert.Equal(
-					t,
-					int64(1),
-					GlobalColdStartStats.
-						Snapshot(
-							"invalid-factor-test",
-							arm,
-						).
-						InvalidFeedback,
-				)
-			},
-		)
-	}
 }

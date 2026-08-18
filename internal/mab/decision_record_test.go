@@ -203,10 +203,6 @@ func TestResolveDecisionWithFeedbackRecordsFallback(
 				DurationMs: 10.0,
 
 				IsWarmStart: true,
-
-				CostFactor: 1.0,
-
-				EnergyFactor: 1.0,
 			},
 		)
 
