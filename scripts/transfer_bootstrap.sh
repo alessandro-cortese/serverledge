@@ -693,6 +693,46 @@ if [[ "$CATALOG_MACHINE_TAG" != "$X86_TAG" &&
     "Il profile_machine_tag del catalogo ($CATALOG_MACHINE_TAG) non coincide con $X86_TAG o $ARM_TAG."
 fi
 
+# The transfer bootstrap must profile the new function on one predetermined
+# architecture only.
+#
+# The donor catalog already defines the reference architecture through
+# profile_machine_tag. Using the same machine tag for the target profiling
+# guarantees that donor and target feature vectors belong to the same
+# profiling space.
+case "$CATALOG_MACHINE_TAG" in
+
+"$X86_TAG")
+  BOOTSTRAP_LABEL="x86"
+  BOOTSTRAP_NODE_NAME="$X86_NODE_NAME"
+  BOOTSTRAP_HOST="$X86_HOST"
+  BOOTSTRAP_PORT="$X86_PORT"
+  BOOTSTRAP_TAG="$X86_TAG"
+
+  BOOTSTRAP_SSH_TARGET="$X86_SSH_TARGET"
+  BOOTSTRAP_REMOTE_PATH="$X86_REMOTE_PATH"
+  BOOTSTRAP_SSH_PORT="$X86_SSH_PORT"
+  ;;
+
+"$ARM_TAG")
+  BOOTSTRAP_LABEL="ARM"
+  BOOTSTRAP_NODE_NAME="$ARM_NODE_NAME"
+  BOOTSTRAP_HOST="$ARM_HOST"
+  BOOTSTRAP_PORT="$ARM_PORT"
+  BOOTSTRAP_TAG="$ARM_TAG"
+
+  BOOTSTRAP_SSH_TARGET="$ARM_SSH_TARGET"
+  BOOTSTRAP_REMOTE_PATH="$ARM_REMOTE_PATH"
+  BOOTSTRAP_SSH_PORT="$ARM_SSH_PORT"
+  ;;
+
+*)
+  fail \
+    "Machine tag bootstrap non supportato: $CATALOG_MACHINE_TAG"
+  ;;
+
+esac
+
 OUTPUT_DIR="data/profiling/transfer-bootstrap/${EXPERIMENT_ID}"
 
 COLLECTION_ROOT="data/profiling/raw"
@@ -759,30 +799,32 @@ output:
 
 Workflow:
 
-  1. record current raw-dataset line counts on x86 and ARM
+  1. select the predetermined bootstrap architecture from
+   donor catalog profile_machine_tag
 
-  2. prewarm one target container directly on x86 and ARM
+  2. record the current profiling dataset line count only
+   for the selected bootstrap node
 
-  3. invoke target sequentially on both nodes with:
-       CanDoOffloading=false
+  3. prewarm one target container directly on that node
 
-  4. collect per-node profiling JSONL datasets
+  4. invoke the target $SAMPLES_PER_ARCH times on that node with:
+     CanDoOffloading=false
 
-  5. isolate only lines appended during this bootstrap
-     and belonging to the target function
+  5. collect profiling JSONL datasets
 
-  6. require >= $SAMPLES_PER_ARCH warm/exclusive
-     eligible samples per architecture
+  6. isolate only samples appended during this bootstrap
+   for the target function and selected machine tag
 
-  7. aggregate FunctionProfile and export mean/median CSV
+  7. require >= $SAMPLES_PER_ARCH warm/exclusive
+   eligible target samples
 
-  8. build transfer-query.json with donor preprocessing model
+  9. build transfer-query.json with donor preprocessing model
 
-  9. run similarity selection
+  10. run similarity selection
 
- 10. POST selection.json to the live LB transfer-control API
+  11. POST selection.json to the live LB transfer-control API
 
- 11. subsequent normal requests go through UCB1/LinUCB
+  12. subsequent normal requests go through UCB1/LinUCB
 
 PLAN
 
@@ -1024,51 +1066,29 @@ remote_line_count() {
 }
 
 check_node \
-  "x86" \
-  "$X86_HOST" \
-  "$X86_PORT"
+  "$BOOTSTRAP_LABEL" \
+  "$BOOTSTRAP_HOST" \
+  "$BOOTSTRAP_PORT"
 
-check_node \
-  "ARM" \
-  "$ARM_HOST" \
-  "$ARM_PORT"
-
-X86_BASELINE_LINES="$(
+BOOTSTRAP_BASELINE_LINES="$(
   remote_line_count \
-    "$X86_SSH_TARGET" \
-    "$X86_REMOTE_PATH" \
-    "$X86_SSH_PORT"
+    "$BOOTSTRAP_SSH_TARGET" \
+    "$BOOTSTRAP_REMOTE_PATH" \
+    "$BOOTSTRAP_SSH_PORT"
 )"
 
-ARM_BASELINE_LINES="$(
-  remote_line_count \
-    "$ARM_SSH_TARGET" \
-    "$ARM_REMOTE_PATH" \
-    "$ARM_SSH_PORT"
-)"
-
-[[ "$X86_BASELINE_LINES" =~ ^[0-9]+$ ]] ||
+[[ "$BOOTSTRAP_BASELINE_LINES" =~ ^[0-9]+$ ]] ||
   fail \
-    "Baseline x86 non valida: $X86_BASELINE_LINES"
-
-[[ "$ARM_BASELINE_LINES" =~ ^[0-9]+$ ]] ||
-  fail \
-    "Baseline ARM non valida: $ARM_BASELINE_LINES"
+    "Baseline profiling non valida per $BOOTSTRAP_NODE_NAME: $BOOTSTRAP_BASELINE_LINES"
 
 echo \
-  "[bootstrap] raw baseline x86_lines=$X86_BASELINE_LINES arm_lines=$ARM_BASELINE_LINES"
+  "[bootstrap] node=$BOOTSTRAP_NODE_NAME tag=$BOOTSTRAP_TAG raw_baseline_lines=$BOOTSTRAP_BASELINE_LINES"
 
 prewarm_node \
-  "x86" \
-  "$X86_HOST" \
-  "$X86_PORT" \
-  "$OUTPUT_DIR/prewarm-x86.json"
-
-prewarm_node \
-  "ARM" \
-  "$ARM_HOST" \
-  "$ARM_PORT" \
-  "$OUTPUT_DIR/prewarm-arm.json"
+  "$BOOTSTRAP_LABEL" \
+  "$BOOTSTRAP_HOST" \
+  "$BOOTSTRAP_PORT" \
+  "$OUTPUT_DIR/prewarm-bootstrap.json"
 
 sleep \
   "$PREWARM_SETTLE_SECONDS"
@@ -1080,18 +1100,11 @@ for index in $(
 ); do
 
   invoke_node \
-    "x86" \
-    "$X86_HOST" \
-    "$X86_PORT" \
+    "$BOOTSTRAP_LABEL" \
+    "$BOOTSTRAP_HOST" \
+    "$BOOTSTRAP_PORT" \
     "$index" \
-    "$OUTPUT_DIR/invoke-x86-${index}.json"
-
-  invoke_node \
-    "ARM" \
-    "$ARM_HOST" \
-    "$ARM_PORT" \
-    "$index" \
-    "$OUTPUT_DIR/invoke-arm-${index}.json"
+    "$OUTPUT_DIR/invoke-bootstrap-${index}.json"
 
 done
 
@@ -1114,12 +1127,9 @@ mkdir -p \
   "$COLLECTION_DIR" \
   "$FILTERED_DIR" \
   "$FUNCTION_NAME" \
-  "$X86_NODE_NAME" \
-  "$X86_TAG" \
-  "$X86_BASELINE_LINES" \
-  "$ARM_NODE_NAME" \
-  "$ARM_TAG" \
-  "$ARM_BASELINE_LINES" \
+  "$BOOTSTRAP_NODE_NAME" \
+  "$BOOTSTRAP_TAG" \
+  "$BOOTSTRAP_BASELINE_LINES" \
   "$SAMPLES_PER_ARCH" <<'PY_FILTER'
 
 import json
@@ -1133,18 +1143,12 @@ from pathlib import Path
     filtered_raw,
     function_name,
 
-    x86_node,
-    x86_tag,
-    x86_baseline_raw,
-
-    arm_node,
-    arm_tag,
-    arm_baseline_raw,
+    bootstrap_node,
+    bootstrap_tag,
+    bootstrap_baseline_raw,
 
     required_raw,
-) = sys.argv[
-    1:
-]
+) = sys.argv[1:]
 
 collection = Path(
     collection_raw
@@ -1159,17 +1163,10 @@ required = int(
 )
 
 expected = {
-    x86_node: (
-        x86_tag,
+    bootstrap_node: (
+        bootstrap_tag,
         int(
-            x86_baseline_raw
-        ),
-    ),
-
-    arm_node: (
-        arm_tag,
-        int(
-            arm_baseline_raw
+            bootstrap_baseline_raw
         ),
     ),
 }

@@ -15,3 +15,5 @@ analysis/requirements.txt
 analysis/
 data/
 logs/
+examples/kepler_cpu_smoke.py
+logs/kepler-serverledge-smoke

@@ -126,6 +126,11 @@ func UpdateBandit(
 	feedback.ExecutionNode =
 		report.ExecutionNode
 
+	feedback.KeplerEnergy =
+		executionEnergyFeedbackFromReport(
+			report,
+		)
+
 	if feedback.NodeName == "" {
 		feedback.NodeName =
 			feedback.ExecutionNode
@@ -153,13 +158,23 @@ func UpdateBandit(
 		)
 	}
 
-	logMABExecutionTiming(
+	policy :=
 		string(
 			bandit.GetType(),
-		),
+		)
+
+	logMABExecutionTiming(
+		policy,
 		functionName,
 		executionTag,
 		feedback,
+	)
+
+	logMABKeplerEnergyFeedback(
+		policy,
+		functionName,
+		executionTag,
+		feedback.KeplerEnergy,
 	)
 
 	if !ResolveDecisionWithFeedback(
@@ -186,4 +201,44 @@ func UpdateBandit(
 	}
 
 	return nil
+}
+
+// executionEnergyFeedbackFromReport translates the node-side Kepler profile
+// into the deliberately smaller representation consumed by the MAB layer.
+//
+// The zone map is copied so that ExecutionFeedback owns its data independently
+// from the decoded HTTP response.
+func executionEnergyFeedbackFromReport(
+	report function.ExecutionReport,
+) *KeplerExecutionEnergyFeedback {
+	if report.KeplerEnergy == nil {
+		return nil
+	}
+
+	var zones map[string]float64
+
+	if report.KeplerEnergy.CPUJoulesByZone != nil {
+		zones =
+			make(
+				map[string]float64,
+				len(
+					report.KeplerEnergy.CPUJoulesByZone,
+				),
+			)
+
+		for zone, joules := range report.KeplerEnergy.CPUJoulesByZone {
+
+			zones[zone] =
+				joules
+		}
+	}
+
+	return &KeplerExecutionEnergyFeedback{
+		Available: report.KeplerEnergy.Available,
+
+		InvalidReason: report.KeplerEnergy.InvalidReason,
+		ContainerID:   report.KeplerEnergy.ContainerID,
+
+		CPUJoulesByZone: zones,
+	}
 }

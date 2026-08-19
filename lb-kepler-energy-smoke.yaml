@@ -1,0 +1,20 @@
+etcd.address: "127.0.0.1:2379"
+
+api.ip: "127.0.0.1"
+api.port: 8080
+
+registry.area: ROME
+
+lb.arch_awareness: true
+lb.mode: MAB
+
+mab.policy: UCB1
+mab.ucb1.c: 0.8
+mab.cold_start.mode: skip
+
+# Reward energetico reale.
+mab.reward.mode: kepler_energy
+mab.reward.kepler.zone: package
+
+lb.replicas: 128
+lb.refresh_interval: 1

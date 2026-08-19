@@ -1,0 +1,19 @@
+etcd.address: "127.0.0.1:2379"
+api.port: 1323
+registry.area: ROME
+registry.udp.port: 9876
+
+node.machine_tag: x86
+
+container.pool.memory: 512
+
+# Il profiling destinato a clustering/transfer learning resta disabilitato.
+profiling.enabled: false
+profiling.export.enabled: false
+
+# Kepler è invece abilitato indipendentemente dal profiling.
+profiling.kepler.enabled: true
+profiling.kepler.url: "http://127.0.0.1:28282/metrics"
+profiling.kepler.timeout_ms: 3000
+profiling.kepler.poll_interval_ms: 100
+profiling.kepler.refresh_timeout_ms: 3000

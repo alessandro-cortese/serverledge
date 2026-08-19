@@ -38,6 +38,8 @@ type ExecutionReport struct {
 	ExecutionNode  string
 
 	ResourceProfile *profiling.InvocationResourceProfile `json:"ResourceProfile,omitempty"`
+
+	KeplerEnergy *profiling.KeplerInvocationEnergyProfile `json:"KeplerEnergy,omitempty"`
 }
 
 type Response struct {

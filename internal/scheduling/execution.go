@@ -53,6 +53,7 @@ func Execute(
 		executionWallTime,
 		resourceProfile,
 		nodeEnvironment,
+		keplerEnergyProfile,
 		executionErr :=
 		container.ExecuteProfiled(
 			cont,
@@ -64,6 +65,11 @@ func Execute(
 	// Record timing and placement for both successful and failed invocations.
 	// This keeps the raw dataset auditable.
 	r.ResourceProfile = resourceProfile
+	r.KeplerEnergy = keplerEnergyProfile
+	profiling.LogKeplerInvocationEnergyProfile(
+		keplerEnergyProfile,
+	)
+
 	r.IsWarmStart = isWarm
 
 	r.Duration =

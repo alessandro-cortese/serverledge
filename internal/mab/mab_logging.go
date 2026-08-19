@@ -1,6 +1,7 @@
 package mab
 
 import (
+	"fmt"
 	"log"
 	"sort"
 	"strings"
@@ -375,9 +376,13 @@ func logMABRewardBreakdown(
 	functionName string,
 	arm string,
 	durationMs float64,
-	reward float64,
+	result RewardResult,
 ) {
-	info := ParseMachineTag(arm)
+	info :=
+		ParseMachineTag(
+			arm,
+		)
+
 	capabilities :=
 		strings.Join(
 			info.Capabilities,
@@ -385,7 +390,7 @@ func logMABRewardBreakdown(
 		)
 
 	log.Printf(
-		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f latency_reward=%.6f final_reward=%.6f\n",
+		"%s event=reward_breakdown ts=%d policy=%s function=%s arm=%s base_tag=%s architecture=%s specialization=%s capabilities=[%s] duration_ms=%.6f reward_mode=%s reward_input=%s reward_input_value=%.6f reward_input_unit=%s final_reward=%.6f\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -396,11 +401,13 @@ func logMABRewardBreakdown(
 		info.Specialization,
 		capabilities,
 		durationMs,
-		reward,
-		reward,
+		result.Mode,
+		result.InputName,
+		result.InputValue,
+		result.InputUnit,
+		result.Value,
 	)
 }
-
 func logMABExecutionTiming(
 	policy string,
 	functionName string,
@@ -437,7 +444,7 @@ func logMABUseColdStartSample(
 	durationMs float64,
 ) {
 	log.Printf(
-		"%s event=use_cold_start_sample ts=%d policy=%s function=%s arm=%s duration_ms=%.6f mode=execution reward_time_source=duration_ms\n",
+		"%s event=use_cold_start_sample ts=%d policy=%s function=%s arm=%s duration_ms=%.6f mode=execution reward_source=configured_reward_mode\n",
 		mabLogPrefix,
 		nowMillis(),
 		policy,
@@ -580,5 +587,89 @@ func logMABSelectionRuntimeTransfer(
 		result.Prior.SourceRealObservationCount,
 		result.Prior.TransferredArmCount,
 		result.Prior.SkippedArmCount,
+	)
+}
+
+func logMABKeplerEnergyFeedback(
+	policy string,
+	functionName string,
+	arm string,
+	energy *KeplerExecutionEnergyFeedback,
+) {
+	if energy == nil {
+		return
+	}
+
+	if !energy.Available {
+		log.Printf(
+			"%s event=kepler_energy_feedback ts=%d policy=%s function=%s arm=%s available=false container_id=%s reason=%q\n",
+			mabLogPrefix,
+			nowMillis(),
+			policy,
+			functionName,
+			arm,
+			energy.ContainerID,
+			energy.InvalidReason,
+		)
+
+		return
+	}
+
+	zones :=
+		make(
+			[]string,
+			0,
+			len(
+				energy.CPUJoulesByZone,
+			),
+		)
+
+	for zone := range energy.CPUJoulesByZone {
+
+		zones =
+			append(
+				zones,
+				zone,
+			)
+	}
+
+	sort.Strings(
+		zones,
+	)
+
+	zoneValues :=
+		make(
+			[]string,
+			0,
+			len(
+				zones,
+			),
+		)
+
+	for _, zone := range zones {
+
+		zoneValues =
+			append(
+				zoneValues,
+				fmt.Sprintf(
+					"%s=%.9f",
+					zone,
+					energy.CPUJoulesByZone[zone],
+				),
+			)
+	}
+
+	log.Printf(
+		"%s event=kepler_energy_feedback ts=%d policy=%s function=%s arm=%s available=true container_id=%s cpu_joules_by_zone=%q\n",
+		mabLogPrefix,
+		nowMillis(),
+		policy,
+		functionName,
+		arm,
+		energy.ContainerID,
+		strings.Join(
+			zoneValues,
+			",",
+		),
 	)
 }

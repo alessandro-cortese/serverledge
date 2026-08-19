@@ -96,6 +96,13 @@ const MAB_COLD_START_MODE = "mab.cold_start.mode"
 // a fresh target MAB from a donor-selection artifact. Disabled by default.
 const MAB_TRANSFER_CONTROL_ENABLED = "mab.transfer.control.enabled"
 
+const MAB_REWARD_MODE = "mab.reward.mode"
+
+// Selects the Kepler energy zone to use when an energy-based MAB reward is
+// enabled. The zone must be explicitly configured so that Serverledge never
+// assumes that different Kepler/RAPL domains can be combined or substituted.
+const MAB_REWARD_KEPLER_ZONE = "mab.reward.kepler.zone"
+
 // port for udp status listener
 const LISTEN_UDP_PORT = "registry.udp.port"
 
@@ -146,6 +153,16 @@ const FUNCTION_PROFILING_KEPLER_URL = "profiling.kepler.url"
 
 // HTTP timeout used when reading the Kepler metrics endpoint.
 const FUNCTION_PROFILING_KEPLER_TIMEOUT_MS = "profiling.kepler.timeout_ms"
+
+// FUNCTION_PROFILING_KEPLER_POLL_INTERVAL_MS controls how often Serverledge
+// polls Kepler while waiting for the exporter to account for a completed
+// invocation.
+const FUNCTION_PROFILING_KEPLER_POLL_INTERVAL_MS = "profiling.kepler.poll_interval_ms"
+
+// FUNCTION_PROFILING_KEPLER_REFRESH_TIMEOUT_MS is the maximum amount of time
+// Serverledge waits for the cumulative Kepler counter of a container to advance
+// after an invocation has completed.
+const FUNCTION_PROFILING_KEPLER_REFRESH_TIMEOUT_MS = "profiling.kepler.refresh_timeout_ms"
 
 // Scheduling policy to use
 // Possible values: "qosaware", "default", "cloudonly"

@@ -559,13 +559,26 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 			arm,
 		)
 
-	latencyReward :=
-		-math.Log(
-			feedback.DurationMs,
+	rewardResult,
+		err :=
+		CalculateExecutionReward(
+			feedback,
 		)
 
+	if err != nil {
+		log.Printf(
+			"[MAB] event=reward_calculation_failed policy=%s function=%s arm=%s error=%v",
+			LinUCB,
+			p.FunctionName,
+			arm,
+			err,
+		)
+
+		return
+	}
+
 	reward :=
-		latencyReward
+		rewardResult.Value
 
 	if !isFiniteNumber(
 		reward,
@@ -586,7 +599,7 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 		p.FunctionName,
 		arm,
 		feedback.DurationMs,
-		reward,
+		rewardResult,
 	)
 
 	x :=

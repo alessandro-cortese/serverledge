@@ -487,13 +487,24 @@ func (b *UCB1Bandit) updateRewardLocked(
 		return
 	}
 
-	latencyReward :=
-		-math.Log(
-			feedback.DurationMs,
+	rewardResult, err :=
+		CalculateExecutionReward(
+			feedback,
 		)
 
-	reward :=
-		latencyReward
+	if err != nil {
+		log.Printf(
+			"[MAB] event=reward_calculation_failed policy=%s function=%s arm=%s error=%v",
+			UCB1,
+			b.FunctionName,
+			arm,
+			err,
+		)
+
+		return
+	}
+
+	reward := rewardResult.Value
 
 	if !isFiniteNumber(
 		reward,
@@ -514,7 +525,7 @@ func (b *UCB1Bandit) updateRewardLocked(
 		b.FunctionName,
 		arm,
 		feedback.DurationMs,
-		reward,
+		rewardResult,
 	)
 
 	stats.Count++

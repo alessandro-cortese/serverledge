@@ -61,6 +61,10 @@ func main() {
 	// Register a signal handler to cleanup things on termination
 	registerTerminationHandler(e)
 
+	if err := mab.ValidateRewardConfiguration(); err != nil {
+		log.Fatalf("Invalid MAB reward configuration: %v", err)
+	}
+
 	mab.InitBanditManager()
 	lb.RegisterTransferControlRoutes(e)
 	lb.StartReverseProxy(e, myArea)

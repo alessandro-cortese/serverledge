@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/serverledge-faas/serverledge/internal/function"
+	"github.com/serverledge-faas/serverledge/internal/profiling"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -283,6 +284,20 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 			OffloadLatency: 0.001,
 			IsWarmStart:    false,
 			ExecutionNode:  "node-a",
+
+			KeplerEnergy: &profiling.KeplerInvocationEnergyProfile{
+				SchemaVersion: profiling.
+					KeplerInvocationEnergyProfileSchemaVersion,
+
+				Available: true,
+
+				ContainerID: "container-a",
+
+				CPUJoulesByZone: map[string]float64{
+					"core":    1.25,
+					"package": 1.75,
+				},
+			},
 		},
 	}
 
@@ -387,6 +402,36 @@ func TestUpdateBanditPreservesNodeSpecificFeedback(
 		t,
 		"node-a",
 		recorder.feedback.ExecutionNode,
+	)
+
+	require.NotNil(
+		t,
+		recorder.feedback.KeplerEnergy,
+	)
+
+	assert.True(
+		t,
+		recorder.feedback.KeplerEnergy.Available,
+	)
+
+	assert.Equal(
+		t,
+		"container-a",
+		recorder.feedback.KeplerEnergy.ContainerID,
+	)
+
+	assert.InDelta(
+		t,
+		1.25,
+		recorder.feedback.KeplerEnergy.CPUJoulesByZone["core"],
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		1.75,
+		recorder.feedback.KeplerEnergy.CPUJoulesByZone["package"],
+		1e-9,
 	)
 
 	assert.Equal(

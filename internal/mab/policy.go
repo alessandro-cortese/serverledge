@@ -19,6 +19,17 @@ type Context struct {
 	ArchMemUsage map[string]float64
 }
 
+// KeplerExecutionEnergyFeedback contains only the Kepler information needed
+// by the MAB feedback path. Collector-specific timing and polling metadata stay
+// in the node-side ExecutionReport and are intentionally not coupled to the
+// policy layer.
+type KeplerExecutionEnergyFeedback struct {
+	Available       bool
+	InvalidReason   string
+	ContainerID     string
+	CPUJoulesByZone map[string]float64
+}
+
 // ExecutionFeedback contains the measurements associated with the node that
 // actually executed an invocation.
 type ExecutionFeedback struct {
@@ -27,11 +38,10 @@ type ExecutionFeedback struct {
 	InitTimeMs       float64
 	QueueingTimeMs   float64
 	OffloadLatencyMs float64
-
-	IsWarmStart bool
-
-	NodeName      string
-	ExecutionNode string
+	IsWarmStart      bool
+	NodeName         string
+	ExecutionNode    string
+	KeplerEnergy     *KeplerExecutionEnergyFeedback
 }
 
 // SyntheticReward is a policy-level learning observation that is not derived
