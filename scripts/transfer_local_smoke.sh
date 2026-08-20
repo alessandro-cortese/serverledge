@@ -17,6 +17,12 @@ PYTHON_BIN="${PYTHON_BIN:-./.venv-analysis/bin/python}"
 
 SAMPLES_PER_ARCH="${SAMPLES_PER_ARCH:-10}"
 
+# Architecture used for the initial profiling phase of the target function.
+#
+# The donor is still profiled / learned on both MAB arms. Only the new target
+# function is bootstrapped on one predetermined architecture before transfer.
+TARGET_BOOTSTRAP_TAG="${TARGET_BOOTSTRAP_TAG:-x86}"
+
 DONOR_MAX_REQUESTS="${DONOR_MAX_REQUESTS:-12}"
 
 PRIOR_WEIGHT="${PRIOR_WEIGHT:-0.5}"
@@ -51,6 +57,36 @@ ETCD_LOG="$LOG_DIR/etcd.log"
 
 RAW_X86="$LOG_DIR/profiling-x86.jsonl"
 RAW_ARM="$LOG_DIR/profiling-arm64.jsonl"
+
+case "$TARGET_BOOTSTRAP_TAG" in
+
+x86)
+  TARGET_BOOTSTRAP_LABEL="x86"
+  TARGET_BOOTSTRAP_PORT="$X86_PORT"
+  TARGET_BOOTSTRAP_RAW="$RAW_X86"
+
+  TARGET_NON_BOOTSTRAP_TAG="arm64"
+  TARGET_NON_BOOTSTRAP_RAW="$RAW_ARM"
+  ;;
+
+arm64)
+  TARGET_BOOTSTRAP_LABEL="ARM"
+  TARGET_BOOTSTRAP_PORT="$ARM_PORT"
+  TARGET_BOOTSTRAP_RAW="$RAW_ARM"
+
+  TARGET_NON_BOOTSTRAP_TAG="x86"
+  TARGET_NON_BOOTSTRAP_RAW="$RAW_X86"
+  ;;
+
+*)
+  echo \
+    "[FAIL] TARGET_BOOTSTRAP_TAG deve essere x86 oppure arm64, ricevuto: $TARGET_BOOTSTRAP_TAG" \
+    >&2
+
+  exit 1
+  ;;
+
+esac
 
 DONOR_FUNCTION="donor_smoke_${STAMP}"
 TARGET_FUNCTION="target_smoke_${STAMP}"
@@ -216,7 +252,13 @@ echo \
   "target:             $TARGET_FUNCTION"
 
 echo \
-  "samples per tag:    $SAMPLES_PER_ARCH"
+  "donor samples/tag:  $SAMPLES_PER_ARCH"
+
+echo \
+  "target bootstrap N: $SAMPLES_PER_ARCH"
+
+echo \
+  "target bootstrap:   $TARGET_BOOTSTRAP_TAG"
 
 echo \
   "x86 logical node:   127.0.0.1:$X86_PORT tag=x86"
@@ -649,6 +691,48 @@ profile_function() {
 }
 
 # ============================================================
+# Profilazione target su una sola architettura prestabilita
+# ============================================================
+
+profile_function_on_bootstrap_arch() {
+  local function_name="$1"
+  local prefix="$2"
+
+  echo \
+    "[bootstrap] Prewarm $function_name solo su $TARGET_BOOTSTRAP_TAG..."
+
+  bin/serverledge-cli prewarm \
+    -f "$function_name" \
+    -c 1 \
+    -H 127.0.0.1 \
+    -P "$TARGET_BOOTSTRAP_PORT" \
+    > "$LOG_DIR/prewarm-${function_name}-${TARGET_BOOTSTRAP_TAG}.json"
+
+  sleep 1
+
+  echo \
+    "[bootstrap] $SAMPLES_PER_ARCH invocazioni dirette solo su $TARGET_BOOTSTRAP_TAG per $function_name..."
+
+  for i in $(
+    seq \
+      1 \
+      "$SAMPLES_PER_ARCH"
+  ); do
+
+    direct_invoke \
+      "$function_name" \
+      "$TARGET_BOOTSTRAP_PORT" \
+      "$LOG_DIR/${prefix}-${TARGET_BOOTSTRAP_TAG}-${i}.json"
+
+  done
+
+  docker ps \
+    --format \
+      '{{.ID}}\t{{.Image}}\t{{.Names}}' \
+    > "$LOG_DIR/docker-after-${prefix}.txt"
+}
+
+# ============================================================
 # Filtro dataset della funzione
 # ============================================================
 
@@ -832,6 +916,178 @@ PY
 }
 
 # ============================================================
+# Filtro target: una sola architettura di bootstrap
+# ============================================================
+
+filter_function_samples_on_bootstrap_arch() {
+  local function_name="$1"
+  local output_dir="$2"
+
+  local output_file=
+  output_file="$output_dir/${TARGET_BOOTSTRAP_TAG}/profiling-samples.jsonl"
+
+  mkdir -p \
+    "$output_dir/${TARGET_BOOTSTRAP_TAG}"
+
+  "$PYTHON_BIN" \
+    - \
+    "$TARGET_BOOTSTRAP_RAW" \
+    "$function_name" \
+    "$TARGET_BOOTSTRAP_TAG" \
+    "$SAMPLES_PER_ARCH" \
+    "$output_file" <<'PY'
+
+import json
+import sys
+
+from pathlib import Path
+
+
+(
+    source_raw,
+    function_name,
+    expected_tag,
+    required_raw,
+    output_raw,
+) = sys.argv[1:]
+
+
+required = int(
+    required_raw
+)
+
+
+source = Path(
+    source_raw
+)
+
+
+if not source.is_file():
+
+    raise SystemExit(
+        "raw profiling dataset "
+        f"mancante: {source}"
+    )
+
+
+selected = []
+
+eligible = 0
+warm = 0
+cold = 0
+
+
+for (
+    line_number,
+    raw,
+) in enumerate(
+    source.read_text(
+        encoding="utf-8"
+    ).splitlines(),
+    1,
+):
+
+    if not raw.strip():
+        continue
+
+    sample = json.loads(
+        raw
+    )
+
+    if (
+        sample.get(
+            "function_name"
+        )
+        != function_name
+    ):
+        continue
+
+    if (
+        sample.get(
+            "machine_tag"
+        )
+        != expected_tag
+    ):
+        continue
+
+    selected.append(
+        sample
+    )
+
+    if sample.get(
+        "warm_start"
+    ):
+
+        warm += 1
+
+    else:
+
+        cold += 1
+
+    if (
+        (
+            sample.get(
+                "eligibility"
+            )
+            or {}
+        ).get(
+            "resource_clustering"
+        )
+        is True
+    ):
+
+        eligible += 1
+
+
+if eligible < required:
+
+    raise SystemExit(
+        f"{function_name}/{expected_tag}: "
+        "campioni eligible insufficienti: "
+        f"{eligible} < {required}"
+    )
+
+
+output = Path(
+    output_raw
+)
+
+output.parent.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+
+with output.open(
+    "w",
+    encoding="utf-8",
+) as handle:
+
+    for sample in selected:
+
+        handle.write(
+            json.dumps(
+                sample,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+
+
+print(
+    "[bootstrap] "
+    f"function={function_name} "
+    f"tag={expected_tag} "
+    f"selected={len(selected)} "
+    f"warm={warm} "
+    f"cold={cold} "
+    f"eligible={eligible}"
+)
+
+PY
+}
+
+# ============================================================
 # Aggregazione
 # ============================================================
 
@@ -920,7 +1176,8 @@ CATALOG_JSON="$DONOR_DIR/smoke-donor-catalog.json"
   "$DONOR_PREPROCESSED" \
   "$CATALOG_JSON" \
   "$DONOR_FUNCTION" \
-  "$RUN_ID" <<'PY'
+  "$RUN_ID" \
+  "$TARGET_BOOTSTRAP_TAG" <<'PY'
 
 import csv
 import json
@@ -936,8 +1193,8 @@ from analysis.profiling import preprocess
     output_raw,
     donor_name,
     run_id,
+    profile_machine_tag,
 ) = sys.argv[1:]
-
 
 with Path(
     source_raw
@@ -966,7 +1223,7 @@ matches = [
         row[
             "machine_tag"
         ]
-        == "x86"
+        == profile_machine_tag
     )
 ]
 
@@ -977,7 +1234,7 @@ if len(
 
     raise SystemExit(
         "attesa una sola riga "
-        "donor x86, trovate "
+        f"donor {profile_machine_tag}, trovate "
         f"{len(matches)}"
     )
 
@@ -1035,7 +1292,7 @@ catalog = {
             "mean",
 
         "profile_machine_tag":
-            "x86",
+            profile_machine_tag,
     },
 
     "donor_policy": {
@@ -1086,7 +1343,7 @@ catalog = {
                 ),
 
             "profile_machine_tag":
-                "x86",
+                profile_machine_tag,
 
             "aggregation":
                 "mean",
@@ -1225,14 +1482,17 @@ echo \
   "[mab] donor real updates: x86=$x86_updates arm64=$arm_updates"
 
 # ============================================================
-# 5. Profilazione target DIRETTA
+# 5. Bootstrap target DIRETTO su architettura prestabilita
 # ============================================================
 
-profile_function \
+echo \
+  "[bootstrap] target=$TARGET_FUNCTION tag=$TARGET_BOOTSTRAP_TAG samples=$SAMPLES_PER_ARCH"
+
+profile_function_on_bootstrap_arch \
   "$TARGET_FUNCTION" \
   "target-profile"
 
-filter_function_samples \
+filter_function_samples_on_bootstrap_arch \
   "$TARGET_FUNCTION" \
   "$TARGET_DIR/filtered"
 
@@ -1242,6 +1502,86 @@ aggregate_function \
   "$TARGET_DIR"
 
 # Prima del transfer il target non deve essere mai passato dal MAB.
+
+# ============================================================
+# Verifica: zero profiling target sull'altra architettura
+# ============================================================
+
+"$PYTHON_BIN" \
+  - \
+  "$TARGET_NON_BOOTSTRAP_RAW" \
+  "$TARGET_FUNCTION" \
+  "$TARGET_NON_BOOTSTRAP_TAG" <<'PY'
+
+import json
+import sys
+
+from pathlib import Path
+
+
+source = Path(
+    sys.argv[
+        1
+    ]
+)
+
+function_name = sys.argv[
+    2
+]
+
+unexpected_tag = sys.argv[
+    3
+]
+
+
+count = 0
+
+
+if source.is_file():
+
+    for raw in source.read_text(
+        encoding="utf-8"
+    ).splitlines():
+
+        if not raw.strip():
+            continue
+
+        sample = json.loads(
+            raw
+        )
+
+        if (
+            sample.get(
+                "function_name"
+            )
+            == function_name
+            and
+            sample.get(
+                "machine_tag"
+            )
+            == unexpected_tag
+        ):
+
+            count += 1
+
+
+if count != 0:
+
+    raise SystemExit(
+        f"{function_name}: trovati "
+        f"{count} profiling sample inattesi "
+        f"su {unexpected_tag}"
+    )
+
+
+print(
+    "[bootstrap-check] "
+    f"function={function_name} "
+    f"non_bootstrap_tag={unexpected_tag} "
+    "samples=0"
+)
+
+PY
 
 if grep \
   -q \
@@ -1618,7 +1958,13 @@ echo \
   "✓ container Docker realmente prewarmed"
 
 echo \
-  "✓ profiling reale su due machine_tag logici"
+  "✓ donor profilato sui due machine_tag logici"
+
+echo \
+  "✓ target bootstrap solo su $TARGET_BOOTSTRAP_TAG"
+
+echo \
+  "✓ zero profiling target su $TARGET_NON_BOOTSTRAP_TAG prima del transfer"
 
 echo \
   "✓ FunctionProfile aggregato"

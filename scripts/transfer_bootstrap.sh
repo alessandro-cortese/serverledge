@@ -733,6 +733,10 @@ case "$CATALOG_MACHINE_TAG" in
 
 esac
 
+[[ "$BOOTSTRAP_TAG" == "$CATALOG_MACHINE_TAG" ]] ||
+  fail \
+    "Bootstrap tag incoerente: catalog=$CATALOG_MACHINE_TAG selected=$BOOTSTRAP_TAG"
+
 OUTPUT_DIR="data/profiling/transfer-bootstrap/${EXPERIMENT_ID}"
 
 COLLECTION_ROOT="data/profiling/raw"
@@ -769,9 +773,14 @@ cat <<PLAN
 10C.3B.2 — EXPERIMENTAL TRANSFER BOOTSTRAP
 ============================================================
 
-experiment_id:        $EXPERIMENT_ID
-function:             $FUNCTION_NAME
-samples_per_arch:     $SAMPLES_PER_ARCH
+experiment_id:         $EXPERIMENT_ID
+function:              $FUNCTION_NAME
+
+bootstrap_samples:     $SAMPLES_PER_ARCH
+bootstrap_arch:        $BOOTSTRAP_LABEL
+bootstrap_machine_tag: $BOOTSTRAP_TAG
+bootstrap_node:        $BOOTSTRAP_NODE_NAME
+bootstrap_api:         http://$BOOTSTRAP_HOST:$BOOTSTRAP_PORT
 
 x86:
   node:               $X86_NODE_NAME
@@ -817,6 +826,8 @@ Workflow:
 
   7. require >= $SAMPLES_PER_ARCH warm/exclusive
    eligible target samples
+
+  8. aggregate FunctionProfile and export mean/median CSV
 
   9. build transfer-query.json with donor preprocessing model
 
