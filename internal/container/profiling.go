@@ -11,101 +11,48 @@ import (
 )
 
 const (
-	defaultKeplerMetricsURL = "http://127.0.0.1:28282/metrics"
-
-	defaultKeplerHTTPTimeout = 3 * time.Second
-
-	defaultKeplerPollInterval = 100 * time.Millisecond
-
+	defaultKeplerMetricsURL     = "http://127.0.0.1:28282/metrics"
+	defaultKeplerHTTPTimeout    = 3 * time.Second
+	defaultKeplerPollInterval   = 100 * time.Millisecond
 	defaultKeplerRefreshTimeout = 3 * time.Second
 )
 
 type keplerCollectionConfig struct {
-	client *profiling.KeplerClient
-
+	client         *profiling.KeplerClient
 	pollInterval   time.Duration
 	refreshTimeout time.Duration
 }
 
-func configuredKeplerCollection() (
-	*keplerCollectionConfig,
-	error,
-) {
-	httpTimeoutMs :=
-		config.GetInt(
-			config.FUNCTION_PROFILING_KEPLER_TIMEOUT_MS,
-			int(
-				defaultKeplerHTTPTimeout/
-					time.Millisecond,
-			),
-		)
+func configuredKeplerCollection() (*keplerCollectionConfig, error) {
 
-	pollIntervalMs :=
-		config.GetInt(
-			config.FUNCTION_PROFILING_KEPLER_POLL_INTERVAL_MS,
-			int(
-				defaultKeplerPollInterval/
-					time.Millisecond,
-			),
-		)
-
-	refreshTimeoutMs :=
-		config.GetInt(
-			config.FUNCTION_PROFILING_KEPLER_REFRESH_TIMEOUT_MS,
-			int(
-				defaultKeplerRefreshTimeout/
-					time.Millisecond,
-			),
-		)
+	httpTimeoutMs := config.GetInt(config.FUNCTION_PROFILING_KEPLER_TIMEOUT_MS, int(defaultKeplerHTTPTimeout/time.Millisecond))
+	pollIntervalMs := config.GetInt(config.FUNCTION_PROFILING_KEPLER_POLL_INTERVAL_MS, int(defaultKeplerPollInterval/time.Millisecond))
+	refreshTimeoutMs := config.GetInt(config.FUNCTION_PROFILING_KEPLER_REFRESH_TIMEOUT_MS, int(defaultKeplerRefreshTimeout/time.Millisecond))
 
 	if httpTimeoutMs <= 0 {
-		return nil,
-			fmt.Errorf(
-				"profiling.kepler.timeout_ms must be positive",
-			)
+		return nil, fmt.Errorf("profiling.kepler.timeout_ms must be positive")
 	}
 
 	if pollIntervalMs <= 0 {
-		return nil,
-			fmt.Errorf(
-				"profiling.kepler.poll_interval_ms must be positive",
-			)
+		return nil, fmt.Errorf("profiling.kepler.poll_interval_ms must be positive")
 	}
 
 	if refreshTimeoutMs <= 0 {
-		return nil,
-			fmt.Errorf(
-				"profiling.kepler.refresh_timeout_ms must be positive",
-			)
+		return nil, fmt.Errorf("profiling.kepler.refresh_timeout_ms must be positive")
 	}
 
-	client,
-		err :=
-		profiling.NewKeplerClient(
-			config.GetString(
-				config.FUNCTION_PROFILING_KEPLER_URL,
-				defaultKeplerMetricsURL,
-			),
-			time.Duration(
-				httpTimeoutMs,
-			)*time.Millisecond,
-		)
+	client, err :=
+		profiling.NewKeplerClient(config.GetString(config.FUNCTION_PROFILING_KEPLER_URL, defaultKeplerMetricsURL),
+			time.Duration(httpTimeoutMs)*time.Millisecond)
 
 	if err != nil {
-		return nil,
-			err
+		return nil, err
 	}
 
 	return &keplerCollectionConfig{
-			client: client,
-
-			pollInterval: time.Duration(
-				pollIntervalMs,
-			) * time.Millisecond,
-
-			refreshTimeout: time.Duration(
-				refreshTimeoutMs,
-			) * time.Millisecond,
+			client:         client,
+			pollInterval:   time.Duration(pollIntervalMs) * time.Millisecond,
+			refreshTimeout: time.Duration(refreshTimeoutMs) * time.Millisecond,
 		},
 		nil
 }
@@ -124,12 +71,7 @@ func configuredKeplerCollection() (
 // When either measurement requires an exclusive window, profilingMu remains
 // locked until all final measurements, including a refresh-aware Kepler read,
 // have completed.
-func ExecuteProfiled(
-	cont *Container,
-	req *executor.InvocationRequest,
-	maxConcurrency int16,
-	collectResourceProfile bool,
-) (
+func ExecuteProfiled(cont *Container, req *executor.InvocationRequest, collectResourceProfile bool) (
 	*executor.InvocationResult,
 	time.Duration,
 	time.Duration,
@@ -145,45 +87,17 @@ func ExecuteProfiled(
 			nil,
 			nil,
 			nil,
-			fmt.Errorf(
-				"cannot execute on a nil container",
-			)
+			fmt.Errorf("cannot execute on a nil container")
 	}
 
-	contID :=
-		cont.ID
+	contID := cont.ID
+	resourceProfilingEnabled := config.GetBool(config.FUNCTION_PROFILING_ENABLED, false) && collectResourceProfile
+	keplerEnabled := config.GetBool(config.FUNCTION_PROFILING_KEPLER_ENABLED, false)
 
-	resourceProfilingEnabled :=
-		config.GetBool(
-			config.FUNCTION_PROFILING_ENABLED,
-			false,
-		) &&
-			collectResourceProfile
-
-	keplerEnabled :=
-		config.GetBool(
-			config.FUNCTION_PROFILING_KEPLER_ENABLED,
-			false,
-		)
-
-	if !resourceProfilingEnabled &&
-		!keplerEnabled {
-
-		executionStartedAt :=
-			time.Now()
-
-		response,
-			invocationWait,
-			err :=
-			Execute(
-				contID,
-				req,
-			)
-
-		executionWallTime :=
-			time.Since(
-				executionStartedAt,
-			)
+	if !resourceProfilingEnabled && !keplerEnabled {
+		executionStartedAt := time.Now()
+		response, invocationWait, err := Execute(contID, req)
+		executionWallTime := time.Since(executionStartedAt)
 
 		return response,
 			invocationWait,
@@ -194,22 +108,11 @@ func ExecuteProfiled(
 			err
 	}
 
-	profilingLockStartedAt :=
-		time.Now()
-
 	cont.profilingMu.Lock()
-
-	profilingLockWait :=
-		time.Since(
-			profilingLockStartedAt,
-		)
-
 	defer cont.profilingMu.Unlock()
-
 	var nodeBefore profiling.NodeResourceSnapshot
 	var nodeBeforeErr error
 	var nodeStartOverhead time.Duration
-
 	var containerBefore profiling.ResourceSnapshot
 	var containerBeforeErr error
 	var containerStartOverhead time.Duration
@@ -217,31 +120,12 @@ func ExecuteProfiled(
 	if resourceProfilingEnabled {
 		// The node snapshot is intentionally taken first so that the node
 		// profiling interval contains the container profiling interval.
-		nodeStartSnapshotStartedAt :=
-			time.Now()
-
-		nodeBefore,
-			nodeBeforeErr =
-			profiling.ReadNodeResourceSnapshot()
-
-		nodeStartOverhead =
-			time.Since(
-				nodeStartSnapshotStartedAt,
-			)
-
-		containerStartSnapshotStartedAt :=
-			time.Now()
-
-		containerBefore,
-			containerBeforeErr =
-			cf.GetResourceSnapshot(
-				contID,
-			)
-
-		containerStartOverhead =
-			time.Since(
-				containerStartSnapshotStartedAt,
-			)
+		nodeStartSnapshotStartedAt := time.Now()
+		nodeBefore, nodeBeforeErr = profiling.ReadNodeResourceSnapshot()
+		nodeStartOverhead = time.Since(nodeStartSnapshotStartedAt)
+		containerStartSnapshotStartedAt := time.Now()
+		containerBefore, containerBeforeErr = cf.GetResourceSnapshot(contID)
+		containerStartOverhead = time.Since(containerStartSnapshotStartedAt)
 	}
 
 	var keplerConfig *keplerCollectionConfig
@@ -252,63 +136,33 @@ func ExecuteProfiled(
 	if keplerEnabled {
 		var keplerConfigErr error
 
-		keplerConfig,
-			keplerConfigErr =
-			configuredKeplerCollection()
+		keplerConfig, keplerConfigErr = configuredKeplerCollection()
 
 		if keplerConfigErr != nil {
-			keplerEnergyProfile =
-				profiling.NewInvalidKeplerInvocationEnergyProfile(
-					contID,
-					fmt.Sprintf(
-						"kepler_configuration_failed: %v",
-						keplerConfigErr,
-					),
-				)
+			keplerEnergyProfile = profiling.NewInvalidKeplerInvocationEnergyProfile(
+				contID,
+				fmt.Sprintf("kepler_configuration_failed: %v", keplerConfigErr),
+			)
 		} else {
-			keplerBefore,
-				keplerConfigErr =
-				keplerConfig.client.
-					ReadContainerSnapshot(
-						context.Background(),
-						contID,
-					)
+			keplerBefore, keplerConfigErr = keplerConfig.client.ReadContainerSnapshot(context.Background(), contID)
 
 			if keplerConfigErr != nil {
-				keplerEnergyProfile =
-					profiling.NewInvalidKeplerInvocationEnergyProfile(
-						contID,
-						fmt.Sprintf(
-							"kepler_snapshot_before_failed: %v",
-							keplerConfigErr,
-						),
-					)
+				keplerEnergyProfile = profiling.NewInvalidKeplerInvocationEnergyProfile(
+					contID,
+					fmt.Sprintf("kepler_snapshot_before_failed: %v", keplerConfigErr),
+				)
 			} else {
-				keplerBeforeAvailable =
-					true
+				keplerBeforeAvailable = true
 			}
 		}
 	}
 
-	executionStartedAt :=
-		time.Now()
-
-	response,
-		invocationWait,
-		executionErr :=
-		Execute(
-			contID,
-			req,
-		)
-
-	executionWallTime :=
-		time.Since(
-			executionStartedAt,
-		)
+	executionStartedAt := time.Now()
+	response, invocationWait, executionErr := Execute(contID, req)
+	executionWallTime := time.Since(executionStartedAt)
 
 	var containerAfter profiling.ResourceSnapshot
 	var containerAfterErr error
-	var containerEndOverhead time.Duration
 
 	var nodeAfter profiling.NodeResourceSnapshot
 	var nodeAfterErr error
@@ -316,70 +170,34 @@ func ExecuteProfiled(
 
 	if resourceProfilingEnabled {
 		if containerBeforeErr == nil {
-			containerEndSnapshotStartedAt :=
-				time.Now()
-
-			containerAfter,
-				containerAfterErr =
-				cf.GetResourceSnapshot(
-					contID,
-				)
-
-			containerEndOverhead =
-				time.Since(
-					containerEndSnapshotStartedAt,
-				)
+			containerAfter, containerAfterErr = cf.GetResourceSnapshot(contID)
 		}
 
-		nodeEndSnapshotStartedAt :=
-			time.Now()
-
-		nodeAfter,
-			nodeAfterErr =
-			profiling.ReadNodeResourceSnapshot()
-
-		nodeEndOverhead =
-			time.Since(
-				nodeEndSnapshotStartedAt,
-			)
+		nodeEndSnapshotStartedAt := time.Now()
+		nodeAfter, nodeAfterErr = profiling.ReadNodeResourceSnapshot()
+		nodeEndOverhead = time.Since(nodeEndSnapshotStartedAt)
 	}
 
 	// Kepler is deliberately read only after the execution and after the
 	// ordinary final snapshots. profilingMu is still held here, therefore no
 	// second invocation handled through ExecuteProfiled can start on this
 	// container while Serverledge waits for Kepler to refresh its counters.
-	if keplerEnabled &&
-		keplerBeforeAvailable {
-
-		refreshContext,
-			cancel :=
-			context.WithTimeout(
-				context.Background(),
-				keplerConfig.refreshTimeout,
-			)
-
+	if keplerEnabled && keplerBeforeAvailable {
+		refreshContext, cancel := context.WithTimeout(context.Background(), keplerConfig.refreshTimeout)
 		var keplerAfterErr error
-
-		keplerEnergyProfile,
-			keplerAfterErr =
-			keplerConfig.client.
-				WaitForContainerEnergyDelta(
-					refreshContext,
-					keplerBefore,
-					keplerConfig.pollInterval,
-				)
+		keplerEnergyProfile, keplerAfterErr = keplerConfig.client.WaitForContainerEnergyDelta(
+			refreshContext,
+			keplerBefore,
+			keplerConfig.pollInterval,
+		)
 
 		cancel()
 
 		if keplerAfterErr != nil {
-			keplerEnergyProfile =
-				profiling.NewInvalidKeplerInvocationEnergyProfile(
-					contID,
-					fmt.Sprintf(
-						"kepler_snapshot_after_failed: %v",
-						keplerAfterErr,
-					),
-				)
+			keplerEnergyProfile = profiling.NewInvalidKeplerInvocationEnergyProfile(
+				contID,
+				fmt.Sprintf("kepler_snapshot_after_failed: %v", keplerAfterErr),
+			)
 		}
 	}
 
@@ -388,47 +206,30 @@ func ExecuteProfiled(
 	if resourceProfilingEnabled {
 		switch {
 		case containerBeforeErr != nil:
-			resourceProfile =
-				profiling.NewInvalidInvocationResourceProfile(
-					contID,
-					maxConcurrency,
-					true,
-					profilingLockWait,
-					fmt.Sprintf(
-						"snapshot_before_failed: %v",
-						containerBeforeErr,
-					),
-					containerStartOverhead,
-					containerEndOverhead,
-				)
+			resourceProfile = profiling.NewInvalidInvocationResourceProfile(
+				contID,
+				true,
+				fmt.Sprintf("snapshot_before_failed: %v", containerBeforeErr),
+				containerStartOverhead,
+			)
 
 		case containerAfterErr != nil:
-			resourceProfile =
-				profiling.NewInvalidInvocationResourceProfile(
-					contID,
-					maxConcurrency,
-					true,
-					profilingLockWait,
-					fmt.Sprintf(
-						"snapshot_after_failed: %v",
-						containerAfterErr,
-					),
-					containerStartOverhead,
-					containerEndOverhead,
-				)
+			resourceProfile = profiling.NewInvalidInvocationResourceProfile(
+				contID,
+				true,
+				fmt.Sprintf("snapshot_after_failed: %v", containerAfterErr),
+				containerStartOverhead,
+			)
 
 		default:
 			resourceProfile =
 				profiling.BuildInvocationResourceProfile(
 					contID,
-					maxConcurrency,
 					true,
-					profilingLockWait,
 					containerBefore,
 					containerAfter,
 					executionWallTime,
 					containerStartOverhead,
-					containerEndOverhead,
 				)
 		}
 	}
@@ -438,36 +239,27 @@ func ExecuteProfiled(
 	if resourceProfilingEnabled {
 		switch {
 		case nodeBeforeErr != nil:
-			nodeProfile =
-				profiling.NewInvalidNodeResourceProfile(
-					fmt.Sprintf(
-						"node_snapshot_before_failed: %v",
-						nodeBeforeErr,
-					),
-					nodeStartOverhead,
-					nodeEndOverhead,
-				)
+			nodeProfile = profiling.NewInvalidNodeResourceProfile(
+				fmt.Sprintf("node_snapshot_before_failed: %v", nodeBeforeErr),
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
 
 		case nodeAfterErr != nil:
-			nodeProfile =
-				profiling.NewInvalidNodeResourceProfile(
-					fmt.Sprintf(
-						"node_snapshot_after_failed: %v",
-						nodeAfterErr,
-					),
-					nodeStartOverhead,
-					nodeEndOverhead,
-				)
+			nodeProfile = profiling.NewInvalidNodeResourceProfile(
+				fmt.Sprintf("node_snapshot_after_failed: %v", nodeAfterErr),
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
 
 		default:
-			nodeProfile =
-				profiling.BuildNodeResourceProfile(
-					nodeBefore,
-					nodeAfter,
-					executionWallTime,
-					nodeStartOverhead,
-					nodeEndOverhead,
-				)
+			nodeProfile = profiling.BuildNodeResourceProfile(
+				nodeBefore,
+				nodeAfter,
+				executionWallTime,
+				nodeStartOverhead,
+				nodeEndOverhead,
+			)
 		}
 	}
 

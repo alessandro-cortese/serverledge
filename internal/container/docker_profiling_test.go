@@ -7,6 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestResourceSnapshotFromDockerStats verifies that only the counters consumed
+// by the profiling pipeline are mapped, and that everything else reported by
+// Docker is deliberately ignored.
 func TestResourceSnapshotFromDockerStats(
 	t *testing.T,
 ) {
@@ -22,12 +25,6 @@ func TestResourceSnapshotFromDockerStats(
 				},
 
 				OnlineCPUs: 2,
-
-				ThrottlingData: dockercontainer.ThrottlingData{
-					ThrottledTime: 50,
-
-					ThrottledPeriods: 4,
-				},
 			},
 
 			MemoryStats: dockercontainer.MemoryStats{
@@ -49,43 +46,6 @@ func TestResourceSnapshotFromDockerStats(
 
 						Value: 100,
 					},
-					{
-						Op: "Write",
-
-						Value: 200,
-					},
-					{
-						Op: "Total",
-
-						Value: 300,
-					},
-				},
-
-				IoServicedRecursive: []dockercontainer.BlkioStatEntry{
-					{
-						Op: "read",
-
-						Value: 3,
-					},
-					{
-						Op: "write",
-
-						Value: 4,
-					},
-				},
-			},
-
-			Networks: map[string]dockercontainer.NetworkStats{
-				"eth0": {
-					RxBytes: 400,
-
-					TxBytes: 500,
-				},
-
-				"eth1": {
-					RxBytes: 40,
-
-					TxBytes: 50,
 				},
 			},
 
@@ -102,8 +62,8 @@ func TestResourceSnapshotFromDockerStats(
 
 	assert.Equal(
 		t,
-		uint64(1000),
-		snapshot.CPUUsageTotalNs,
+		"linux",
+		snapshot.OSType,
 	)
 
 	assert.Equal(
@@ -120,83 +80,40 @@ func TestResourceSnapshotFromDockerStats(
 
 	assert.Equal(
 		t,
-		uint32(2),
-		snapshot.OnlineCPUs,
-	)
-
-	assert.Equal(
-		t,
-		uint64(2048),
-		snapshot.MemoryUsageBytes,
-	)
-
-	assert.Equal(
-		t,
 		uint64(20),
 		snapshot.PageFaults,
-	)
-
-	assert.Equal(
-		t,
-		uint64(2),
-		snapshot.MajorPageFaults,
 	)
 
 	assert.True(
 		t,
 		snapshot.PageFaultsAvailable,
 	)
+}
 
-	assert.Equal(
+// TestResourceSnapshotWithoutPageFaultCounters covers the cgroup configuration
+// in which Docker does not expose page-fault counters at all.
+func TestResourceSnapshotWithoutPageFaultCounters(
+	t *testing.T,
+) {
+	snapshot :=
+		resourceSnapshotFromDockerStats(
+			"linux",
+			dockercontainer.StatsResponse{
+				MemoryStats: dockercontainer.MemoryStats{
+					Stats: map[string]uint64{},
+				},
+			},
+		)
+
+	assert.False(
 		t,
-		uint64(100),
-		snapshot.BlockReadBytes,
+		snapshot.PageFaultsAvailable,
 	)
 
 	assert.Equal(
 		t,
-		uint64(200),
-		snapshot.BlockWriteBytes,
-	)
-
-	assert.Equal(
-		t,
-		uint64(3),
-		snapshot.BlockReadOps,
-	)
-
-	assert.Equal(
-		t,
-		uint64(4),
-		snapshot.BlockWriteOps,
-	)
-
-	assert.True(
-		t,
-		snapshot.BlockIOBytesAvailable,
-	)
-
-	assert.True(
-		t,
-		snapshot.BlockIOOpsAvailable,
-	)
-
-	assert.Equal(
-		t,
-		uint64(440),
-		snapshot.NetworkRxBytes,
-	)
-
-	assert.Equal(
-		t,
-		uint64(550),
-		snapshot.NetworkTxBytes,
-	)
-
-	assert.Equal(
-		t,
-		uint64(5),
-		snapshot.PIDs,
+		uint64(0),
+		snapshot.PageFaults,
 	)
 }
 
@@ -223,47 +140,5 @@ func TestDockerMemoryStatPrefersTotalCgroupV1Counter(
 		t,
 		uint64(100),
 		value,
-	)
-}
-
-func TestResourceSnapshotDistinguishesBlockIOBytesFromOperations(
-	t *testing.T,
-) {
-	stats := dockercontainer.StatsResponse{
-		BlkioStats: dockercontainer.BlkioStats{
-			IoServiceBytesRecursive: []dockercontainer.BlkioStatEntry{
-				{
-					Op:    "Write",
-					Value: 32 * 1024 * 1024,
-				},
-			},
-		},
-	}
-
-	snapshot :=
-		resourceSnapshotFromDockerStats(
-			"linux",
-			stats,
-		)
-
-	assert.True(
-		t,
-		snapshot.BlockIOBytesAvailable,
-	)
-
-	assert.False(
-		t,
-		snapshot.BlockIOOpsAvailable,
-	)
-
-	assert.Equal(
-		t,
-		uint64(32*1024*1024),
-		snapshot.BlockWriteBytes,
-	)
-
-	assert.Zero(
-		t,
-		snapshot.BlockWriteOps,
 	)
 }

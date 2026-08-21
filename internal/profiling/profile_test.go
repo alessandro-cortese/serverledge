@@ -1,6 +1,7 @@
 package profiling
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -15,123 +16,47 @@ func TestBuildInvocationResourceProfileCalculatesDeltas(
 		ResourceSnapshot{
 			OSType: "linux",
 
-			CPUUsageTotalNs: 1_000_000_000,
-
 			CPUUsageUserNs: 700_000_000,
 
 			CPUUsageKernelNs: 300_000_000,
 
-			CPUThrottledTimeNs: 10_000,
-
-			CPUThrottledPeriods: 2,
-
-			OnlineCPUs: 2,
-
-			MemoryUsageBytes: 1000,
-
-			MemoryLimitBytes: 4096,
-
 			PageFaults: 100,
 
-			MajorPageFaults: 4,
-
 			PageFaultsAvailable: true,
-
-			MajorPageFaultsAvailable: true,
-
-			BlockReadBytes: 1000,
-
-			BlockWriteBytes: 2000,
-
-			BlockReadOps: 10,
-
-			BlockWriteOps: 20,
-
-			BlockIOBytesAvailable: true,
-
-			BlockIOOpsAvailable: true,
-
-			NetworkRxBytes: 500,
-
-			NetworkTxBytes: 800,
-
-			NetworkAvailable: true,
-
-			PIDs: 2,
 		}
 
 	after :=
 		ResourceSnapshot{
 			OSType: "linux",
 
-			CPUUsageTotalNs: 2_500_000_000,
+			CPUUsageUserNs: 900_000_000,
 
-			CPUUsageUserNs: 1_700_000_000,
+			CPUUsageKernelNs: 350_000_000,
 
-			CPUUsageKernelNs: 800_000_000,
-
-			CPUThrottledTimeNs: 20_000,
-
-			CPUThrottledPeriods: 5,
-
-			OnlineCPUs: 2,
-
-			MemoryUsageBytes: 1300,
-
-			MemoryLimitBytes: 4096,
-
-			PageFaults: 130,
-
-			MajorPageFaults: 7,
+			PageFaults: 140,
 
 			PageFaultsAvailable: true,
-
-			MajorPageFaultsAvailable: true,
-
-			BlockReadBytes: 1500,
-
-			BlockWriteBytes: 2700,
-
-			BlockReadOps: 15,
-
-			BlockWriteOps: 28,
-
-			BlockIOBytesAvailable: true,
-
-			BlockIOOpsAvailable: true,
-
-			NetworkRxBytes: 900,
-
-			NetworkTxBytes: 1400,
-
-			NetworkAvailable: true,
-
-			PIDs: 3,
 		}
 
 	profile :=
 		BuildInvocationResourceProfile(
 			"container-a",
-			1,
 			true,
-			4*time.Millisecond,
 			before,
 			after,
-			time.Second,
-			2*time.Millisecond,
+			2*time.Second,
 			3*time.Millisecond,
 		)
-
-	assert.InDelta(
-		t,
-		4.0,
-		profile.ProfilingLockWaitMs,
-		1e-9,
-	)
 
 	require.NotNil(
 		t,
 		profile,
+	)
+
+	require.True(
+		t,
+		profile.Valid,
+		profile.InvalidReason,
 	)
 
 	assert.True(
@@ -139,140 +64,78 @@ func TestBuildInvocationResourceProfileCalculatesDeltas(
 		profile.Collected,
 	)
 
-	assert.True(
-		t,
-		profile.Valid,
-	)
-
-	assert.Empty(
-		t,
-		profile.InvalidReason,
-	)
-
-	assert.True(
-		t,
-		profile.ExclusiveContainer,
-	)
-
 	assert.Equal(
 		t,
-		uint64(
-			1_500_000_000,
-		),
-		profile.CPUUsageTotalDeltaNs,
-	)
-
-	assert.Equal(
-		t,
-		uint64(
-			1_000_000_000,
-		),
+		uint64(200_000_000),
 		profile.CPUUsageUserDeltaNs,
 	)
 
 	assert.Equal(
 		t,
-		uint64(
-			500_000_000,
-		),
+		uint64(50_000_000),
 		profile.CPUUsageKernelDeltaNs,
 	)
 
-	assert.InDelta(
-		t,
-		1.5,
-		profile.UtilizedCPUs,
-		1e-9,
-	)
-
 	assert.Equal(
 		t,
-		int64(300),
-		profile.MemoryUsageDeltaBytes,
-	)
-
-	assert.Equal(
-		t,
-		uint64(30),
+		uint64(40),
 		profile.PageFaultsDelta,
 	)
 
-	assert.Equal(
+	assert.True(
 		t,
-		uint64(3),
-		profile.MajorPageFaultsDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(500),
-		profile.BlockReadBytesDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(700),
-		profile.BlockWriteBytesDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(5),
-		profile.BlockReadOpsDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(8),
-		profile.BlockWriteOpsDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(400),
-		profile.NetworkRxBytesDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(600),
-		profile.NetworkTxBytesDelta,
-	)
-
-	assert.InDelta(
-		t,
-		2.0,
-		profile.ProfilingStartOverheadMs,
-		1e-9,
+		profile.PageFaultsAvailable,
 	)
 
 	assert.InDelta(
 		t,
 		3.0,
-		profile.ProfilingEndOverheadMs,
+		profile.ProfilingStartOverheadMs,
 		1e-9,
 	)
 
-	assert.InDelta(
+	assert.Equal(
 		t,
-		5.0,
-		profile.ProfilingTotalOverheadMs,
-		1e-9,
+		"container-a",
+		profile.ContainerID,
+	)
+}
+
+// TestBuildInvocationResourceProfileWithoutPageFaultCounters documents that a
+// missing page-fault counter does not invalidate the profile: it only makes the
+// sample ineligible for the feature vector, which checks PageFaultsAvailable.
+func TestBuildInvocationResourceProfileWithoutPageFaultCounters(
+	t *testing.T,
+) {
+	profile :=
+		BuildInvocationResourceProfile(
+			"container-a",
+			true,
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			time.Second,
+			0,
+		)
+
+	require.True(
+		t,
+		profile.Valid,
+		profile.InvalidReason,
 	)
 
-	assert.True(
+	assert.False(
 		t,
-		profile.BlockIOAvailable,
+		profile.PageFaultsAvailable,
 	)
 
-	assert.True(
+	assert.Equal(
 		t,
-		profile.BlockIOBytesAvailable,
-	)
-
-	assert.True(
-		t,
-		profile.BlockIOOpsAvailable,
+		uint64(0),
+		profile.PageFaultsDelta,
 	)
 }
 
@@ -282,9 +145,7 @@ func TestBuildInvocationResourceProfileMarksNonExclusiveCollectionInvalid(
 	profile :=
 		BuildInvocationResourceProfile(
 			"container-a",
-			2,
 			false,
-			0,
 			ResourceSnapshot{
 				OSType: "linux",
 			},
@@ -292,7 +153,6 @@ func TestBuildInvocationResourceProfileMarksNonExclusiveCollectionInvalid(
 				OSType: "linux",
 			},
 			time.Second,
-			0,
 			0,
 		)
 
@@ -330,27 +190,131 @@ func TestBuildInvocationResourceProfileRejectsRegressingCounters(
 		ResourceSnapshot{
 			OSType: "linux",
 
-			CPUUsageTotalNs: 2_000_000_000,
+			CPUUsageUserNs: 2_000_000_000,
+
+			CPUUsageKernelNs: 500_000_000,
+
+			PageFaults: 200,
+
+			PageFaultsAvailable: true,
 		}
 
 	after :=
 		ResourceSnapshot{
 			OSType: "linux",
 
-			CPUUsageTotalNs: 1_000_000_000,
+			CPUUsageUserNs: 1_000_000_000,
+
+			CPUUsageKernelNs: 400_000_000,
+
+			PageFaults: 100,
+
+			PageFaultsAvailable: true,
 		}
 
 	profile :=
 		BuildInvocationResourceProfile(
 			"container-a",
-			1,
 			true,
-			0,
 			before,
 			after,
 			time.Second,
 			0,
+		)
+
+	require.False(
+		t,
+		profile.Valid,
+	)
+
+	assert.Contains(
+		t,
+		profile.InvalidReason,
+		"cpu_user_counter_regressed",
+	)
+
+	assert.Contains(
+		t,
+		profile.InvalidReason,
+		"cpu_kernel_counter_regressed",
+	)
+
+	assert.Contains(
+		t,
+		profile.InvalidReason,
+		"page_fault_counter_regressed",
+	)
+}
+
+// TestBuildInvocationResourceProfileRejectsNonPositiveWallTime covers the only
+// surviving validity check on the measurement window.
+func TestBuildInvocationResourceProfileRejectsNonPositiveWallTime(
+	t *testing.T,
+) {
+	profile :=
+		BuildInvocationResourceProfile(
+			"container-a",
+			true,
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			ResourceSnapshot{
+				OSType: "linux",
+			},
 			0,
+			0,
+		)
+
+	require.False(
+		t,
+		profile.Valid,
+	)
+
+	assert.Contains(
+		t,
+		profile.InvalidReason,
+		"non_positive_execution_wall_time",
+	)
+}
+
+func TestBuildInvocationResourceProfileRejectsNonLinuxContainer(
+	t *testing.T,
+) {
+	profile :=
+		BuildInvocationResourceProfile(
+			"container-a",
+			true,
+			ResourceSnapshot{
+				OSType: "windows",
+			},
+			ResourceSnapshot{
+				OSType: "linux",
+			},
+			time.Second,
+			0,
+		)
+
+	require.False(
+		t,
+		profile.Valid,
+	)
+
+	assert.Contains(
+		t,
+		profile.InvalidReason,
+		"unsupported_os_before",
+	)
+}
+
+func TestNewInvalidInvocationResourceProfileRecordsReason(
+	t *testing.T,
+) {
+	profile :=
+		NewInvalidInvocationResourceProfile(
+			"container-a",
+			true,
+			"snapshot_before_failed: boom",
+			2*time.Millisecond,
 		)
 
 	require.NotNil(
@@ -359,6 +323,11 @@ func TestBuildInvocationResourceProfileRejectsRegressingCounters(
 	)
 
 	assert.True(
+		t,
+		profile.Enabled,
+	)
+
+	assert.False(
 		t,
 		profile.Collected,
 	)
@@ -368,135 +337,88 @@ func TestBuildInvocationResourceProfileRejectsRegressingCounters(
 		profile.Valid,
 	)
 
-	assert.Contains(
+	assert.Equal(
 		t,
+		"snapshot_before_failed: boom",
 		profile.InvalidReason,
-		"cpu_total_counter_regressed",
-	)
-}
-
-func TestBuildInvocationResourceProfileSupportsBlockBytesWithoutOps(
-	t *testing.T,
-) {
-	before := ResourceSnapshot{
-		OSType: "linux",
-
-		BlockWriteBytes: 1_000,
-
-		BlockIOBytesAvailable: true,
-		BlockIOOpsAvailable:   false,
-	}
-
-	after := ResourceSnapshot{
-		OSType: "linux",
-
-		BlockWriteBytes: 1_000 + 32*1024*1024,
-
-		BlockIOBytesAvailable: true,
-		BlockIOOpsAvailable:   false,
-	}
-
-	profile :=
-		BuildInvocationResourceProfile(
-			"container-a",
-			1,
-			true,
-			4*time.Millisecond,
-			before,
-			after,
-			time.Second,
-			2*time.Millisecond,
-			3*time.Millisecond,
-		)
-
-	require.NotNil(
-		t,
-		profile,
-	)
-
-	assert.True(
-		t,
-		profile.Valid,
-	)
-
-	assert.True(
-		t,
-		profile.BlockIOAvailable,
-	)
-
-	assert.True(
-		t,
-		profile.BlockIOBytesAvailable,
-	)
-
-	assert.False(
-		t,
-		profile.BlockIOOpsAvailable,
-	)
-
-	assert.Equal(
-		t,
-		uint64(32*1024*1024),
-		profile.BlockWriteBytesDelta,
-	)
-
-	assert.Zero(
-		t,
-		profile.BlockWriteOpsDelta,
-	)
-}
-
-func TestBuildInvocationResourceProfileAcceptsExclusiveCollectionWithConfiguredConcurrency(
-	t *testing.T,
-) {
-	profile :=
-		BuildInvocationResourceProfile(
-			"container-a",
-			4,
-			true,
-			10*time.Millisecond,
-			ResourceSnapshot{
-				OSType: "linux",
-			},
-			ResourceSnapshot{
-				OSType: "linux",
-			},
-			time.Second,
-			0,
-			0,
-		)
-
-	require.NotNil(
-		t,
-		profile,
-	)
-
-	assert.True(
-		t,
-		profile.Valid,
-	)
-
-	assert.True(
-		t,
-		profile.ExclusiveContainer,
-	)
-
-	assert.Equal(
-		t,
-		int16(4),
-		profile.MaxConcurrency,
 	)
 
 	assert.InDelta(
 		t,
-		10.0,
-		profile.ProfilingLockWaitMs,
+		2.0,
+		profile.ProfilingStartOverheadMs,
 		1e-9,
 	)
+}
 
-	assert.NotContains(
+// TestInvocationResourceProfileUsesStableJSONKeys pins the exported schema.
+//
+// The JSONL dataset is consumed by the offline Python pipeline and by the
+// validation scripts, so the key names must not follow Go identifiers: renaming
+// a struct field must never silently change the dataset.
+func TestInvocationResourceProfileUsesStableJSONKeys(
+	t *testing.T,
+) {
+	encoded, err :=
+		json.Marshal(
+			BuildInvocationResourceProfile(
+				"container-a",
+				true,
+				ResourceSnapshot{
+					OSType:              "linux",
+					PageFaultsAvailable: true,
+				},
+				ResourceSnapshot{
+					OSType:              "linux",
+					PageFaultsAvailable: true,
+				},
+				time.Second,
+				0,
+			),
+		)
+
+	require.NoError(
 		t,
-		profile.InvalidReason,
-		"container_concurrency_not_exclusive",
+		err,
+	)
+
+	var decoded map[string]any
+
+	require.NoError(
+		t,
+		json.Unmarshal(
+			encoded,
+			&decoded,
+		),
+	)
+
+	expectedKeys :=
+		[]string{
+			"enabled",
+			"collected",
+			"valid",
+			"container_id",
+			"exclusive_container",
+			"cpu_usage_user_delta_ns",
+			"cpu_usage_kernel_delta_ns",
+			"page_faults_delta",
+			"page_faults_available",
+			"profiling_start_overhead_ms",
+		}
+
+	for _, key := range expectedKeys {
+
+		assert.Contains(
+			t,
+			decoded,
+			key,
+		)
+	}
+
+	// invalid_reason is omitted when the profile is valid.
+	assert.Len(
+		t,
+		decoded,
+		len(expectedKeys),
 	)
 }

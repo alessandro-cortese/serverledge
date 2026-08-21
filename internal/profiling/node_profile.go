@@ -41,8 +41,7 @@ type NodeMemorySnapshot struct {
 // NodeVMStatSnapshot contains cumulative host/VM counters read from
 // /proc/vmstat.
 type NodeVMStatSnapshot struct {
-	PageFaults      uint64
-	MajorPageFaults uint64
+	PageFaults uint64
 }
 
 // NodeResourceSnapshot is a point-in-time view of node-scoped counters.
@@ -69,74 +68,42 @@ type NodeResourceSnapshot struct {
 // These values describe the node or VM environment. They must not be
 // interpreted as exclusive consumption by the function.
 type NodeResourceProfile struct {
-	Collected bool
-	Complete  bool
-	Errors    []string `json:",omitempty"`
+	Collected bool     `json:"collected"`
+	Complete  bool     `json:"complete"`
+	Errors    []string `json:"errors,omitempty"`
 
-	CPUAvailable    bool
-	MemoryAvailable bool
-	VMStatAvailable bool
+	CPUAvailable    bool `json:"cpu_available"`
+	MemoryAvailable bool `json:"memory_available"`
+	VMStatAvailable bool `json:"vm_stat_available"`
 
-	AvailableCPUs       int
-	ExecutionWallTimeMs float64
+	AvailableCPUs       int     `json:"available_cpus"`
+	ExecutionWallTimeMs float64 `json:"execution_wall_time_ms"`
 
-	CPUUserDeltaTicks      uint64
-	CPUNiceDeltaTicks      uint64
-	CPUKernelDeltaTicks    uint64
-	CPUIdleDeltaTicks      uint64
-	CPUIOWaitDeltaTicks    uint64
-	CPUIRQDeltaTicks       uint64
-	CPUSoftIRQDeltaTicks   uint64
-	CPUStealDeltaTicks     uint64
-	CPUGuestDeltaTicks     uint64
-	CPUGuestNiceDeltaTicks uint64
-	CPUTotalDeltaTicks     uint64
+	CPUUserDeltaMs      float64 `json:"cpu_user_delta_ms"`
+	CPUNiceDeltaMs      float64 `json:"cpu_nice_delta_ms"`
+	CPUKernelDeltaMs    float64 `json:"cpu_kernel_delta_ms"`
+	CPUIdleDeltaMs      float64 `json:"cpu_idle_delta_ms"`
+	CPUIOWaitDeltaMs    float64 `json:"cpu_iowait_delta_ms"`
+	CPUIRQDeltaMs       float64 `json:"cpu_irq_delta_ms"`
+	CPUSoftIRQDeltaMs   float64 `json:"cpu_soft_irq_delta_ms"`
+	CPUStealDeltaMs     float64 `json:"cpu_steal_delta_ms"`
+	CPUGuestDeltaMs     float64 `json:"cpu_guest_delta_ms"`
+	CPUGuestNiceDeltaMs float64 `json:"cpu_guest_nice_delta_ms"`
 
-	CPUUserDeltaMs      float64
-	CPUNiceDeltaMs      float64
-	CPUKernelDeltaMs    float64
-	CPUIdleDeltaMs      float64
-	CPUIOWaitDeltaMs    float64
-	CPUIRQDeltaMs       float64
-	CPUSoftIRQDeltaMs   float64
-	CPUStealDeltaMs     float64
-	CPUGuestDeltaMs     float64
-	CPUGuestNiceDeltaMs float64
+	TotalMemoryBeforeBytes uint64 `json:"total_memory_before_bytes"`
+	TotalMemoryAfterBytes  uint64 `json:"total_memory_after_bytes"`
 
-	CPUUserPercent      float64
-	CPUNicePercent      float64
-	CPUKernelPercent    float64
-	CPUIdlePercent      float64
-	CPUIOWaitPercent    float64
-	CPUIRQPercent       float64
-	CPUSoftIRQPercent   float64
-	CPUStealPercent     float64
-	CPUGuestPercent     float64
-	CPUGuestNicePercent float64
+	FreeMemoryBeforeBytes uint64 `json:"free_memory_before_bytes"`
+	FreeMemoryAfterBytes  uint64 `json:"free_memory_after_bytes"`
 
-	TotalMemoryBeforeBytes uint64
-	TotalMemoryAfterBytes  uint64
+	PageFaultsBefore uint64 `json:"page_faults_before"`
+	PageFaultsAfter  uint64 `json:"page_faults_after"`
 
-	FreeMemoryBeforeBytes  uint64
-	FreeMemoryAfterBytes   uint64
-	FreeMemoryAverageBytes uint64
+	PageFaultsDelta uint64 `json:"page_faults_delta"`
 
-	AvailableMemoryBeforeBytes  uint64
-	AvailableMemoryAfterBytes   uint64
-	AvailableMemoryAverageBytes uint64
-
-	PageFaultsBefore uint64
-	PageFaultsAfter  uint64
-
-	MajorPageFaultsBefore uint64
-	MajorPageFaultsAfter  uint64
-
-	PageFaultsDelta      uint64
-	MajorPageFaultsDelta uint64
-
-	SnapshotStartOverheadMs float64
-	SnapshotEndOverheadMs   float64
-	SnapshotTotalOverheadMs float64
+	SnapshotStartOverheadMs float64 `json:"snapshot_start_overhead_ms"`
+	SnapshotEndOverheadMs   float64 `json:"snapshot_end_overhead_ms"`
+	SnapshotTotalOverheadMs float64 `json:"snapshot_total_overhead_ms"`
 }
 
 // ReadNodeResourceSnapshot reads all supported node-scoped procfs sources.
@@ -149,191 +116,75 @@ func ReadNodeResourceSnapshot() (NodeResourceSnapshot, error) {
 	return readNodeResourceSnapshotFromRoot(defaultProcRoot)
 }
 
-func readNodeResourceSnapshotFromRoot(
-	procRoot string,
-) (NodeResourceSnapshot, error) {
-	snapshot := NodeResourceSnapshot{
-		ReadAt: time.Now(),
-	}
+func readNodeResourceSnapshotFromRoot(procRoot string) (NodeResourceSnapshot, error) {
+
+	snapshot := NodeResourceSnapshot{ReadAt: time.Now()}
 
 	var collectionErrors []error
 
-	statData, err :=
-		os.ReadFile(
-			filepath.Join(
-				procRoot,
-				"stat",
-			),
-		)
+	statData, err := os.ReadFile(filepath.Join(procRoot, "stat"))
 
 	if err != nil {
-		message :=
-			fmt.Sprintf(
-				"proc_stat_read_failed: %v",
-				err,
-			)
 
-		snapshot.CollectionErrors =
-			append(
-				snapshot.CollectionErrors,
-				message,
-			)
+		message := fmt.Sprintf("proc_stat_read_failed: %v", err)
+		snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+		collectionErrors = append(collectionErrors, errors.New(message))
 
-		collectionErrors =
-			append(
-				collectionErrors,
-				errors.New(message),
-			)
 	} else {
-		cpu, parseErr :=
-			parseProcStat(
-				statData,
-			)
 
+		cpu, parseErr := parseProcStat(statData)
 		if parseErr != nil {
-			message :=
-				fmt.Sprintf(
-					"proc_stat_parse_failed: %v",
-					parseErr,
-				)
 
-			snapshot.CollectionErrors =
-				append(
-					snapshot.CollectionErrors,
-					message,
-				)
+			message := fmt.Sprintf("proc_stat_parse_failed: %v", parseErr)
+			snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+			collectionErrors = append(collectionErrors, errors.New(message))
 
-			collectionErrors =
-				append(
-					collectionErrors,
-					errors.New(message),
-				)
 		} else {
+
 			snapshot.CPU = cpu
 			snapshot.CPUAvailable = true
+
 		}
 	}
 
-	memInfoData, err :=
-		os.ReadFile(
-			filepath.Join(
-				procRoot,
-				"meminfo",
-			),
-		)
+	memInfoData, err := os.ReadFile(filepath.Join(procRoot, "meminfo"))
 
 	if err != nil {
-		message :=
-			fmt.Sprintf(
-				"proc_meminfo_read_failed: %v",
-				err,
-			)
-
-		snapshot.CollectionErrors =
-			append(
-				snapshot.CollectionErrors,
-				message,
-			)
-
-		collectionErrors =
-			append(
-				collectionErrors,
-				errors.New(message),
-			)
+		message := fmt.Sprintf("proc_meminfo_read_failed: %v", err)
+		snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+		collectionErrors = append(collectionErrors, errors.New(message))
 	} else {
-		memory, parseErr :=
-			parseProcMemInfo(
-				memInfoData,
-			)
-
+		memory, parseErr := parseProcMemInfo(memInfoData)
 		if parseErr != nil {
-			message :=
-				fmt.Sprintf(
-					"proc_meminfo_parse_failed: %v",
-					parseErr,
-				)
-
-			snapshot.CollectionErrors =
-				append(
-					snapshot.CollectionErrors,
-					message,
-				)
-
-			collectionErrors =
-				append(
-					collectionErrors,
-					errors.New(message),
-				)
+			message := fmt.Sprintf("proc_meminfo_parse_failed: %v", parseErr)
+			snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+			collectionErrors = append(collectionErrors, errors.New(message))
 		} else {
 			snapshot.Memory = memory
 			snapshot.MemoryAvailable = true
 		}
 	}
 
-	vmStatData, err :=
-		os.ReadFile(
-			filepath.Join(
-				procRoot,
-				"vmstat",
-			),
-		)
-
+	vmStatData, err := os.ReadFile(filepath.Join(procRoot, "vmstat"))
 	if err != nil {
-		message :=
-			fmt.Sprintf(
-				"proc_vmstat_read_failed: %v",
-				err,
-			)
-
-		snapshot.CollectionErrors =
-			append(
-				snapshot.CollectionErrors,
-				message,
-			)
-
-		collectionErrors =
-			append(
-				collectionErrors,
-				errors.New(message),
-			)
+		message := fmt.Sprintf("proc_vmstat_read_failed: %v", err)
+		snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+		collectionErrors = append(collectionErrors, errors.New(message))
 	} else {
-		vmStat, parseErr :=
-			parseProcVMStat(
-				vmStatData,
-			)
+		vmStat, parseErr := parseProcVMStat(vmStatData)
 
 		if parseErr != nil {
-			message :=
-				fmt.Sprintf(
-					"proc_vmstat_parse_failed: %v",
-					parseErr,
-				)
-
-			snapshot.CollectionErrors =
-				append(
-					snapshot.CollectionErrors,
-					message,
-				)
-
-			collectionErrors =
-				append(
-					collectionErrors,
-					errors.New(message),
-				)
+			message := fmt.Sprintf("proc_vmstat_parse_failed: %v", parseErr)
+			snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
+			collectionErrors = append(collectionErrors, errors.New(message))
 		} else {
 			snapshot.VMStat = vmStat
 			snapshot.VMStatAvailable = true
 		}
 	}
 
-	if !snapshot.CPUAvailable &&
-		!snapshot.MemoryAvailable &&
-		!snapshot.VMStatAvailable {
-
-		return snapshot,
-			errors.Join(
-				collectionErrors...,
-			)
+	if !snapshot.CPUAvailable && !snapshot.MemoryAvailable && !snapshot.VMStatAvailable {
+		return snapshot, errors.Join(collectionErrors...)
 	}
 
 	return snapshot, nil
@@ -343,31 +194,15 @@ func readNodeResourceSnapshotFromRoot(
 // failure of the initial or final node snapshot.
 //
 // The failure remains observability data and never prevents the invocation.
-func NewInvalidNodeResourceProfile(
-	reason string,
-	startOverhead time.Duration,
-	endOverhead time.Duration,
-) *NodeResourceProfile {
+func NewInvalidNodeResourceProfile(reason string, startOverhead time.Duration, endOverhead time.Duration) *NodeResourceProfile {
+
 	return &NodeResourceProfile{
-		Collected: false,
-		Complete:  false,
-
-		Errors: []string{
-			reason,
-		},
-
-		SnapshotStartOverheadMs: durationMilliseconds(
-			startOverhead,
-		),
-
-		SnapshotEndOverheadMs: durationMilliseconds(
-			endOverhead,
-		),
-
-		SnapshotTotalOverheadMs: durationMilliseconds(
-			startOverhead +
-				endOverhead,
-		),
+		Collected:               false,
+		Complete:                false,
+		Errors:                  []string{reason},
+		SnapshotStartOverheadMs: durationMilliseconds(startOverhead),
+		SnapshotEndOverheadMs:   durationMilliseconds(endOverhead),
+		SnapshotTotalOverheadMs: durationMilliseconds(startOverhead + endOverhead),
 	}
 }
 
@@ -377,13 +212,8 @@ func NewInvalidNodeResourceProfile(
 // The raw CPU tick deltas are retained for auditability. CPU milliseconds and
 // percentages are normalized over the CPU time theoretically available during
 // the measured wall-clock interval.
-func BuildNodeResourceProfile(
-	before NodeResourceSnapshot,
-	after NodeResourceSnapshot,
-	executionWallTime time.Duration,
-	startOverhead time.Duration,
-	endOverhead time.Duration,
-) *NodeResourceProfile {
+func BuildNodeResourceProfile(before NodeResourceSnapshot, after NodeResourceSnapshot, executionWallTime time.Duration, startOverhead time.Duration, endOverhead time.Duration) *NodeResourceProfile {
+
 	profile :=
 		&NodeResourceProfile{
 			Collected: before.CPUAvailable ||
@@ -393,198 +223,65 @@ func BuildNodeResourceProfile(
 				after.MemoryAvailable ||
 				after.VMStatAvailable,
 
-			CPUAvailable: before.CPUAvailable &&
-				after.CPUAvailable,
-
-			MemoryAvailable: before.MemoryAvailable &&
-				after.MemoryAvailable,
-
-			VMStatAvailable: before.VMStatAvailable &&
-				after.VMStatAvailable,
-
-			ExecutionWallTimeMs: durationMilliseconds(
-				executionWallTime,
-			),
-
-			SnapshotStartOverheadMs: durationMilliseconds(
-				startOverhead,
-			),
-
-			SnapshotEndOverheadMs: durationMilliseconds(
-				endOverhead,
-			),
-
-			SnapshotTotalOverheadMs: durationMilliseconds(
-				startOverhead +
-					endOverhead,
-			),
+			CPUAvailable:            before.CPUAvailable && after.CPUAvailable,
+			MemoryAvailable:         before.MemoryAvailable && after.MemoryAvailable,
+			VMStatAvailable:         before.VMStatAvailable && after.VMStatAvailable,
+			ExecutionWallTimeMs:     durationMilliseconds(executionWallTime),
+			SnapshotStartOverheadMs: durationMilliseconds(startOverhead),
+			SnapshotEndOverheadMs:   durationMilliseconds(endOverhead),
+			SnapshotTotalOverheadMs: durationMilliseconds(startOverhead + endOverhead),
 		}
 
-	profile.Errors =
-		append(
-			profile.Errors,
-			prefixNodeErrors(
-				"before",
-				before.CollectionErrors,
-			)...,
-		)
-
-	profile.Errors =
-		append(
-			profile.Errors,
-			prefixNodeErrors(
-				"after",
-				after.CollectionErrors,
-			)...,
-		)
+	profile.Errors = append(profile.Errors, prefixNodeErrors("before", before.CollectionErrors)...)
+	profile.Errors = append(profile.Errors, prefixNodeErrors("after", after.CollectionErrors)...)
 
 	if profile.CPUAvailable {
-		err :=
-			populateNodeCPUProfile(
-				profile,
-				before.CPU,
-				after.CPU,
-			)
-
+		err := populateNodeCPUProfile(profile, before.CPU, after.CPU)
 		if err != nil {
 			profile.CPUAvailable = false
-
-			profile.Errors =
-				append(
-					profile.Errors,
-					err.Error(),
-				)
-		} else {
-			populateNormalizedNodeCPUTimes(
-				profile,
-			)
+			profile.Errors = append(profile.Errors, err.Error())
 		}
 	} else {
-		profile.Errors =
-			append(
-				profile.Errors,
-				"cpu_snapshot_incomplete",
-			)
+		profile.Errors = append(profile.Errors, "cpu_snapshot_incomplete")
 	}
 
 	if profile.MemoryAvailable {
-		profile.TotalMemoryBeforeBytes =
-			before.Memory.TotalBytes
-
-		profile.TotalMemoryAfterBytes =
-			after.Memory.TotalBytes
-
-		profile.FreeMemoryBeforeBytes =
-			before.Memory.FreeBytes
-
-		profile.FreeMemoryAfterBytes =
-			after.Memory.FreeBytes
-
-		profile.FreeMemoryAverageBytes =
-			averageNodeUint64(
-				before.Memory.FreeBytes,
-				after.Memory.FreeBytes,
-			)
-
-		profile.AvailableMemoryBeforeBytes =
-			before.Memory.AvailableBytes
-
-		profile.AvailableMemoryAfterBytes =
-			after.Memory.AvailableBytes
-
-		profile.AvailableMemoryAverageBytes =
-			averageNodeUint64(
-				before.Memory.AvailableBytes,
-				after.Memory.AvailableBytes,
-			)
+		profile.TotalMemoryBeforeBytes = before.Memory.TotalBytes
+		profile.TotalMemoryAfterBytes = after.Memory.TotalBytes
+		profile.FreeMemoryBeforeBytes = before.Memory.FreeBytes
+		profile.FreeMemoryAfterBytes = after.Memory.FreeBytes
 	} else {
-		profile.Errors =
-			append(
-				profile.Errors,
-				"memory_snapshot_incomplete",
-			)
+		profile.Errors = append(profile.Errors, "memory_snapshot_incomplete")
 	}
 
 	if profile.VMStatAvailable {
-		profile.PageFaultsBefore =
-			before.VMStat.PageFaults
-
-		profile.PageFaultsAfter =
-			after.VMStat.PageFaults
-
-		profile.MajorPageFaultsBefore =
-			before.VMStat.MajorPageFaults
-
-		profile.MajorPageFaultsAfter =
-			after.VMStat.MajorPageFaults
-
 		var ok bool
-
-		profile.PageFaultsDelta, ok =
-			counterDelta(
-				after.VMStat.PageFaults,
-				before.VMStat.PageFaults,
-			)
+		profile.PageFaultsBefore = before.VMStat.PageFaults
+		profile.PageFaultsAfter = after.VMStat.PageFaults
+		profile.PageFaultsDelta, ok = counterDelta(after.VMStat.PageFaults, before.VMStat.PageFaults)
 
 		if !ok {
 			profile.VMStatAvailable = false
-
-			profile.Errors =
-				append(
-					profile.Errors,
-					"node_page_fault_counter_regressed",
-				)
+			profile.Errors = append(profile.Errors, "node_page_fault_counter_regressed")
 		}
 
-		profile.MajorPageFaultsDelta, ok =
-			counterDelta(
-				after.VMStat.MajorPageFaults,
-				before.VMStat.MajorPageFaults,
-			)
-
-		if !ok {
-			profile.VMStatAvailable = false
-
-			profile.Errors =
-				append(
-					profile.Errors,
-					"node_major_page_fault_counter_regressed",
-				)
-		}
 	} else {
-		profile.Errors =
-			append(
-				profile.Errors,
-				"vmstat_snapshot_incomplete",
-			)
+		profile.Errors = append(profile.Errors, "vmstat_snapshot_incomplete")
 	}
 
-	profile.Complete =
-		profile.CPUAvailable &&
-			profile.MemoryAvailable &&
-			profile.VMStatAvailable
-
+	profile.Complete = profile.CPUAvailable && profile.MemoryAvailable && profile.VMStatAvailable
 	return profile
 }
 
-func parseProcStat(
-	data []byte,
-) (NodeCPUStatSnapshot, error) {
+func parseProcStat(data []byte) (NodeCPUStatSnapshot, error) {
+
 	var result NodeCPUStatSnapshot
 	var aggregateFound bool
 
-	scanner :=
-		bufio.NewScanner(
-			strings.NewReader(
-				string(data),
-			),
-		)
+	scanner := bufio.NewScanner(strings.NewReader(string(data)))
 
 	for scanner.Scan() {
-		fields :=
-			strings.Fields(
-				scanner.Text(),
-			)
+		fields := strings.Fields(scanner.Text())
 
 		if len(fields) == 0 {
 			continue
@@ -592,41 +289,21 @@ func parseProcStat(
 
 		if fields[0] == "cpu" {
 			if len(fields) < 5 {
-				return result,
-					fmt.Errorf(
-						"aggregate cpu line has %d fields",
-						len(fields),
-					)
+				return result, fmt.Errorf("aggregate cpu line has %d fields", len(fields))
 			}
 
-			values :=
-				make(
-					[]uint64,
-					10,
-				)
+			values := make([]uint64, 10)
 
-			for index := 1; index < len(fields) &&
-				index <= 10; index++ {
+			for index := 1; index < len(fields) && index <= 10; index++ {
 
-				value, err :=
-					strconv.ParseUint(
-						fields[index],
-						10,
-						64,
-					)
+				value, err := strconv.ParseUint(fields[index], 10, 64)
 
 				if err != nil {
 					return result,
-						fmt.Errorf(
-							"invalid cpu field %d (%q): %w",
-							index,
-							fields[index],
-							err,
-						)
+						fmt.Errorf("invalid cpu field %d (%q): %w", index, fields[index], err)
 				}
 
-				values[index-1] =
-					value
+				values[index-1] = value
 			}
 
 			result.UserTicks = values[0]
@@ -645,100 +322,55 @@ func parseProcStat(
 			continue
 		}
 
-		if isPerCPUName(
-			fields[0],
-		) {
+		if isPerCPUName(fields[0]) {
 			result.AvailableCPUs++
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return result,
-			fmt.Errorf(
-				"scan /proc/stat: %w",
-				err,
-			)
+		return result, fmt.Errorf("scan /proc/stat: %w", err)
 	}
 
 	if !aggregateFound {
-		return result,
-			errors.New(
-				"aggregate cpu line not found",
-			)
+		return result, errors.New("aggregate cpu line not found")
 	}
 
 	if result.AvailableCPUs == 0 {
-		return result,
-			errors.New(
-				"no per-cpu lines found",
-			)
+		return result, errors.New("no per-cpu lines found")
 	}
 
 	return result, nil
 }
 
-func parseProcMemInfo(
-	data []byte,
-) (NodeMemorySnapshot, error) {
-	values :=
-		make(
-			map[string]uint64,
-		)
+func parseProcMemInfo(data []byte) (NodeMemorySnapshot, error) {
 
-	scanner :=
-		bufio.NewScanner(
-			strings.NewReader(
-				string(data),
-			),
-		)
+	values := make(map[string]uint64)
+
+	scanner := bufio.NewScanner(strings.NewReader(string(data)))
 
 	for scanner.Scan() {
-		fields :=
-			strings.Fields(
-				scanner.Text(),
-			)
+		fields := strings.Fields(scanner.Text())
 
 		if len(fields) < 2 {
 			continue
 		}
 
-		key :=
-			strings.TrimSuffix(
-				fields[0],
-				":",
-			)
+		key := strings.TrimSuffix(fields[0], ":")
 
-		if key != "MemTotal" &&
-			key != "MemFree" &&
-			key != "MemAvailable" {
-
+		if key != "MemTotal" && key != "MemFree" && key != "MemAvailable" {
 			continue
 		}
 
-		value, err :=
-			strconv.ParseUint(
-				fields[1],
-				10,
-				64,
-			)
+		value, err := strconv.ParseUint(fields[1], 10, 64)
 
 		if err != nil {
-			return NodeMemorySnapshot{},
-				fmt.Errorf(
-					"invalid %s value %q: %w",
-					key,
-					fields[1],
-					err,
-				)
+			return NodeMemorySnapshot{}, fmt.Errorf("invalid %s value %q: %w", key, fields[1], err)
 		}
 
-		multiplier :=
-			uint64(1)
+		multiplier := uint64(1)
 
 		if len(fields) >= 3 {
-			switch strings.ToLower(
-				fields[2],
-			) {
+			switch strings.ToLower(fields[2]) {
 			case "kb":
 				multiplier = 1024
 
@@ -746,159 +378,71 @@ func parseProcMemInfo(
 				multiplier = 1
 
 			default:
-				return NodeMemorySnapshot{},
-					fmt.Errorf(
-						"unsupported %s unit %q",
-						key,
-						fields[2],
-					)
+				return NodeMemorySnapshot{}, fmt.Errorf("unsupported %s unit %q", key, fields[2])
 			}
 		}
 
-		if value >
-			math.MaxUint64/
-				multiplier {
-
-			return NodeMemorySnapshot{},
-				fmt.Errorf(
-					"%s overflows bytes",
-					key,
-				)
+		if value > (math.MaxUint64 / multiplier) {
+			return NodeMemorySnapshot{}, fmt.Errorf("%s overflows bytes", key)
 		}
 
-		values[key] =
-			value *
-				multiplier
+		values[key] = value * multiplier
 	}
 
 	if err := scanner.Err(); err != nil {
-		return NodeMemorySnapshot{},
-			fmt.Errorf(
-				"scan /proc/meminfo: %w",
-				err,
-			)
+		return NodeMemorySnapshot{}, fmt.Errorf("scan /proc/meminfo: %w", err)
 	}
 
-	requiredFields :=
-		[]string{
-			"MemTotal",
-			"MemFree",
-			"MemAvailable",
-		}
+	requiredFields := []string{"MemTotal", "MemFree", "MemAvailable"}
 
 	for _, required := range requiredFields {
 
-		if _, ok :=
-			values[required]; !ok {
-
-			return NodeMemorySnapshot{},
-				fmt.Errorf(
-					"%s not found",
-					required,
-				)
+		if _, ok := values[required]; !ok {
+			return NodeMemorySnapshot{}, fmt.Errorf("%s not found", required)
 		}
 	}
 
-	return NodeMemorySnapshot{
-		TotalBytes: values["MemTotal"],
-
-		FreeBytes: values["MemFree"],
-
-		AvailableBytes: values["MemAvailable"],
-	}, nil
+	return NodeMemorySnapshot{TotalBytes: values["MemTotal"], FreeBytes: values["MemFree"], AvailableBytes: values["MemAvailable"]}, nil
 }
 
-func parseProcVMStat(
-	data []byte,
-) (NodeVMStatSnapshot, error) {
-	values :=
-		make(
-			map[string]uint64,
-		)
+func parseProcVMStat(data []byte) (NodeVMStatSnapshot, error) {
 
-	scanner :=
-		bufio.NewScanner(
-			strings.NewReader(
-				string(data),
-			),
-		)
+	values := make(map[string]uint64)
+
+	scanner := bufio.NewScanner(strings.NewReader(string(data)))
 
 	for scanner.Scan() {
-		fields :=
-			strings.Fields(
-				scanner.Text(),
-			)
-
+		fields := strings.Fields(scanner.Text())
 		if len(fields) != 2 {
 			continue
 		}
 
-		if fields[0] != "pgfault" &&
-			fields[0] != "pgmajfault" {
-
+		if fields[0] != "pgfault" {
 			continue
 		}
 
-		value, err :=
-			strconv.ParseUint(
-				fields[1],
-				10,
-				64,
-			)
+		value, err := strconv.ParseUint(fields[1], 10, 64)
 
 		if err != nil {
-			return NodeVMStatSnapshot{},
-				fmt.Errorf(
-					"invalid %s value %q: %w",
-					fields[0],
-					fields[1],
-					err,
-				)
+			return NodeVMStatSnapshot{}, fmt.Errorf("invalid %s value %q: %w", fields[0], fields[1], err)
 		}
 
-		values[fields[0]] =
-			value
+		values[fields[0]] = value
 	}
 
 	if err := scanner.Err(); err != nil {
-		return NodeVMStatSnapshot{},
-			fmt.Errorf(
-				"scan /proc/vmstat: %w",
-				err,
-			)
+		return NodeVMStatSnapshot{}, fmt.Errorf("scan /proc/vmstat: %w", err)
 	}
 
-	requiredFields :=
-		[]string{
-			"pgfault",
-			"pgmajfault",
-		}
-
-	for _, required := range requiredFields {
-
-		if _, ok :=
-			values[required]; !ok {
-
-			return NodeVMStatSnapshot{},
-				fmt.Errorf(
-					"%s not found",
-					required,
-				)
-		}
+	if _, ok := values["pgfault"]; !ok {
+		return NodeVMStatSnapshot{}, fmt.Errorf("%s not found", "pgfault")
 	}
 
-	return NodeVMStatSnapshot{
-		PageFaults: values["pgfault"],
-
-		MajorPageFaults: values["pgmajfault"],
-	}, nil
+	return NodeVMStatSnapshot{PageFaults: values["pgfault"]}, nil
 }
 
-func populateNodeCPUProfile(
-	profile *NodeResourceProfile,
-	before NodeCPUStatSnapshot,
-	after NodeCPUStatSnapshot,
-) error {
+func populateNodeCPUProfile(profile *NodeResourceProfile, before NodeCPUStatSnapshot, after NodeCPUStatSnapshot) error {
+
 	type counterPair struct {
 		name   string
 		before uint64
@@ -906,8 +450,23 @@ func populateNodeCPUProfile(
 		target *uint64
 	}
 
-	var rawUserDelta uint64
-	var rawNiceDelta uint64
+	// CPU counters are read in clock ticks. Ticks are an implementation
+	// detail of /proc/stat: only the normalized millisecond values are
+	// exported, so the raw deltas stay local to this function.
+	var (
+		rawUserDelta   uint64
+		rawNiceDelta   uint64
+		userTicks      uint64
+		niceTicks      uint64
+		kernelTicks    uint64
+		idleTicks      uint64
+		ioWaitTicks    uint64
+		irqTicks       uint64
+		softIRQTicks   uint64
+		stealTicks     uint64
+		guestTicks     uint64
+		guestNiceTicks uint64
+	)
 
 	pairs :=
 		[]counterPair{
@@ -927,240 +486,127 @@ func populateNodeCPUProfile(
 				name:   "cpu_kernel",
 				before: before.KernelTicks,
 				after:  after.KernelTicks,
-				target: &profile.CPUKernelDeltaTicks,
+				target: &kernelTicks,
 			},
 			{
 				name:   "cpu_idle",
 				before: before.IdleTicks,
 				after:  after.IdleTicks,
-				target: &profile.CPUIdleDeltaTicks,
+				target: &idleTicks,
 			},
 			{
 				name:   "cpu_iowait",
 				before: before.IOWaitTicks,
 				after:  after.IOWaitTicks,
-				target: &profile.CPUIOWaitDeltaTicks,
+				target: &ioWaitTicks,
 			},
 			{
 				name:   "cpu_irq",
 				before: before.IRQTicks,
 				after:  after.IRQTicks,
-				target: &profile.CPUIRQDeltaTicks,
+				target: &irqTicks,
 			},
 			{
 				name:   "cpu_softirq",
 				before: before.SoftIRQTicks,
 				after:  after.SoftIRQTicks,
-				target: &profile.CPUSoftIRQDeltaTicks,
+				target: &softIRQTicks,
 			},
 			{
 				name:   "cpu_steal",
 				before: before.StealTicks,
 				after:  after.StealTicks,
-				target: &profile.CPUStealDeltaTicks,
+				target: &stealTicks,
 			},
 			{
 				name:   "cpu_guest",
 				before: before.GuestTicks,
 				after:  after.GuestTicks,
-				target: &profile.CPUGuestDeltaTicks,
+				target: &guestTicks,
 			},
 			{
 				name:   "cpu_guest_nice",
 				before: before.GuestNiceTicks,
 				after:  after.GuestNiceTicks,
-				target: &profile.CPUGuestNiceDeltaTicks,
+				target: &guestNiceTicks,
 			},
 		}
 
 	for _, pair := range pairs {
-
-		delta, ok :=
-			counterDelta(
-				pair.after,
-				pair.before,
-			)
-
+		delta, ok := counterDelta(pair.after, pair.before)
 		if !ok {
-			return fmt.Errorf(
-				"node_%s_counter_regressed",
-				pair.name,
-			)
+			return fmt.Errorf("node_%s_counter_regressed", pair.name)
 		}
-
-		*pair.target =
-			delta
+		*pair.target = delta
 	}
 
 	// Linux includes guest time in user time and guest_nice time in nice
 	// time. Subtracting them makes the exported CPU modes mutually exclusive.
-	if profile.CPUGuestDeltaTicks >
-		rawUserDelta {
-
-		return errors.New(
-			"node_cpu_guest_exceeds_user",
-		)
+	if guestTicks > rawUserDelta {
+		return errors.New("node_cpu_guest_exceeds_user")
 	}
 
-	if profile.CPUGuestNiceDeltaTicks >
-		rawNiceDelta {
-
-		return errors.New(
-			"node_cpu_guest_nice_exceeds_nice",
-		)
+	if guestNiceTicks > rawNiceDelta {
+		return errors.New("node_cpu_guest_nice_exceeds_nice")
 	}
 
-	profile.CPUUserDeltaTicks =
-		rawUserDelta -
-			profile.CPUGuestDeltaTicks
+	userTicks = rawUserDelta - guestTicks
+	niceTicks = rawNiceDelta - guestNiceTicks
+	totalTicks := sumNodeUint64(
+		userTicks,
+		niceTicks,
+		kernelTicks,
+		idleTicks,
+		ioWaitTicks,
+		irqTicks,
+		softIRQTicks,
+		stealTicks,
+		guestTicks,
+		guestNiceTicks,
+	)
 
-	profile.CPUNiceDeltaTicks =
-		rawNiceDelta -
-			profile.CPUGuestNiceDeltaTicks
-
-	profile.CPUTotalDeltaTicks =
-		sumNodeUint64(
-			profile.CPUUserDeltaTicks,
-			profile.CPUNiceDeltaTicks,
-			profile.CPUKernelDeltaTicks,
-			profile.CPUIdleDeltaTicks,
-			profile.CPUIOWaitDeltaTicks,
-			profile.CPUIRQDeltaTicks,
-			profile.CPUSoftIRQDeltaTicks,
-			profile.CPUStealDeltaTicks,
-			profile.CPUGuestDeltaTicks,
-			profile.CPUGuestNiceDeltaTicks,
-		)
-
-	if profile.CPUTotalDeltaTicks == 0 {
-		return errors.New(
-			"node_cpu_total_delta_zero",
-		)
+	if totalTicks == 0 {
+		return errors.New("node_cpu_total_delta_zero")
 	}
 
-	profile.AvailableCPUs =
-		after.AvailableCPUs
+	profile.AvailableCPUs = after.AvailableCPUs
 
 	if profile.AvailableCPUs <= 0 {
-		profile.AvailableCPUs =
-			before.AvailableCPUs
+		profile.AvailableCPUs = before.AvailableCPUs
 	}
 
 	if profile.AvailableCPUs <= 0 {
-		return errors.New(
-			"node_available_cpus_invalid",
-		)
+		return errors.New("node_available_cpus_invalid")
 	}
+
+	availableCPUTimeMs := profile.ExecutionWallTimeMs * float64(profile.AvailableCPUs)
+
+	normalizedMs := func(ticks uint64) float64 {
+		return availableCPUTimeMs * (float64(ticks) / float64(totalTicks))
+	}
+
+	profile.CPUUserDeltaMs = normalizedMs(userTicks)
+	profile.CPUNiceDeltaMs = normalizedMs(niceTicks)
+	profile.CPUKernelDeltaMs = normalizedMs(kernelTicks)
+	profile.CPUIdleDeltaMs = normalizedMs(idleTicks)
+	profile.CPUIOWaitDeltaMs = normalizedMs(ioWaitTicks)
+	profile.CPUIRQDeltaMs = normalizedMs(irqTicks)
+	profile.CPUSoftIRQDeltaMs = normalizedMs(softIRQTicks)
+	profile.CPUStealDeltaMs = normalizedMs(stealTicks)
+	profile.CPUGuestDeltaMs = normalizedMs(guestTicks)
+	profile.CPUGuestNiceDeltaMs = normalizedMs(guestNiceTicks)
 
 	return nil
 }
 
-func populateNormalizedNodeCPUTimes(
-	profile *NodeResourceProfile,
-) {
-	availableCPUTimeMs :=
-		profile.ExecutionWallTimeMs *
-			float64(
-				profile.AvailableCPUs,
-			)
+func isPerCPUName(value string) bool {
 
-	totalTicks :=
-		float64(
-			profile.CPUTotalDeltaTicks,
-		)
-
-	normalize :=
-		func(
-			ticks uint64,
-		) (float64, float64) {
-			share :=
-				float64(ticks) /
-					totalTicks
-
-			return availableCPUTimeMs *
-					share,
-				share *
-					100.0
-		}
-
-	profile.CPUUserDeltaMs,
-		profile.CPUUserPercent =
-		normalize(
-			profile.CPUUserDeltaTicks,
-		)
-
-	profile.CPUNiceDeltaMs,
-		profile.CPUNicePercent =
-		normalize(
-			profile.CPUNiceDeltaTicks,
-		)
-
-	profile.CPUKernelDeltaMs,
-		profile.CPUKernelPercent =
-		normalize(
-			profile.CPUKernelDeltaTicks,
-		)
-
-	profile.CPUIdleDeltaMs,
-		profile.CPUIdlePercent =
-		normalize(
-			profile.CPUIdleDeltaTicks,
-		)
-
-	profile.CPUIOWaitDeltaMs,
-		profile.CPUIOWaitPercent =
-		normalize(
-			profile.CPUIOWaitDeltaTicks,
-		)
-
-	profile.CPUIRQDeltaMs,
-		profile.CPUIRQPercent =
-		normalize(
-			profile.CPUIRQDeltaTicks,
-		)
-
-	profile.CPUSoftIRQDeltaMs,
-		profile.CPUSoftIRQPercent =
-		normalize(
-			profile.CPUSoftIRQDeltaTicks,
-		)
-
-	profile.CPUStealDeltaMs,
-		profile.CPUStealPercent =
-		normalize(
-			profile.CPUStealDeltaTicks,
-		)
-
-	profile.CPUGuestDeltaMs,
-		profile.CPUGuestPercent =
-		normalize(
-			profile.CPUGuestDeltaTicks,
-		)
-
-	profile.CPUGuestNiceDeltaMs,
-		profile.CPUGuestNicePercent =
-		normalize(
-			profile.CPUGuestNiceDeltaTicks,
-		)
-}
-
-func isPerCPUName(
-	value string,
-) bool {
-	if len(value) <= 3 ||
-		!strings.HasPrefix(
-			value,
-			"cpu",
-		) {
-
+	if len(value) <= 3 || !strings.HasPrefix(value, "cpu") {
 		return false
 	}
 
 	for _, character := range value[3:] {
-
-		if character < '0' ||
-			character > '9' {
-
+		if character < '0' || character > '9' {
 			return false
 		}
 	}
@@ -1168,47 +614,19 @@ func isPerCPUName(
 	return true
 }
 
-func prefixNodeErrors(
-	prefix string,
-	values []string,
-) []string {
-	result :=
-		make(
-			[]string,
-			0,
-			len(values),
-		)
+func prefixNodeErrors(prefix string, values []string) []string {
 
+	result := make([]string, 0, len(values))
 	for _, value := range values {
-
-		result =
-			append(
-				result,
-				prefix+
-					": "+
-					value,
-			)
+		result = append(result, prefix+": "+value)
 	}
 
 	return result
 }
 
-func averageNodeUint64(
-	first uint64,
-	second uint64,
-) uint64 {
-	return first/2 +
-		second/2 +
-		(first%2+second%2)/2
-}
-
-func sumNodeUint64(
-	values ...uint64,
-) uint64 {
+func sumNodeUint64(values ...uint64) uint64 {
 	var result uint64
-
 	for _, value := range values {
-
 		result += value
 	}
 

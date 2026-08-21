@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const InvocationSampleSchemaVersion = 3
+const InvocationSampleSchemaVersion = 4
 
 // InvocationTiming contains the timing dimensions associated with one
 // invocation. Values are expressed in milliseconds to make the exported
@@ -90,23 +90,16 @@ type InvocationSampleInput struct {
 
 // BuildInvocationSample builds one raw, versioned profiling record and assigns
 // deterministic analysis eligibility flags.
-func BuildInvocationSample(
-	input InvocationSampleInput,
-) InvocationSample {
+func BuildInvocationSample(input InvocationSampleInput) InvocationSample {
 	timestamp := input.Timestamp
 
 	if timestamp.IsZero() {
 		timestamp = time.Now()
 	}
 
-	containerID :=
-		input.ContainerID
-
-	if containerID == "" &&
-		input.Profile != nil {
-
-		containerID =
-			input.Profile.ContainerID
+	containerID := input.ContainerID
+	if containerID == "" && input.Profile != nil {
+		containerID = input.Profile.ContainerID
 	}
 
 	return InvocationSample{
@@ -138,55 +131,23 @@ func BuildInvocationSample(
 	}
 }
 
-func buildInvocationEligibility(
-	warmStart bool,
-	executionSucceeded bool,
-	timing InvocationTiming,
-	profile *InvocationResourceProfile,
-) InvocationEligibility {
-	reasons :=
-		make(
-			[]string,
-			0,
-			7,
-		)
+func buildInvocationEligibility(warmStart bool, executionSucceeded bool, timing InvocationTiming, profile *InvocationResourceProfile) InvocationEligibility {
 
-	performanceTimingValid :=
-		finiteNonNegative(
-			timing.DurationMs,
-		) &&
-			finiteNonNegative(
-				timing.ResponseTimeMs,
-			)
+	reasons := make([]string, 0, 7)
+	performanceTimingValid := finiteNonNegative(timing.DurationMs) && finiteNonNegative(timing.ResponseTimeMs)
 
 	if !executionSucceeded {
-		reasons =
-			append(
-				reasons,
-				"execution_failed",
-			)
+		reasons = append(reasons, "execution_failed")
 	}
 
 	if !warmStart {
-		reasons =
-			append(
-				reasons,
-				"cold_start",
-			)
+		reasons = append(reasons, "cold_start")
 	}
 
-	if warmStart &&
-		!performanceTimingValid {
-
-		reasons =
-			append(
-				reasons,
-				"timing_invalid",
-			)
+	if warmStart && !performanceTimingValid {
+		reasons = append(reasons, "timing_invalid")
 	}
 
-	// Il profilo delle risorse è richiesto soltanto per
-	// le invocazioni warm.
 	profileUsable := false
 
 	if warmStart {
@@ -194,70 +155,34 @@ func buildInvocationEligibility(
 
 		if profile == nil {
 			profileUsable = false
-
-			reasons =
-				append(
-					reasons,
-					"profile_missing",
-				)
+			reasons = append(reasons, "profile_missing")
 		} else {
 			if !profile.Enabled {
 				profileUsable = false
-
-				reasons =
-					append(
-						reasons,
-						"profile_disabled",
-					)
+				reasons = append(reasons, "profile_disabled")
 			}
 
 			if !profile.Collected {
 				profileUsable = false
-
-				reasons =
-					append(
-						reasons,
-						"profile_not_collected",
-					)
+				reasons = append(reasons, "profile_not_collected")
 			}
 
 			if !profile.Valid {
 				profileUsable = false
-
-				reasons =
-					append(
-						reasons,
-						"profile_invalid",
-					)
+				reasons = append(reasons, "profile_invalid")
 			}
 
 			if !profile.ExclusiveContainer {
 				profileUsable = false
-
-				reasons =
-					append(
-						reasons,
-						"container_not_exclusive",
-					)
+				reasons = append(reasons, "container_not_exclusive")
 			}
 		}
 	}
 
-	performanceAnalysis :=
-		warmStart &&
-			executionSucceeded &&
-			performanceTimingValid
+	performanceAnalysis := warmStart && executionSucceeded && performanceTimingValid
+	coldStartAnalysis := !warmStart && executionSucceeded && finiteNonNegative(timing.InitTimeMs)
 
-	coldStartAnalysis :=
-		!warmStart &&
-			executionSucceeded &&
-			finiteNonNegative(
-				timing.InitTimeMs,
-			)
-
-	resourceClustering :=
-		performanceAnalysis &&
-			profileUsable
+	resourceClustering := performanceAnalysis && profileUsable
 
 	return InvocationEligibility{
 		ResourceClustering:  resourceClustering,
@@ -267,15 +192,6 @@ func buildInvocationEligibility(
 	}
 }
 
-func finiteNonNegative(
-	value float64,
-) bool {
-	return value >= 0 &&
-		!math.IsNaN(
-			value,
-		) &&
-		!math.IsInf(
-			value,
-			0,
-		)
+func finiteNonNegative(value float64) bool {
+	return value >= 0 && !math.IsNaN(value) && !math.IsInf(value, 0)
 }

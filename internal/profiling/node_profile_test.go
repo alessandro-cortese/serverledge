@@ -203,11 +203,29 @@ pgmajfault 12
 		uint64(1234),
 		result.PageFaults,
 	)
+}
 
-	assert.Equal(
+// TestParseProcVMStatRequiresPageFaults documents that pgfault is the only
+// mandatory counter: /proc/vmstat content without it must be rejected, while
+// the absence of any other line is irrelevant.
+func TestParseProcVMStatRequiresPageFaults(
+	t *testing.T,
+) {
+	data :=
+		[]byte(
+			`nr_free_pages 10
+pgmajfault 12
+`,
+		)
+
+	_, err :=
+		parseProcVMStat(
+			data,
+		)
+
+	require.Error(
 		t,
-		uint64(12),
-		result.MajorPageFaults,
+		err,
 	)
 }
 
@@ -296,8 +314,7 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 			},
 
 			VMStat: NodeVMStatSnapshot{
-				PageFaults:      1000,
-				MajorPageFaults: 10,
+				PageFaults: 1000,
 			},
 		}
 
@@ -328,8 +345,7 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 			},
 
 			VMStat: NodeVMStatSnapshot{
-				PageFaults:      1040,
-				MajorPageFaults: 12,
+				PageFaults: 1040,
 			},
 		}
 
@@ -359,68 +375,105 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 
 	assert.Equal(
 		t,
-		uint64(28),
-		profile.CPUUserDeltaTicks,
-	)
-
-	assert.Equal(
-		t,
-		uint64(3),
-		profile.CPUNiceDeltaTicks,
-	)
-
-	assert.Equal(
-		t,
-		uint64(10),
-		profile.CPUKernelDeltaTicks,
-	)
-
-	assert.Equal(
-		t,
-		uint64(40),
-		profile.CPUIdleDeltaTicks,
-	)
-
-	assert.Equal(
-		t,
-		uint64(93),
-		profile.CPUTotalDeltaTicks,
-	)
-
-	assert.Equal(
-		t,
 		2,
 		profile.AvailableCPUs,
 	)
 
+	// Tick deltas are no longer exported: only the normalized millisecond
+	// values are. The expected values are therefore expressed through the
+	// same relation the implementation applies:
+	//
+	//	deltaMs = wallTimeMs * availableCPUs * (modeTicks / totalTicks)
+	//
+	// with guest time already subtracted from user time and guest_nice
+	// already subtracted from nice time:
+	//
+	//	user  = (130 - 100) - (6 - 4) = 28
+	//	nice  = (14 - 10) - (3 - 2)   = 3
+	//	total = 28+3+10+40+5+1+2+1+2+1 = 93
+	const (
+		expectedTotalTicks   = 93.0
+		expectedAvailableCPU = 2.0
+		expectedWallTimeMs   = 1000.0
+	)
+
+	availableCPUTimeMs :=
+		expectedWallTimeMs *
+			expectedAvailableCPU
+
+	expectedMs :=
+		func(
+			modeTicks float64,
+		) float64 {
+			return availableCPUTimeMs *
+				(modeTicks /
+					expectedTotalTicks)
+		}
+
 	assert.InDelta(
 		t,
-		2000.0,
+		expectedMs(28),
+		profile.CPUUserDeltaMs,
+		1e-6,
+	)
+
+	assert.InDelta(
+		t,
+		expectedMs(3),
+		profile.CPUNiceDeltaMs,
+		1e-6,
+	)
+
+	assert.InDelta(
+		t,
+		expectedMs(10),
+		profile.CPUKernelDeltaMs,
+		1e-6,
+	)
+
+	assert.InDelta(
+		t,
+		expectedMs(40),
+		profile.CPUIdleDeltaMs,
+		1e-6,
+	)
+
+	assert.InDelta(
+		t,
+		expectedMs(5),
+		profile.CPUIOWaitDeltaMs,
+		1e-6,
+	)
+
+	assert.InDelta(
+		t,
+		expectedMs(2),
+		profile.CPUGuestDeltaMs,
+		1e-6,
+	)
+
+	// The invariant of Linux CPU time accounting: for every second of wall
+	// time each available CPU contributes one second distributed across the
+	// modes, so the modes must still sum to the total available CPU time.
+	assert.InDelta(
+		t,
+		availableCPUTimeMs,
 		sumNodeCPUMilliseconds(
 			profile,
 		),
 		1e-6,
 	)
 
-	assert.InDelta(
+	assert.Equal(
 		t,
-		100.0,
-		sumNodeCPUPercentages(
-			profile,
-		),
-		1e-9,
+		uint64(400),
+		profile.FreeMemoryBeforeBytes,
 	)
 
 	assert.Equal(
 		t,
-		uint64(350),
-		profile.FreeMemoryAverageBytes,
-	)
-
-	assert.Equal(
-		t,
-		uint64(550),
-		profile.AvailableMemoryAverageBytes,
+		uint64(300),
+		profile.FreeMemoryAfterBytes,
 	)
 
 	assert.Equal(
@@ -439,24 +492,6 @@ func TestBuildNodeResourceProfileCalculatesDeltas(
 		t,
 		uint64(40),
 		profile.PageFaultsDelta,
-	)
-
-	assert.Equal(
-		t,
-		uint64(10),
-		profile.MajorPageFaultsBefore,
-	)
-
-	assert.Equal(
-		t,
-		uint64(12),
-		profile.MajorPageFaultsAfter,
-	)
-
-	assert.Equal(
-		t,
-		uint64(2),
-		profile.MajorPageFaultsDelta,
 	)
 
 	assert.InDelta(
@@ -577,19 +612,4 @@ func sumNodeCPUMilliseconds(
 		profile.CPUStealDeltaMs +
 		profile.CPUGuestDeltaMs +
 		profile.CPUGuestNiceDeltaMs
-}
-
-func sumNodeCPUPercentages(
-	profile *NodeResourceProfile,
-) float64 {
-	return profile.CPUUserPercent +
-		profile.CPUNicePercent +
-		profile.CPUKernelPercent +
-		profile.CPUIdlePercent +
-		profile.CPUIOWaitPercent +
-		profile.CPUIRQPercent +
-		profile.CPUSoftIRQPercent +
-		profile.CPUStealPercent +
-		profile.CPUGuestPercent +
-		profile.CPUGuestNicePercent
 }

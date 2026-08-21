@@ -35,9 +35,9 @@ func TestLogInvocationResourceProfileQuotesRequestID(
 		"node-a",
 		true,
 		&InvocationResourceProfile{
-			Collected:           true,
-			Valid:               true,
-			ProfilingLockWaitMs: 12.5,
+			Collected:                true,
+			Valid:                    true,
+			ProfilingStartOverheadMs: 12.5,
 		},
 	)
 
@@ -46,7 +46,7 @@ func TestLogInvocationResourceProfileQuotesRequestID(
 	assert.Contains(
 		t,
 		line,
-		"profiling_lock_wait_ms=12.500000",
+		"profiling_start_overhead_ms=12.500000",
 	)
 
 	assert.True(

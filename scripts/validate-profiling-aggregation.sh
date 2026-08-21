@@ -412,27 +412,27 @@ def extract(sample):
     duration = sample["timing"]["duration_ms"]
 
     page_faults = profile[
-        "PageFaultsDelta"
+        "page_faults_delta"
     ]
 
     user_ns = profile[
-        "CPUUsageUserDeltaNs"
+        "cpu_usage_user_delta_ns"
     ]
 
     kernel_ns = profile[
-        "CPUUsageKernelDeltaNs"
+        "cpu_usage_kernel_delta_ns"
     ]
 
     free_bytes = node[
-        "FreeMemoryBeforeBytes"
+        "free_memory_before_bytes"
     ]
 
     start_container = profile[
-        "ProfilingStartOverheadMs"
+        "profiling_start_overhead_ms"
     ]
 
     start_node = node[
-        "SnapshotStartOverheadMs"
+        "snapshot_start_overhead_ms"
     ]
 
     values = (
@@ -534,7 +534,7 @@ for index, sample in enumerate(
     check(
         sample.get(
             "schema_version"
-        ) == 3,
+        ) == 4,
         f"raw {index}: schema_version non valido",
     )
 

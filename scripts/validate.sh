@@ -350,7 +350,7 @@ if len(samples) != 3:
 # ============================================================
 
 for index, sample in enumerate(samples, start=1):
-    if sample.get("schema_version") != 3:
+    if sample.get("schema_version") != 4:
         failures.append(
             f"campione {index}: "
             "schema_version non valido"
@@ -617,11 +617,11 @@ else:
         )
     else:
         for key, expected in (
-            ("Enabled", True),
-            ("Collected", True),
-            ("Valid", True),
-            ("ExclusiveContainer", True),
-            ("PageFaultsAvailable", True),
+            ("enabled", True),
+            ("collected", True),
+            ("valid", True),
+            ("exclusive_container", True),
+            ("page_faults_available", True),
         ):
             if profile.get(key) is not expected:
                 failures.append(
@@ -631,10 +631,10 @@ else:
                 )
 
         for key in (
-            "PageFaultsDelta",
-            "CPUUsageUserDeltaNs",
-            "CPUUsageKernelDeltaNs",
-            "ProfilingStartOverheadMs",
+            "page_faults_delta",
+            "cpu_usage_user_delta_ns",
+            "cpu_usage_kernel_delta_ns",
+            "profiling_start_overhead_ms",
         ):
             value = profile.get(
                 key
@@ -671,10 +671,10 @@ else:
         )
     else:
         for key, expected in (
-            ("Collected", True),
-            ("CPUAvailable", True),
-            ("MemoryAvailable", True),
-            ("VMStatAvailable", True),
+            ("collected", True),
+            ("cpu_available", True),
+            ("memory_available", True),
+            ("vm_stat_available", True),
         ):
             if (
                 node_environment.get(key)
@@ -689,7 +689,7 @@ else:
 
         available_cpus = (
             node_environment.get(
-                "AvailableCPUs"
+                "available_cpus"
             )
         )
 
@@ -705,27 +705,85 @@ else:
                 "AvailableCPUs non valido"
             )
 
-        cpu_total_ticks = (
-            node_environment.get(
-                "CPUTotalDeltaTicks"
-            )
+        # I delta CPU del nodo sono esportati solo in millisecondi
+        # normalizzati: i tick sono un dettaglio di /proc/stat e restano
+        # interni a populateNodeCPUProfile.
+        cpu_mode_keys = (
+            "cpu_user_delta_ms",
+            "cpu_nice_delta_ms",
+            "cpu_kernel_delta_ms",
+            "cpu_idle_delta_ms",
+            "cpu_iowait_delta_ms",
+            "cpu_irq_delta_ms",
+            "cpu_soft_irq_delta_ms",
+            "cpu_steal_delta_ms",
+            "cpu_guest_delta_ms",
+            "cpu_guest_nice_delta_ms",
         )
 
-        if (
-            not isinstance(
-                cpu_total_ticks,
-                int,
+        cpu_mode_values = [
+            node_environment.get(key)
+            for key in cpu_mode_keys
+        ]
+
+        if not all(
+            isinstance(
+                value,
+                (int, float),
             )
-            or cpu_total_ticks <= 0
+            and math.isfinite(
+                value
+            )
+            and value >= 0
+            for value in cpu_mode_values
         ):
             failures.append(
                 "warm node_environment: "
-                "CPUTotalDeltaTicks non valido"
+                "delta CPU in millisecondi non validi"
             )
+        else:
+            # Invariante del Linux CPU time accounting: le modalita'
+            # sommano al tempo CPU disponibile nella finestra osservata.
+            execution_wall_time_ms = (
+                node_environment.get(
+                    "execution_wall_time_ms"
+                )
+            )
+
+            if (
+                isinstance(
+                    execution_wall_time_ms,
+                    (int, float),
+                )
+                and math.isfinite(
+                    execution_wall_time_ms
+                )
+                and execution_wall_time_ms > 0
+                and isinstance(
+                    available_cpus,
+                    int,
+                )
+                and available_cpus > 0
+            ):
+                expected_cpu_time_ms = (
+                    execution_wall_time_ms
+                    * available_cpus
+                )
+
+                if not math.isclose(
+                    sum(cpu_mode_values),
+                    expected_cpu_time_ms,
+                    rel_tol=1e-6,
+                ):
+                    failures.append(
+                        "warm node_environment: "
+                        "i delta CPU non sommano al "
+                        "tempo CPU disponibile"
+                    )
 
         total_memory_after = (
             node_environment.get(
-                "TotalMemoryAfterBytes"
+                "total_memory_after_bytes"
             )
         )
 
@@ -744,7 +802,7 @@ else:
         # freeMemory utilizzata nel vettore RF.
         free_memory_before = (
             node_environment.get(
-                "FreeMemoryBeforeBytes"
+                "free_memory_before_bytes"
             )
         )
 
@@ -763,13 +821,13 @@ else:
         # Page fault assoluti.
         page_faults_before = (
             node_environment.get(
-                "PageFaultsBefore"
+                "page_faults_before"
             )
         )
 
         page_faults_after = (
             node_environment.get(
-                "PageFaultsAfter"
+                "page_faults_after"
             )
         )
 
@@ -850,37 +908,37 @@ else:
     ):
         page_faults_delta = (
             profile.get(
-                "PageFaultsDelta"
+                "page_faults_delta"
             )
         )
 
         cpu_user_ns = (
             profile.get(
-                "CPUUsageUserDeltaNs"
+                "cpu_usage_user_delta_ns"
             )
         )
 
         cpu_kernel_ns = (
             profile.get(
-                "CPUUsageKernelDeltaNs"
+                "cpu_usage_kernel_delta_ns"
             )
         )
 
         free_memory_bytes = (
             node_environment.get(
-                "FreeMemoryBeforeBytes"
+                "free_memory_before_bytes"
             )
         )
 
         container_start_ms = (
             profile.get(
-                "ProfilingStartOverheadMs"
+                "profiling_start_overhead_ms"
             )
         )
 
         node_start_ms = (
             node_environment.get(
-                "SnapshotStartOverheadMs"
+                "snapshot_start_overhead_ms"
             )
         )
 
@@ -1127,6 +1185,11 @@ print(
 print(
     "[PASS] Il warm contiene metriche "
     "node-scoped valide da /proc."
+)
+
+print(
+    "[PASS] I delta CPU del nodo sommano "
+    "al tempo CPU disponibile."
 )
 
 print(
