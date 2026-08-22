@@ -45,47 +45,39 @@ type InvocationEligibility struct {
 // NodeEnvironment contains node-scoped procfs metrics observed during the
 // same warm invocation interval. The two scopes remain intentionally separate.
 type InvocationSample struct {
-	SchemaVersion int   `json:"schema_version"`
-	TimestampMs   int64 `json:"timestamp_ms"`
-
-	RequestID    string `json:"request_id"`
-	FunctionName string `json:"function_name"`
-	MachineTag   string `json:"machine_tag"`
-	NodeName     string `json:"node_name"`
-	ContainerID  string `json:"container_id"`
-
+	SchemaVersion         int                             `json:"schema_version"`
+	TimestampMs           int64                           `json:"timestamp_ms"`
+	RequestID             string                          `json:"request_id"`
+	FunctionName          string                          `json:"function_name"`
+	MachineTag            string                          `json:"machine_tag"`
+	NodeName              string                          `json:"node_name"`
+	ContainerID           string                          `json:"container_id"`
 	FunctionConfiguration InvocationFunctionConfiguration `json:"function_configuration"`
-
-	WarmStart          bool   `json:"warm_start"`
-	ExecutionSucceeded bool   `json:"execution_succeeded"`
-	ExecutionError     string `json:"execution_error,omitempty"`
-
-	Timing          InvocationTiming           `json:"timing"`
-	Profile         *InvocationResourceProfile `json:"profile,omitempty"`
-	NodeEnvironment *NodeResourceProfile       `json:"node_environment,omitempty"`
-	Eligibility     InvocationEligibility      `json:"eligibility"`
+	WarmStart             bool                            `json:"warm_start"`
+	ExecutionSucceeded    bool                            `json:"execution_succeeded"`
+	ExecutionError        string                          `json:"execution_error,omitempty"`
+	Timing                InvocationTiming                `json:"timing"`
+	Profile               *InvocationResourceProfile      `json:"profile,omitempty"`
+	NodeEnvironment       *NodeResourceProfile            `json:"node_environment,omitempty"`
+	Eligibility           InvocationEligibility           `json:"eligibility"`
 }
 
 // InvocationSampleInput contains the values required to build one raw sample.
 type InvocationSampleInput struct {
-	Timestamp time.Time
-
-	RequestID    string
-	FunctionName string
-	MachineTag   string
-	NodeName     string
-	ContainerID  string
-
+	Timestamp          time.Time
+	RequestID          string
+	FunctionName       string
+	MachineTag         string
+	NodeName           string
+	ContainerID        string
 	ConfiguredCPUs     float64
 	ConfiguredMemoryMB int64
-
 	WarmStart          bool
 	ExecutionSucceeded bool
 	ExecutionError     string
-
-	Timing          InvocationTiming
-	Profile         *InvocationResourceProfile
-	NodeEnvironment *NodeResourceProfile
+	Timing             InvocationTiming
+	Profile            *InvocationResourceProfile
+	NodeEnvironment    *NodeResourceProfile
 }
 
 // BuildInvocationSample builds one raw, versioned profiling record and assigns
@@ -103,31 +95,21 @@ func BuildInvocationSample(input InvocationSampleInput) InvocationSample {
 	}
 
 	return InvocationSample{
-		SchemaVersion: InvocationSampleSchemaVersion,
-		TimestampMs:   timestamp.UnixMilli(),
-		RequestID:     input.RequestID,
-		FunctionName:  input.FunctionName,
-		MachineTag:    input.MachineTag,
-		NodeName:      input.NodeName,
-		ContainerID:   containerID,
-
-		FunctionConfiguration: InvocationFunctionConfiguration{
-			ConfiguredCPUs:     input.ConfiguredCPUs,
-			ConfiguredMemoryMB: input.ConfiguredMemoryMB,
-		},
-
-		WarmStart:          input.WarmStart,
-		ExecutionSucceeded: input.ExecutionSucceeded,
-		ExecutionError:     input.ExecutionError,
-		Timing:             input.Timing,
-		Profile:            input.Profile,
-		NodeEnvironment:    input.NodeEnvironment,
-		Eligibility: buildInvocationEligibility(
-			input.WarmStart,
-			input.ExecutionSucceeded,
-			input.Timing,
-			input.Profile,
-		),
+		SchemaVersion:         InvocationSampleSchemaVersion,
+		TimestampMs:           timestamp.UnixMilli(),
+		RequestID:             input.RequestID,
+		FunctionName:          input.FunctionName,
+		MachineTag:            input.MachineTag,
+		NodeName:              input.NodeName,
+		ContainerID:           containerID,
+		FunctionConfiguration: InvocationFunctionConfiguration{ConfiguredCPUs: input.ConfiguredCPUs, ConfiguredMemoryMB: input.ConfiguredMemoryMB},
+		WarmStart:             input.WarmStart,
+		ExecutionSucceeded:    input.ExecutionSucceeded,
+		ExecutionError:        input.ExecutionError,
+		Timing:                input.Timing,
+		Profile:               input.Profile,
+		NodeEnvironment:       input.NodeEnvironment,
+		Eligibility:           buildInvocationEligibility(input.WarmStart, input.ExecutionSucceeded, input.Timing, input.Profile),
 	}
 }
 

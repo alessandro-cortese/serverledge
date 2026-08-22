@@ -50,12 +50,10 @@ type NodeVMStatSnapshot struct {
 // Serverledge and are intentionally kept separate from container-scoped
 // Docker/cgroup data.
 type NodeResourceSnapshot struct {
-	ReadAt time.Time
-
-	CPU    NodeCPUStatSnapshot
-	Memory NodeMemorySnapshot
-	VMStat NodeVMStatSnapshot
-
+	ReadAt           time.Time
+	CPU              NodeCPUStatSnapshot
+	Memory           NodeMemorySnapshot
+	VMStat           NodeVMStatSnapshot
 	CPUAvailable     bool
 	MemoryAvailable  bool
 	VMStatAvailable  bool
@@ -68,42 +66,34 @@ type NodeResourceSnapshot struct {
 // These values describe the node or VM environment. They must not be
 // interpreted as exclusive consumption by the function.
 type NodeResourceProfile struct {
-	Collected bool     `json:"collected"`
-	Complete  bool     `json:"complete"`
-	Errors    []string `json:"errors,omitempty"`
-
-	CPUAvailable    bool `json:"cpu_available"`
-	MemoryAvailable bool `json:"memory_available"`
-	VMStatAvailable bool `json:"vm_stat_available"`
-
-	AvailableCPUs       int     `json:"available_cpus"`
-	ExecutionWallTimeMs float64 `json:"execution_wall_time_ms"`
-
-	CPUUserDeltaMs      float64 `json:"cpu_user_delta_ms"`
-	CPUNiceDeltaMs      float64 `json:"cpu_nice_delta_ms"`
-	CPUKernelDeltaMs    float64 `json:"cpu_kernel_delta_ms"`
-	CPUIdleDeltaMs      float64 `json:"cpu_idle_delta_ms"`
-	CPUIOWaitDeltaMs    float64 `json:"cpu_iowait_delta_ms"`
-	CPUIRQDeltaMs       float64 `json:"cpu_irq_delta_ms"`
-	CPUSoftIRQDeltaMs   float64 `json:"cpu_soft_irq_delta_ms"`
-	CPUStealDeltaMs     float64 `json:"cpu_steal_delta_ms"`
-	CPUGuestDeltaMs     float64 `json:"cpu_guest_delta_ms"`
-	CPUGuestNiceDeltaMs float64 `json:"cpu_guest_nice_delta_ms"`
-
-	TotalMemoryBeforeBytes uint64 `json:"total_memory_before_bytes"`
-	TotalMemoryAfterBytes  uint64 `json:"total_memory_after_bytes"`
-
-	FreeMemoryBeforeBytes uint64 `json:"free_memory_before_bytes"`
-	FreeMemoryAfterBytes  uint64 `json:"free_memory_after_bytes"`
-
-	PageFaultsBefore uint64 `json:"page_faults_before"`
-	PageFaultsAfter  uint64 `json:"page_faults_after"`
-
-	PageFaultsDelta uint64 `json:"page_faults_delta"`
-
-	SnapshotStartOverheadMs float64 `json:"snapshot_start_overhead_ms"`
-	SnapshotEndOverheadMs   float64 `json:"snapshot_end_overhead_ms"`
-	SnapshotTotalOverheadMs float64 `json:"snapshot_total_overhead_ms"`
+	Collected               bool     `json:"collected"`
+	Complete                bool     `json:"complete"`
+	Errors                  []string `json:"errors,omitempty"`
+	CPUAvailable            bool     `json:"cpu_available"`
+	MemoryAvailable         bool     `json:"memory_available"`
+	VMStatAvailable         bool     `json:"vm_stat_available"`
+	AvailableCPUs           int      `json:"available_cpus"`
+	ExecutionWallTimeMs     float64  `json:"execution_wall_time_ms"`
+	CPUUserDeltaMs          float64  `json:"cpu_user_delta_ms"`
+	CPUNiceDeltaMs          float64  `json:"cpu_nice_delta_ms"`
+	CPUKernelDeltaMs        float64  `json:"cpu_kernel_delta_ms"`
+	CPUIdleDeltaMs          float64  `json:"cpu_idle_delta_ms"`
+	CPUIOWaitDeltaMs        float64  `json:"cpu_iowait_delta_ms"`
+	CPUIRQDeltaMs           float64  `json:"cpu_irq_delta_ms"`
+	CPUSoftIRQDeltaMs       float64  `json:"cpu_soft_irq_delta_ms"`
+	CPUStealDeltaMs         float64  `json:"cpu_steal_delta_ms"`
+	CPUGuestDeltaMs         float64  `json:"cpu_guest_delta_ms"`
+	CPUGuestNiceDeltaMs     float64  `json:"cpu_guest_nice_delta_ms"`
+	TotalMemoryBeforeBytes  uint64   `json:"total_memory_before_bytes"`
+	TotalMemoryAfterBytes   uint64   `json:"total_memory_after_bytes"`
+	FreeMemoryBeforeBytes   uint64   `json:"free_memory_before_bytes"`
+	FreeMemoryAfterBytes    uint64   `json:"free_memory_after_bytes"`
+	PageFaultsBefore        uint64   `json:"page_faults_before"`
+	PageFaultsAfter         uint64   `json:"page_faults_after"`
+	PageFaultsDelta         uint64   `json:"page_faults_delta"`
+	SnapshotStartOverheadMs float64  `json:"snapshot_start_overhead_ms"`
+	SnapshotEndOverheadMs   float64  `json:"snapshot_end_overhead_ms"`
+	SnapshotTotalOverheadMs float64  `json:"snapshot_total_overhead_ms"`
 }
 
 // ReadNodeResourceSnapshot reads all supported node-scoped procfs sources.
@@ -119,36 +109,25 @@ func ReadNodeResourceSnapshot() (NodeResourceSnapshot, error) {
 func readNodeResourceSnapshotFromRoot(procRoot string) (NodeResourceSnapshot, error) {
 
 	snapshot := NodeResourceSnapshot{ReadAt: time.Now()}
-
 	var collectionErrors []error
-
 	statData, err := os.ReadFile(filepath.Join(procRoot, "stat"))
-
 	if err != nil {
-
 		message := fmt.Sprintf("proc_stat_read_failed: %v", err)
 		snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
 		collectionErrors = append(collectionErrors, errors.New(message))
-
 	} else {
-
 		cpu, parseErr := parseProcStat(statData)
 		if parseErr != nil {
-
 			message := fmt.Sprintf("proc_stat_parse_failed: %v", parseErr)
 			snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
 			collectionErrors = append(collectionErrors, errors.New(message))
-
 		} else {
-
 			snapshot.CPU = cpu
 			snapshot.CPUAvailable = true
-
 		}
 	}
 
 	memInfoData, err := os.ReadFile(filepath.Join(procRoot, "meminfo"))
-
 	if err != nil {
 		message := fmt.Sprintf("proc_meminfo_read_failed: %v", err)
 		snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
@@ -172,7 +151,6 @@ func readNodeResourceSnapshotFromRoot(procRoot string) (NodeResourceSnapshot, er
 		collectionErrors = append(collectionErrors, errors.New(message))
 	} else {
 		vmStat, parseErr := parseProcVMStat(vmStatData)
-
 		if parseErr != nil {
 			message := fmt.Sprintf("proc_vmstat_parse_failed: %v", parseErr)
 			snapshot.CollectionErrors = append(snapshot.CollectionErrors, message)
@@ -259,7 +237,6 @@ func BuildNodeResourceProfile(before NodeResourceSnapshot, after NodeResourceSna
 		profile.PageFaultsBefore = before.VMStat.PageFaults
 		profile.PageFaultsAfter = after.VMStat.PageFaults
 		profile.PageFaultsDelta, ok = counterDelta(after.VMStat.PageFaults, before.VMStat.PageFaults)
-
 		if !ok {
 			profile.VMStatAvailable = false
 			profile.Errors = append(profile.Errors, "node_page_fault_counter_regressed")
@@ -279,10 +256,8 @@ func parseProcStat(data []byte) (NodeCPUStatSnapshot, error) {
 	var aggregateFound bool
 
 	scanner := bufio.NewScanner(strings.NewReader(string(data)))
-
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
-
 		if len(fields) == 0 {
 			continue
 		}
@@ -293,16 +268,12 @@ func parseProcStat(data []byte) (NodeCPUStatSnapshot, error) {
 			}
 
 			values := make([]uint64, 10)
-
 			for index := 1; index < len(fields) && index <= 10; index++ {
-
 				value, err := strconv.ParseUint(fields[index], 10, 64)
-
 				if err != nil {
 					return result,
 						fmt.Errorf("invalid cpu field %d (%q): %w", index, fields[index], err)
 				}
-
 				values[index-1] = value
 			}
 
@@ -318,7 +289,6 @@ func parseProcStat(data []byte) (NodeCPUStatSnapshot, error) {
 			result.GuestNiceTicks = values[9]
 
 			aggregateFound = true
-
 			continue
 		}
 
@@ -345,30 +315,22 @@ func parseProcStat(data []byte) (NodeCPUStatSnapshot, error) {
 func parseProcMemInfo(data []byte) (NodeMemorySnapshot, error) {
 
 	values := make(map[string]uint64)
-
 	scanner := bufio.NewScanner(strings.NewReader(string(data)))
-
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
-
 		if len(fields) < 2 {
 			continue
 		}
-
 		key := strings.TrimSuffix(fields[0], ":")
-
 		if key != "MemTotal" && key != "MemFree" && key != "MemAvailable" {
 			continue
 		}
 
 		value, err := strconv.ParseUint(fields[1], 10, 64)
-
 		if err != nil {
 			return NodeMemorySnapshot{}, fmt.Errorf("invalid %s value %q: %w", key, fields[1], err)
 		}
-
 		multiplier := uint64(1)
-
 		if len(fields) >= 3 {
 			switch strings.ToLower(fields[2]) {
 			case "kb":
@@ -394,9 +356,7 @@ func parseProcMemInfo(data []byte) (NodeMemorySnapshot, error) {
 	}
 
 	requiredFields := []string{"MemTotal", "MemFree", "MemAvailable"}
-
 	for _, required := range requiredFields {
-
 		if _, ok := values[required]; !ok {
 			return NodeMemorySnapshot{}, fmt.Errorf("%s not found", required)
 		}
@@ -410,7 +370,6 @@ func parseProcVMStat(data []byte) (NodeVMStatSnapshot, error) {
 	values := make(map[string]uint64)
 
 	scanner := bufio.NewScanner(strings.NewReader(string(data)))
-
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		if len(fields) != 2 {

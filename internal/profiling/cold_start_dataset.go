@@ -1,12 +1,10 @@
 package profiling
 
 import (
-	"bufio"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,36 +12,32 @@ import (
 
 const (
 	DefaultColdStartProfileExportPath = "data/profiling/cold-start-profiles.jsonl"
-
-	DefaultColdStartProfileCSVPath = "data/profiling/cold-start-profiles.csv"
-
-	ColdStartProfileCSVSchemaVersion = 1
+	DefaultColdStartProfileCSVPath    = "data/profiling/cold-start-profiles.csv"
+	ColdStartProfileCSVSchemaVersion  = 1
 )
 
 type ColdStartProfileGroupStatus struct {
-	FunctionName string `json:"function_name"`
-
-	MachineTag string `json:"machine_tag"`
-
+	FunctionName          string                          `json:"function_name"`
+	MachineTag            string                          `json:"machine_tag"`
 	FunctionConfiguration InvocationFunctionConfiguration `json:"function_configuration"`
-
-	EligibleSampleCount int `json:"eligible_sample_count"`
-
-	SelectedSampleCount int `json:"selected_sample_count"`
-
-	Built bool `json:"built"`
+	EligibleSampleCount   int                             `json:"eligible_sample_count"`
+	SelectedSampleCount   int                             `json:"selected_sample_count"`
+	Built                 bool                            `json:"built"`
 }
 
 type ColdStartProfileBuildResult struct {
-	Profiles []ColdStartProfile
-
-	Groups []ColdStartProfileGroupStatus
-
-	RawSampleCount int
-
+	Profiles        []ColdStartProfile
+	Groups          []ColdStartProfileGroupStatus
+	RawSampleCount  int
 	EligibleSamples int
+	IgnoredSamples  int
+}
 
-	IgnoredSamples int
+type coldStartProfileIdentity struct {
+	FunctionName       string
+	MachineTag         string
+	ConfiguredCPUs     float64
+	ConfiguredMemoryMB int64
 }
 
 // BuildColdStartProfilesByGroup groups cold-start samples by function,
@@ -52,20 +46,13 @@ type ColdStartProfileBuildResult struct {
 // samplesPerProfile is intentionally explicit. The local smoke test may use
 // one sample, while the final experimental protocol can require a larger
 // number without changing the implementation.
-func BuildColdStartProfilesByGroup(
-	samples []InvocationSample,
-	samplesPerProfile int,
-) (ColdStartProfileBuildResult, error) {
+func BuildColdStartProfilesByGroup(samples []InvocationSample, samplesPerProfile int) (ColdStartProfileBuildResult, error) {
+
 	if samplesPerProfile <= 0 {
-		return ColdStartProfileBuildResult{},
-			fmt.Errorf(
-				"samples per cold-start profile must be positive, got %d",
-				samplesPerProfile,
-			)
+		return ColdStartProfileBuildResult{}, fmt.Errorf("samples per cold-start profile must be positive, got %d", samplesPerProfile)
 	}
 
 	result := ColdStartProfileBuildResult{RawSampleCount: len(samples)}
-
 	groups := make(map[functionProfileGroupKey][]timestampedInvocationSample)
 
 	for index, sample := range samples {
@@ -75,16 +62,10 @@ func BuildColdStartProfilesByGroup(
 		}
 
 		if err := validateColdStartSample(sample); err != nil {
-			return ColdStartProfileBuildResult{},
-				fmt.Errorf(
-					"invalid eligible cold-start sample at index %d: %w",
-					index,
-					err,
-				)
+			return ColdStartProfileBuildResult{}, fmt.Errorf("invalid eligible cold-start sample at index %d: %w", index, err)
 		}
 
 		result.EligibleSamples++
-
 		key := functionProfileGroupKey{
 			FunctionName:       sample.FunctionName,
 			MachineTag:         sample.MachineTag,
@@ -122,7 +103,6 @@ func BuildColdStartProfilesByGroup(
 	})
 
 	result.Groups = make([]ColdStartProfileGroupStatus, 0, len(keys))
-
 	result.Profiles = make([]ColdStartProfile, 0, len(keys))
 
 	for _, key := range keys {
@@ -132,10 +112,8 @@ func BuildColdStartProfilesByGroup(
 			if candidates[i].TimestampMs != candidates[j].TimestampMs {
 				return candidates[i].TimestampMs < candidates[j].TimestampMs
 			}
-
 			return candidates[i].InputOrder < candidates[j].InputOrder
-		},
-		)
+		})
 
 		status := ColdStartProfileGroupStatus{
 			FunctionName: key.FunctionName,
@@ -155,15 +133,16 @@ func BuildColdStartProfilesByGroup(
 		// As for warm profiling, if more observations than requested are
 		// available, select the most recent ones deterministically.
 		selectedCandidates := candidates[len(candidates)-samplesPerProfile:]
-
 		selectedSamples := make([]InvocationSample, 0, samplesPerProfile)
-
 		for _, candidate := range selectedCandidates {
 			selectedSamples = append(selectedSamples, candidate.Sample)
 		}
 
-		profile, err := AggregateColdStartSamples(selectedSamples)
-
+		// Mirrors the warm path: raw InvocationSample →
+		// BuildColdStartProfileFromSamples → AggregateColdStartSamples →
+		// ColdStartProfile. Going through the same entry point as the warm
+		// builder keeps the two pipelines readable side by side.
+		profile, err := BuildColdStartProfileFromSamples(selectedSamples)
 		if err != nil {
 			return ColdStartProfileBuildResult{}, fmt.Errorf(
 				"failed to aggregate cold starts for function %q on machine tag %q: %w",
@@ -182,39 +161,22 @@ func BuildColdStartProfilesByGroup(
 	return result, nil
 }
 
-func ExportColdStartProfilesJSONL(
-	path string,
-	profiles []ColdStartProfile,
-) error {
-	path =
-		strings.TrimSpace(
-			path,
-		)
+func ExportColdStartProfilesJSONL(path string, profiles []ColdStartProfile) error {
 
+	path = strings.TrimSpace(path)
 	if path == "" {
-		return fmt.Errorf(
-			"cold-start profile output path cannot be empty",
-		)
+		return fmt.Errorf("cold-start profile output path cannot be empty")
 	}
 
 	if len(profiles) == 0 {
-		return fmt.Errorf(
-			"cannot export an empty cold-start profile dataset",
-		)
+		return fmt.Errorf("cannot export an empty cold-start profile dataset")
 	}
 
 	for index, profile := range profiles {
 
-		if err :=
-			validateColdStartProfile(
-				profile,
-			); err != nil {
+		if err := validateColdStartProfile(profile); err != nil {
 
-			return fmt.Errorf(
-				"invalid cold-start profile at index %d: %w",
-				index,
-				err,
-			)
+			return fmt.Errorf("invalid cold-start profile at index %d: %w", index, err)
 		}
 	}
 
@@ -222,219 +184,64 @@ func ExportColdStartProfilesJSONL(
 		return err
 	}
 
-	directory :=
-		filepath.Dir(
-			path,
-		)
-
-	if directory != "." {
-		if err :=
-			os.MkdirAll(
-				directory,
-				0o755,
-			); err != nil {
-
-			return fmt.Errorf(
-				"failed to create cold-start profile export directory %s: %w",
-				directory,
-				err,
-			)
-		}
-	}
-
-	tempFile, err :=
-		os.CreateTemp(
-			directory,
-			".cold-start-profiles-*.tmp",
-		)
-
+	tempFile, tempPath, err := createAtomicFile(path, ".cold-start-profiles-*.tmp", "cold-start profile dataset")
 	if err != nil {
-		return fmt.Errorf(
-			"failed to create temporary cold-start profile dataset: %w",
-			err,
-		)
+		return err
 	}
-
-	tempPath :=
-		tempFile.Name()
 
 	cleanupTemp := true
-
 	defer func() {
 		if cleanupTemp {
-			_ =
-				os.Remove(
-					tempPath,
-				)
+			_ = os.Remove(tempPath)
 		}
 	}()
 
-	encoder :=
-		json.NewEncoder(
-			tempFile,
-		)
+	encoder := json.NewEncoder(tempFile)
 
 	for index, profile := range profiles {
-
-		if err :=
-			encoder.Encode(
-				profile,
-			); err != nil {
-
-			_ =
-				tempFile.Close()
-
-			return fmt.Errorf(
-				"failed to encode cold-start profile at index %d: %w",
-				index,
-				err,
-			)
+		if err := encoder.Encode(profile); err != nil {
+			_ = tempFile.Close()
+			return fmt.Errorf("failed to encode cold-start profile at index %d: %w", index, err)
 		}
 	}
 
-	if err :=
-		finalizeColdStartAtomicFile(
-			tempFile,
-			tempPath,
-			path,
-		); err != nil {
-
+	if err := finalizeAtomicFile(tempFile, tempPath, path, "cold-start profile dataset"); err != nil {
 		return err
 	}
 
 	cleanupTemp = false
-
 	return nil
 }
 
-func LoadColdStartProfilesJSONL(
-	path string,
-) ([]ColdStartProfile, error) {
-	path =
-		strings.TrimSpace(
-			path,
-		)
+func LoadColdStartProfilesJSONL(path string) ([]ColdStartProfile, error) {
 
-	if path == "" {
-		return nil,
-			fmt.Errorf(
-				"cold-start profile input path cannot be empty",
-			)
-	}
+	path = strings.TrimSpace(path)
 
-	file, err :=
-		os.Open(
-			path,
-		)
+	profiles := make([]ColdStartProfile, 0)
 
-	if err != nil {
-		return nil,
-			fmt.Errorf(
-				"failed to open cold-start profile dataset %s: %w",
-				path,
-				err,
-			)
-	}
-
-	defer file.Close()
-
-	scanner :=
-		bufio.NewScanner(
-			file,
-		)
-
-	scanner.Buffer(
-		make(
-			[]byte,
-			64*1024,
-		),
-		4*1024*1024,
-	)
-
-	profiles :=
-		make(
-			[]ColdStartProfile,
-			0,
-		)
-
-	lineNumber := 0
-
-	for scanner.Scan() {
-		lineNumber++
-
-		line :=
-			strings.TrimSpace(
-				scanner.Text(),
-			)
-
-		if line == "" {
-			continue
-		}
-
+	if err := scanJSONLines(path, "cold-start profile", func(line []byte, lineNumber int) error {
 		var profile ColdStartProfile
-
-		if err :=
-			json.Unmarshal(
-				[]byte(line),
-				&profile,
-			); err != nil {
-
-			return nil,
-				fmt.Errorf(
-					"invalid cold-start profile JSON at line %d: %w",
-					lineNumber,
-					err,
-				)
+		if err := json.Unmarshal(line, &profile); err != nil {
+			return fmt.Errorf("invalid cold-start profile JSON at line %d: %w", lineNumber, err)
+		}
+		if err := validateColdStartProfile(profile); err != nil {
+			return fmt.Errorf("invalid cold-start profile at line %d: %w", lineNumber, err)
 		}
 
-		if err :=
-			validateColdStartProfile(
-				profile,
-			); err != nil {
-
-			return nil,
-				fmt.Errorf(
-					"invalid cold-start profile at line %d: %w",
-					lineNumber,
-					err,
-				)
-		}
-
-		profiles =
-			append(
-				profiles,
-				profile,
-			)
-	}
-
-	if err :=
-		scanner.Err(); err != nil {
-
-		return nil,
-			fmt.Errorf(
-				"failed to read cold-start profile dataset %s: %w",
-				path,
-				err,
-			)
+		profiles = append(profiles, profile)
+		return nil
+	},
+	); err != nil {
+		return nil, err
 	}
 
 	if len(profiles) == 0 {
-		return nil,
-			fmt.Errorf(
-				"cold-start profile dataset %s contains no profiles",
-				path,
-			)
+		return nil, fmt.Errorf("cold-start profile dataset %s contains no profiles", path)
 	}
 
-	if err :=
-		validateUniqueColdStartProfiles(
-			profiles,
-		); err != nil {
-
-		return nil,
-			err
+	if err := validateUniqueColdStartProfiles(profiles); err != nil {
+		return nil, err
 	}
-
 	return profiles, nil
 }
 
@@ -453,426 +260,164 @@ func ColdStartProfileCSVHeader() []string {
 	}
 }
 
-func ExportColdStartProfilesCSV(
-	path string,
-	experimentID string,
-	profiles []ColdStartProfile,
-) error {
-	path =
-		strings.TrimSpace(
-			path,
-		)
+func ExportColdStartProfilesCSV(path string, experimentID string, profiles []ColdStartProfile) error {
 
-	experimentID =
-		strings.TrimSpace(
-			experimentID,
-		)
-
+	path = strings.TrimSpace(path)
+	experimentID = strings.TrimSpace(experimentID)
 	if path == "" {
-		return fmt.Errorf(
-			"cold-start CSV output path cannot be empty",
-		)
+		return fmt.Errorf("cold-start CSV output path cannot be empty")
 	}
 
 	if experimentID == "" {
-		return fmt.Errorf(
-			"experiment ID cannot be empty",
-		)
+		return fmt.Errorf("experiment ID cannot be empty")
 	}
 
 	if len(profiles) == 0 {
-		return fmt.Errorf(
-			"cannot export an empty cold-start profile dataset",
-		)
+		return fmt.Errorf("cannot export an empty cold-start profile dataset")
 	}
 
 	for index, profile := range profiles {
-
-		if err :=
-			validateColdStartProfile(
-				profile,
-			); err != nil {
-
-			return fmt.Errorf(
-				"invalid cold-start profile at index %d: %w",
-				index,
-				err,
-			)
+		if err := validateColdStartProfile(profile); err != nil {
+			return fmt.Errorf("invalid cold-start profile at index %d: %w", index, err)
 		}
 	}
 
-	if err :=
-		validateUniqueColdStartProfiles(
-			profiles,
-		); err != nil {
-
+	if err := validateUniqueColdStartProfiles(profiles); err != nil {
 		return err
 	}
 
-	ordered :=
-		append(
-			[]ColdStartProfile(nil),
-			profiles...,
-		)
+	ordered := append([]ColdStartProfile(nil), profiles...)
 
-	sort.SliceStable(
-		ordered,
-		func(
-			i int,
-			j int,
-		) bool {
+	sort.SliceStable(ordered, func(i int, j int) bool {
+		if ordered[i].FunctionName != ordered[j].FunctionName {
+			return ordered[i].FunctionName < ordered[j].FunctionName
+		}
 
-			if ordered[i].FunctionName !=
-				ordered[j].FunctionName {
+		if ordered[i].MachineTag != ordered[j].MachineTag {
+			return ordered[i].MachineTag < ordered[j].MachineTag
+		}
 
-				return ordered[i].
-					FunctionName <
-					ordered[j].
-						FunctionName
-			}
+		if ordered[i].FunctionConfiguration.ConfiguredCPUs != ordered[j].FunctionConfiguration.ConfiguredCPUs {
+			return ordered[i].FunctionConfiguration.ConfiguredCPUs < ordered[j].FunctionConfiguration.ConfiguredCPUs
+		}
 
-			if ordered[i].MachineTag !=
-				ordered[j].MachineTag {
-
-				return ordered[i].
-					MachineTag <
-					ordered[j].
-						MachineTag
-			}
-
-			if ordered[i].
-				FunctionConfiguration.
-				ConfiguredCPUs !=
-				ordered[j].
-					FunctionConfiguration.
-					ConfiguredCPUs {
-
-				return ordered[i].
-					FunctionConfiguration.
-					ConfiguredCPUs <
-					ordered[j].
-						FunctionConfiguration.
-						ConfiguredCPUs
-			}
-
-			return ordered[i].
-				FunctionConfiguration.
-				ConfiguredMemoryMB <
-				ordered[j].
-					FunctionConfiguration.
-					ConfiguredMemoryMB
-		},
+		return ordered[i].FunctionConfiguration.ConfiguredMemoryMB < ordered[j].FunctionConfiguration.ConfiguredMemoryMB
+	},
 	)
 
-	directory :=
-		filepath.Dir(
-			path,
-		)
-
-	if directory != "." {
-		if err :=
-			os.MkdirAll(
-				directory,
-				0o755,
-			); err != nil {
-
-			return fmt.Errorf(
-				"failed to create cold-start CSV directory %s: %w",
-				directory,
-				err,
-			)
-		}
-	}
-
-	tempFile, err :=
-		os.CreateTemp(
-			directory,
-			".cold-start-profiles-*.csv.tmp",
-		)
+	tempFile, tempPath, err := createAtomicFile(path, ".cold-start-profiles-*.csv.tmp", "cold-start profile CSV")
 
 	if err != nil {
-		return fmt.Errorf(
-			"failed to create temporary cold-start CSV: %w",
-			err,
-		)
+		return err
 	}
-
-	tempPath :=
-		tempFile.Name()
 
 	cleanupTemp := true
 
 	defer func() {
 		if cleanupTemp {
-			_ =
-				os.Remove(
-					tempPath,
-				)
+			_ = os.Remove(tempPath)
 		}
 	}()
 
-	writer :=
-		csv.NewWriter(
-			tempFile,
-		)
+	writer := csv.NewWriter(tempFile)
 
-	if err :=
-		writer.Write(
-			ColdStartProfileCSVHeader(),
-		); err != nil {
-
-		_ =
-			tempFile.Close()
-
-		return fmt.Errorf(
-			"failed to write cold-start CSV header: %w",
-			err,
-		)
+	if err := writer.Write(ColdStartProfileCSVHeader()); err != nil {
+		_ = tempFile.Close()
+		return fmt.Errorf("failed to write cold-start CSV header: %w", err)
 	}
 
 	for index, profile := range ordered {
+		record := []string{strconv.Itoa(ColdStartProfileCSVSchemaVersion),
+			experimentID,
+			strconv.Itoa(profile.SchemaVersion),
+			profile.FunctionName,
+			profile.MachineTag,
+			strconv.FormatFloat(profile.FunctionConfiguration.ConfiguredCPUs, 'g', -1, 64),
+			strconv.FormatInt(profile.FunctionConfiguration.ConfiguredMemoryMB, 10),
+			strconv.Itoa(profile.SampleCount),
+			strconv.FormatFloat(profile.InitTime.MeanMs, 'g', -1, 64),
+			strconv.FormatFloat(profile.InitTime.MedianMs, 'g', -1, 64),
+		}
 
-		record :=
-			[]string{
-				strconv.Itoa(
-					ColdStartProfileCSVSchemaVersion,
-				),
-
-				experimentID,
-
-				strconv.Itoa(
-					profile.SchemaVersion,
-				),
-
-				profile.FunctionName,
-
-				profile.MachineTag,
-
-				strconv.FormatFloat(
-					profile.
-						FunctionConfiguration.
-						ConfiguredCPUs,
-					'g',
-					-1,
-					64,
-				),
-
-				strconv.FormatInt(
-					profile.
-						FunctionConfiguration.
-						ConfiguredMemoryMB,
-					10,
-				),
-
-				strconv.Itoa(
-					profile.SampleCount,
-				),
-
-				strconv.FormatFloat(
-					profile.InitTime.MeanMs,
-					'g',
-					-1,
-					64,
-				),
-
-				strconv.FormatFloat(
-					profile.InitTime.MedianMs,
-					'g',
-					-1,
-					64,
-				),
-			}
-
-		if err :=
-			writer.Write(
-				record,
-			); err != nil {
-
-			_ =
-				tempFile.Close()
-
-			return fmt.Errorf(
-				"failed to write cold-start CSV row %d: %w",
-				index,
-				err,
-			)
+		if err := writer.Write(record); err != nil {
+			_ = tempFile.Close()
+			return fmt.Errorf("failed to write cold-start CSV row %d: %w", index, err)
 		}
 	}
 
 	writer.Flush()
-
-	if err :=
-		writer.Error(); err != nil {
-
-		_ =
-			tempFile.Close()
-
-		return fmt.Errorf(
-			"failed to flush cold-start CSV: %w",
-			err,
-		)
+	if err := writer.Error(); err != nil {
+		_ = tempFile.Close()
+		return fmt.Errorf("failed to flush cold-start CSV: %w", err)
 	}
 
-	if err :=
-		finalizeColdStartAtomicFile(
-			tempFile,
-			tempPath,
-			path,
-		); err != nil {
-
+	if err := finalizeAtomicFile(tempFile, tempPath, path, "cold-start profile CSV"); err != nil {
 		return err
 	}
 
 	cleanupTemp = false
-
 	return nil
 }
 
-func validateColdStartProfile(
-	profile ColdStartProfile,
-) error {
-	if profile.SchemaVersion !=
-		ColdStartProfileSchemaVersion {
+func validateColdStartProfile(profile ColdStartProfile) error {
 
-		return fmt.Errorf(
-			"unsupported cold-start profile schema version %d",
-			profile.SchemaVersion,
-		)
+	if profile.SchemaVersion != ColdStartProfileSchemaVersion {
+		return fmt.Errorf("unsupported cold-start profile schema version %d", profile.SchemaVersion)
 	}
 
-	if strings.TrimSpace(
-		profile.FunctionName,
-	) == "" {
-
-		return fmt.Errorf(
-			"function name is empty",
-		)
+	if strings.TrimSpace(profile.FunctionName) == "" {
+		return fmt.Errorf("function name is empty")
 	}
 
-	if strings.TrimSpace(
-		profile.MachineTag,
-	) == "" {
-
-		return fmt.Errorf(
-			"machine tag is empty",
-		)
+	if strings.TrimSpace(profile.MachineTag) == "" {
+		return fmt.Errorf("machine tag is empty")
 	}
 
-	if !finitePositive(
-		profile.
-			FunctionConfiguration.
-			ConfiguredCPUs,
-	) {
-		return fmt.Errorf(
-			"configured CPUs are invalid: %v",
-			profile.
-				FunctionConfiguration.
-				ConfiguredCPUs,
-		)
+	if !finitePositive(profile.FunctionConfiguration.ConfiguredCPUs) {
+		return fmt.Errorf("configured CPUs are invalid: %v", profile.FunctionConfiguration.ConfiguredCPUs)
 	}
 
-	if profile.
-		FunctionConfiguration.
-		ConfiguredMemoryMB <= 0 {
-
-		return fmt.Errorf(
-			"configured memory is invalid: %d MB",
-			profile.
-				FunctionConfiguration.
-				ConfiguredMemoryMB,
-		)
+	if profile.FunctionConfiguration.ConfiguredMemoryMB <= 0 {
+		return fmt.Errorf("configured memory is invalid: %d MB", profile.FunctionConfiguration.ConfiguredMemoryMB)
 	}
 
 	if profile.SampleCount <= 0 {
-		return fmt.Errorf(
-			"sample count must be positive, got %d",
-			profile.SampleCount,
-		)
+		return fmt.Errorf("sample count must be positive, got %d", profile.SampleCount)
 	}
 
-	if len(
-		profile.SourceRequestIDs,
-	) != profile.SampleCount {
-
-		return fmt.Errorf(
-			"source request ID count %d does not match sample count %d",
-			len(
-				profile.SourceRequestIDs,
-			),
-			profile.SampleCount,
-		)
+	if len(profile.SourceRequestIDs) != profile.SampleCount {
+		return fmt.Errorf("source request ID count %d does not match sample count %d", len(profile.SourceRequestIDs), profile.SampleCount)
 	}
 
-	seen :=
-		make(
-			map[string]struct{},
-			len(
-				profile.SourceRequestIDs,
-			),
-		)
-
+	seen := make(map[string]struct{}, len(profile.SourceRequestIDs))
 	for _, requestID := range profile.SourceRequestIDs {
-
-		requestID =
-			strings.TrimSpace(
-				requestID,
-			)
+		requestID = strings.TrimSpace(requestID)
 
 		if requestID == "" {
-			return fmt.Errorf(
-				"source request ID is empty",
-			)
+			return fmt.Errorf("source request ID is empty")
 		}
 
-		if _, exists :=
-			seen[requestID]; exists {
-
-			return fmt.Errorf(
-				"duplicate source request ID %q",
-				requestID,
-			)
+		if _, exists := seen[requestID]; exists {
+			return fmt.Errorf("duplicate source request ID %q", requestID)
 		}
 
-		seen[requestID] =
-			struct{}{}
+		seen[requestID] = struct{}{}
 	}
 
-	if !finiteNonNegative(
-		profile.InitTime.MeanMs,
-	) {
-		return fmt.Errorf(
-			"mean init time is invalid: %v",
-			profile.InitTime.MeanMs,
-		)
+	if !finiteNonNegative(profile.InitTime.MeanMs) {
+		return fmt.Errorf("mean init time is invalid: %v", profile.InitTime.MeanMs)
 	}
 
-	if !finiteNonNegative(
-		profile.InitTime.MedianMs,
-	) {
-		return fmt.Errorf(
-			"median init time is invalid: %v",
-			profile.InitTime.MedianMs,
-		)
+	if !finiteNonNegative(profile.InitTime.MedianMs) {
+		return fmt.Errorf("median init time is invalid: %v", profile.InitTime.MedianMs)
 	}
 
 	return nil
 }
 
-type coldStartProfileIdentity struct {
-	FunctionName string
+func validateUniqueColdStartProfiles(profiles []ColdStartProfile) error {
 
-	MachineTag string
-
-	ConfiguredCPUs float64
-
-	ConfiguredMemoryMB int64
-}
-
-func validateUniqueColdStartProfiles(
-	profiles []ColdStartProfile,
-) error {
 	seen := make(map[coldStartProfileIdentity]struct{}, len(profiles))
-
 	for _, profile := range profiles {
 		identity := coldStartProfileIdentity{
 			FunctionName:       profile.FunctionName,
@@ -892,62 +437,6 @@ func validateUniqueColdStartProfiles(
 		}
 
 		seen[identity] = struct{}{}
-	}
-
-	return nil
-}
-
-func finalizeColdStartAtomicFile(
-	file *os.File,
-	tempPath string,
-	path string,
-) error {
-	if err :=
-		file.Sync(); err != nil {
-
-		_ =
-			file.Close()
-
-		return fmt.Errorf(
-			"failed to sync temporary file: %w",
-			err,
-		)
-	}
-
-	if err :=
-		file.Chmod(
-			0o644,
-		); err != nil {
-
-		_ =
-			file.Close()
-
-		return fmt.Errorf(
-			"failed to set output permissions: %w",
-			err,
-		)
-	}
-
-	if err :=
-		file.Close(); err != nil {
-
-		return fmt.Errorf(
-			"failed to close temporary file: %w",
-			err,
-		)
-	}
-
-	if err :=
-		os.Rename(
-			tempPath,
-			path,
-		); err != nil {
-
-		return fmt.Errorf(
-			"failed to replace output %s: %w",
-			path,
-			err,
-		)
 	}
 
 	return nil

@@ -14,14 +14,7 @@ const logPrefix = "[PROFILING]"
 // and the page-fault delta that feed the Random Forest features, the
 // container-side profiling overhead, and the validity conditions that decide
 // whether the sample is eligible for clustering.
-func LogInvocationResourceProfile(
-	requestID string,
-	functionName string,
-	machineTag string,
-	nodeName string,
-	warmStart bool,
-	profile *InvocationResourceProfile,
-) {
+func LogInvocationResourceProfile(requestID string, functionName string, machineTag string, nodeName string, warmStart bool, profile *InvocationResourceProfile) {
 	if profile == nil {
 		return
 	}

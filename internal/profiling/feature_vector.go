@@ -27,15 +27,12 @@ type RandomForestProfilingFeatures struct {
 // machine tag or configured resources from accidentally becoming clustering
 // dimensions.
 type ProfilingFeatureVector struct {
-	SchemaVersion int `json:"schema_version"`
-
-	RequestID    string `json:"request_id"`
-	FunctionName string `json:"function_name"`
-	MachineTag   string `json:"machine_tag"`
-
+	SchemaVersion         int                             `json:"schema_version"`
+	RequestID             string                          `json:"request_id"`
+	FunctionName          string                          `json:"function_name"`
+	MachineTag            string                          `json:"machine_tag"`
 	FunctionConfiguration InvocationFunctionConfiguration `json:"function_configuration"`
-
-	Features RandomForestProfilingFeatures `json:"features"`
+	Features              RandomForestProfilingFeatures   `json:"features"`
 }
 
 // RandomForestFeatureNames returns the stable order used by Values.
@@ -93,161 +90,75 @@ func (f RandomForestProfilingFeatures) Values() []float64 {
 // The mapping intentionally keeps function-attributable CPU/page-fault
 // measurements container-scoped, while freeMemory remains an environmental
 // node-scoped feature as in the reference profiling approach.
-func BuildProfilingFeatureVector(
-	sample InvocationSample,
-) (ProfilingFeatureVector, error) {
+func BuildProfilingFeatureVector(sample InvocationSample) (ProfilingFeatureVector, error) {
+
 	if !sample.Eligibility.ResourceClustering {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q is not eligible for resource clustering",
-				sample.RequestID,
-			)
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q is not eligible for resource clustering", sample.RequestID)
 	}
 
 	if sample.Profile == nil {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q has no container profile",
-				sample.RequestID,
-			)
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q has no container profile", sample.RequestID)
 	}
 
 	if sample.NodeEnvironment == nil {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q has no node environment",
-				sample.RequestID,
-			)
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q has no node environment", sample.RequestID)
 	}
 
-	profile :=
-		sample.Profile
-
-	nodeEnvironment :=
-		sample.NodeEnvironment
-
+	profile := sample.Profile
+	nodeEnvironment := sample.NodeEnvironment
 	if !profile.PageFaultsAvailable {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q has no container page-fault counters",
-				sample.RequestID,
-			)
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q has no container page-fault counters", sample.RequestID)
 	}
 
 	if !nodeEnvironment.MemoryAvailable {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q has no node memory snapshot",
-				sample.RequestID,
-			)
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q has no node memory snapshot", sample.RequestID)
 	}
 
-	if !finitePositive(
-		sample.Timing.DurationMs,
-	) {
-		return ProfilingFeatureVector{},
-			fmt.Errorf(
-				"sample %q has invalid duration_ms %.6f",
-				sample.RequestID,
-				sample.Timing.DurationMs,
-			)
+	if !finitePositive(sample.Timing.DurationMs) {
+		return ProfilingFeatureVector{}, fmt.Errorf("sample %q has invalid duration_ms %.6f", sample.RequestID, sample.Timing.DurationMs)
 	}
 
-	cpuUserDeltaMs :=
-		float64(
-			profile.CPUUsageUserDeltaNs,
-		) /
-			1_000_000.0
-
-	cpuKernelDeltaMs :=
-		float64(
-			profile.CPUUsageKernelDeltaNs,
-		) /
-			1_000_000.0
+	cpuUserDeltaMs := float64(profile.CPUUsageUserDeltaNs) / 1_000_000.0
+	cpuKernelDeltaMs := float64(profile.CPUUsageKernelDeltaNs) / 1_000_000.0
 
 	// This is the Serverledge equivalent closest to the paper's utilizedCPUs:
 	// CPU time actually consumed by the invocation divided by user/runtime
 	// wall time.
-	utilizedCPUs :=
-		(cpuUserDeltaMs +
-			cpuKernelDeltaMs) /
-			sample.Timing.DurationMs
-
-	freeMemoryMB :=
-		float64(
-			nodeEnvironment.FreeMemoryBeforeBytes,
-		) /
-			(1024.0 * 1024.0)
+	utilizedCPUs := (cpuUserDeltaMs + cpuKernelDeltaMs) / sample.Timing.DurationMs
+	freeMemoryMB := float64(nodeEnvironment.FreeMemoryBeforeBytes) / (1024.0 * 1024.0)
 
 	// SAAF measures the overhead of its initial inspection phase.
 	// Serverledge performs the corresponding profiling externally, therefore
 	// we sum the two initial snapshot overheads.
-	frameworkRuntimeMs :=
-		profile.ProfilingStartOverheadMs +
-			nodeEnvironment.SnapshotStartOverheadMs
+	frameworkRuntimeMs := profile.ProfilingStartOverheadMs + nodeEnvironment.SnapshotStartOverheadMs
+	features := RandomForestProfilingFeatures{
+		PageFaultsDelta:    float64(profile.PageFaultsDelta),
+		UtilizedCPUs:       utilizedCPUs,
+		FreeMemoryMB:       freeMemoryMB,
+		CPUUserDeltaMs:     cpuUserDeltaMs,
+		CPUKernelDeltaMs:   cpuKernelDeltaMs,
+		FrameworkRuntimeMs: frameworkRuntimeMs,
+	}
 
-	features :=
-		RandomForestProfilingFeatures{
-			PageFaultsDelta: float64(
-				profile.PageFaultsDelta,
-			),
-
-			UtilizedCPUs: utilizedCPUs,
-
-			FreeMemoryMB: freeMemoryMB,
-
-			CPUUserDeltaMs: cpuUserDeltaMs,
-
-			CPUKernelDeltaMs: cpuKernelDeltaMs,
-
-			FrameworkRuntimeMs: frameworkRuntimeMs,
-		}
-
-	names :=
-		RandomForestFeatureNames()
-
-	values :=
-		features.Values()
+	names := RandomForestFeatureNames()
+	values := features.Values()
 
 	for index, value := range values {
-
-		if !finiteNonNegative(
-			value,
-		) {
-			return ProfilingFeatureVector{},
-				fmt.Errorf(
-					"sample %q produced invalid feature %s=%v",
-					sample.RequestID,
-					names[index],
-					value,
-				)
+		if !finiteNonNegative(value) {
+			return ProfilingFeatureVector{}, fmt.Errorf("sample %q produced invalid feature %s=%v", sample.RequestID, names[index], value)
 		}
 	}
 
 	return ProfilingFeatureVector{
-		SchemaVersion: ProfilingFeatureVectorSchemaVersion,
-
-		RequestID: sample.RequestID,
-
-		FunctionName: sample.FunctionName,
-
-		MachineTag: sample.MachineTag,
-
+		SchemaVersion:         ProfilingFeatureVectorSchemaVersion,
+		RequestID:             sample.RequestID,
+		FunctionName:          sample.FunctionName,
+		MachineTag:            sample.MachineTag,
 		FunctionConfiguration: sample.FunctionConfiguration,
-
-		Features: features,
+		Features:              features,
 	}, nil
 }
 
-func finitePositive(
-	value float64,
-) bool {
-	return value > 0 &&
-		!math.IsNaN(
-			value,
-		) &&
-		!math.IsInf(
-			value,
-			0,
-		)
+func finitePositive(value float64) bool {
+	return value > 0 && !math.IsNaN(value) && !math.IsInf(value, 0)
 }

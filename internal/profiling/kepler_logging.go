@@ -13,70 +13,27 @@ import (
 // Energy zones remain separate. This function deliberately does not calculate
 // a total because Kepler zones such as package and core must not be assumed to
 // be additive.
-func LogKeplerInvocationEnergyProfile(
-	profile *KeplerInvocationEnergyProfile,
-) {
+func LogKeplerInvocationEnergyProfile(profile *KeplerInvocationEnergyProfile) {
+
 	if profile == nil {
 		return
 	}
 
-	containerID :=
-		normalizeKeplerContainerID(
-			profile.ContainerID,
-		)
-
+	containerID := normalizeKeplerContainerID(profile.ContainerID)
 	if !profile.Available {
-		log.Printf(
-			"[PROFILING] event=kepler_invocation_energy available=false container_id=%s reason=%q",
-			containerID,
-			profile.InvalidReason,
-		)
-
+		log.Printf("[PROFILING] event=kepler_invocation_energy available=false container_id=%s reason=%q", containerID, profile.InvalidReason)
 		return
 	}
 
-	zones :=
-		make(
-			[]string,
-			0,
-			len(
-				profile.CPUJoulesByZone,
-			),
-		)
-
+	zones := make([]string, 0, len(profile.CPUJoulesByZone))
 	for zone := range profile.CPUJoulesByZone {
-
-		zones =
-			append(
-				zones,
-				zone,
-			)
+		zones = append(zones, zone)
 	}
 
-	sort.Strings(
-		zones,
-	)
-
-	zoneValues :=
-		make(
-			[]string,
-			0,
-			len(
-				zones,
-			),
-		)
-
+	sort.Strings(zones)
+	zoneValues := make([]string, 0, len(zones))
 	for _, zone := range zones {
-
-		zoneValues =
-			append(
-				zoneValues,
-				fmt.Sprintf(
-					"%s=%.9f",
-					zone,
-					profile.CPUJoulesByZone[zone],
-				),
-			)
+		zoneValues = append(zoneValues, fmt.Sprintf("%s=%.9f", zone, profile.CPUJoulesByZone[zone]))
 	}
 
 	log.Printf(
@@ -84,9 +41,6 @@ func LogKeplerInvocationEnergyProfile(
 		containerID,
 		profile.PollAttempts,
 		profile.RefreshWaitMs,
-		strings.Join(
-			zoneValues,
-			",",
-		),
+		strings.Join(zoneValues, ","),
 	)
 }
