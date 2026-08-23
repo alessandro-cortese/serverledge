@@ -28,15 +28,7 @@ const (
 )
 
 func configuredColdStartMode() ColdStartMode {
-	configuredMode :=
-		strings.ToLower(
-			strings.TrimSpace(
-				config.GetString(
-					config.MAB_COLD_START_MODE,
-					string(ColdStartModeSkip),
-				),
-			),
-		)
+	configuredMode := strings.ToLower(strings.TrimSpace(config.GetString(config.MAB_COLD_START_MODE, string(ColdStartModeSkip))))
 
 	switch ColdStartMode(configuredMode) {
 	case ColdStartModeSkip:
@@ -62,19 +54,13 @@ func configuredColdStartMode() ColdStartMode {
 // can update the selected policy.
 //
 // Validation must be performed before calling this function.
-func shouldUpdateRewardFromFeedback(
-	policy string,
-	functionName string,
-	arm string,
-	feedback ExecutionFeedback,
-) bool {
+func shouldUpdateRewardFromFeedback(policy string, functionName string, arm string, feedback ExecutionFeedback) bool {
+
 	if feedback.IsWarmStart {
 		return true
 	}
 
-	mode :=
-		configuredColdStartMode()
-
+	mode := configuredColdStartMode()
 	if mode == ColdStartModeExecution {
 		logMABUseColdStartSample(
 			policy,
@@ -86,11 +72,7 @@ func shouldUpdateRewardFromFeedback(
 		return true
 	}
 
-	GlobalColdStartStats.RecordColdSkipped(
-		functionName,
-		arm,
-	)
-
+	GlobalColdStartStats.RecordColdSkipped(functionName, arm)
 	logMABSkipColdStart(
 		policy,
 		functionName,

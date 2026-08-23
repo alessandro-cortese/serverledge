@@ -41,83 +41,49 @@ type DecisionStorage struct {
 
 var GlobalDecisionStorage = &DecisionStorage{}
 
-func (s *DecisionStorage) Store(
-	reqID string,
-	decision DecisionRecord,
-) {
+func (s *DecisionStorage) Store(reqID string, decision DecisionRecord) {
+
 	if reqID == "" {
 		return
 	}
 
-	decision.RequestID =
-		reqID
-
-	s.data.Store(
-		reqID,
-		decision,
-	)
-
-	logMABDecisionCreated(
-		decision,
-	)
+	decision.RequestID = reqID
+	s.data.Store(reqID, decision)
+	logMABDecisionCreated(decision)
 }
 
 // SetExecutionPlan completes the routing part of a decision after the load
 // balancer has selected a concrete candidate.
-func (s *DecisionStorage) SetExecutionPlan(
-	reqID string,
-	executionArm string,
-	fallbackReason string,
-) (DecisionRecord, bool) {
+func (s *DecisionStorage) SetExecutionPlan(reqID string, executionArm string, fallbackReason string) (DecisionRecord, bool) {
+
 	if reqID == "" {
 		return DecisionRecord{}, false
 	}
 
-	value, ok :=
-		s.data.Load(
-			reqID,
-		)
-
+	value, ok := s.data.Load(reqID)
 	if !ok {
 		return DecisionRecord{}, false
 	}
 
-	decision, ok :=
-		value.(DecisionRecord)
-
+	decision, ok := value.(DecisionRecord)
 	if !ok {
 		return DecisionRecord{}, false
 	}
 
-	decision.ExecutionArm =
-		executionArm
-
-	decision.Fallback =
-		executionArm != "" &&
-			decision.SelectedArm !=
-				executionArm
-
+	decision.ExecutionArm = executionArm
+	decision.Fallback = executionArm != "" && decision.SelectedArm != executionArm
 	if decision.Fallback {
 		if fallbackReason == "" {
-			fallbackReason =
-				FallbackReasonObservedExecutionDiffers
+			fallbackReason = FallbackReasonObservedExecutionDiffers
 		}
 
-		decision.FallbackReason =
-			fallbackReason
+		decision.FallbackReason = fallbackReason
 	} else {
-		decision.FallbackReason =
-			""
+		decision.FallbackReason = ""
 	}
 
-	s.data.Store(
-		reqID,
-		decision,
-	)
-
-	logMABDecisionPlanned(
-		decision,
-	)
+	s.data.Store(reqID, decision)
+	logMABDecisionPlanned(decision)
 
 	return decision, true
 }

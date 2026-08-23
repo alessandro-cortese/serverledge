@@ -9,15 +9,9 @@ import (
 const defaultFallbackPenalty = -12.0
 
 func configuredFallbackPenalty() float64 {
-	penalty :=
-		config.GetFloat(
-			config.MAB_FALLBACK_PENALTY,
-			defaultFallbackPenalty,
-		)
+	penalty := config.GetFloat(config.MAB_FALLBACK_PENALTY, defaultFallbackPenalty)
 
-	if !isFiniteNumber(penalty) ||
-		penalty >= 0 {
-
+	if !isFiniteNumber(penalty) || penalty >= 0 {
 		log.Printf(
 			"%s event=invalid_fallback_penalty ts=%d configured_penalty=%f fallback_penalty=%f\n",
 			mabLogPrefix,
@@ -32,30 +26,19 @@ func configuredFallbackPenalty() float64 {
 	return penalty
 }
 
-func fallbackSyntheticReward(
-	decision DecisionRecord,
-	reason string,
-) *SyntheticReward {
-	requiresPenalty :=
-		decision.Fallback ||
-			reason ==
-				DecisionFailureReasonNoCandidateAfterFallback
-
+func fallbackSyntheticReward(decision DecisionRecord, reason string) *SyntheticReward {
+	requiresPenalty := decision.Fallback || reason == DecisionFailureReasonNoCandidateAfterFallback
 	if !requiresPenalty {
 		return nil
 	}
 
-	penaltyReason :=
-		decision.FallbackReason
-
+	penaltyReason := decision.FallbackReason
 	if penaltyReason == "" {
-		penaltyReason =
-			reason
+		penaltyReason = reason
 	}
 
 	if penaltyReason == "" {
-		penaltyReason =
-			FallbackReasonObservedExecutionDiffers
+		penaltyReason = FallbackReasonObservedExecutionDiffers
 	}
 
 	return &SyntheticReward{

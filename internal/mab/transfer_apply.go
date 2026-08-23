@@ -17,10 +17,8 @@ import (
 //
 // Consequently, a received prior can influence the target's early decisions
 // without ever being re-exported as real target knowledge.
-func ApplyWeakMABPrior(
-	target Policy,
-	prior WeakMABPrior,
-) error {
+func ApplyWeakMABPrior(target Policy, prior WeakMABPrior) error {
+
 	if target == nil {
 		return fmt.Errorf("target MAB policy cannot be nil")
 	}
@@ -30,11 +28,7 @@ func ApplyWeakMABPrior(
 	}
 
 	if target.GetType() != prior.Policy {
-		return fmt.Errorf(
-			"weak prior policy %q does not match target policy %q",
-			prior.Policy,
-			target.GetType(),
-		)
+		return fmt.Errorf("weak prior policy %q does not match target policy %q", prior.Policy, target.GetType())
 	}
 
 	switch typed := target.(type) {
@@ -65,9 +59,8 @@ func ApplyWeakMABPrior(
 	}
 }
 
-func (b *UCB1Bandit) applyWeakPrior(
-	prior WeakMABPrior,
-) error {
+func (b *UCB1Bandit) applyWeakPrior(prior WeakMABPrior) error {
+
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
@@ -81,10 +74,7 @@ func (b *UCB1Bandit) applyWeakPrior(
 		}
 
 		if _, exists := b.Arms[arm]; !exists {
-			return fmt.Errorf(
-				"weak prior arm %q is not initialized in target UCB1 policy",
-				arm,
-			)
+			return fmt.Errorf("weak prior arm %q is not initialized in target UCB1 policy", arm)
 		}
 	}
 
@@ -111,10 +101,7 @@ func (b *UCB1Bandit) applyWeakPrior(
 
 func (b *UCB1Bandit) validateFreshTargetForWeakPriorLocked() error {
 	if b.PriorDonorFunctionName != "" {
-		return fmt.Errorf(
-			"target UCB1 policy already has a weak prior from donor %q",
-			b.PriorDonorFunctionName,
-		)
+		return fmt.Errorf("target UCB1 policy already has a weak prior from donor %q", b.PriorDonorFunctionName)
 	}
 
 	if b.TotalCounts != 0 || b.TotalInFlight != 0 {
@@ -147,9 +134,8 @@ func (b *UCB1Bandit) validateFreshTargetForWeakPriorLocked() error {
 	return nil
 }
 
-func (p *LinUCBDisjointPolicy) applyWeakPrior(
-	prior WeakMABPrior,
-) error {
+func (p *LinUCBDisjointPolicy) applyWeakPrior(prior WeakMABPrior) error {
+
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -163,19 +149,11 @@ func (p *LinUCBDisjointPolicy) applyWeakPrior(
 		}
 
 		if _, exists := p.Arms[arm]; !exists {
-			return fmt.Errorf(
-				"weak prior arm %q is not initialized in target LinUCB policy",
-				arm,
-			)
+			return fmt.Errorf("weak prior arm %q is not initialized in target LinUCB policy", arm)
 		}
 
 		if priorArm.LinUCB.Dim != p.Dim {
-			return fmt.Errorf(
-				"weak prior arm %q dimension %d does not match target LinUCB dimension %d",
-				arm,
-				priorArm.LinUCB.Dim,
-				p.Dim,
-			)
+			return fmt.Errorf("weak prior arm %q dimension %d does not match target LinUCB dimension %d", arm, priorArm.LinUCB.Dim, p.Dim)
 		}
 	}
 
@@ -194,31 +172,13 @@ func (p *LinUCBDisjointPolicy) applyWeakPrior(
 		for i := 0; i < p.Dim; i++ {
 			for j := 0; j < p.Dim; j++ {
 				value := payload.AContribution[i][j]
-
-				state.A.Set(
-					i,
-					j,
-					state.A.At(i, j)+value,
-				)
-
-				state.PriorAContribution.Set(
-					i,
-					j,
-					value,
-				)
+				state.A.Set(i, j, state.A.At(i, j)+value)
+				state.PriorAContribution.Set(i, j, value)
 			}
 
 			value := payload.BContribution[i]
-
-			state.b.SetVec(
-				i,
-				state.b.AtVec(i)+value,
-			)
-
-			state.PriorBContribution.SetVec(
-				i,
-				value,
-			)
+			state.b.SetVec(i, state.b.AtVec(i)+value)
+			state.PriorBContribution.SetVec(i, value)
 		}
 
 		state.PriorObservationWeight = payload.ObservationWeight
@@ -231,10 +191,7 @@ func (p *LinUCBDisjointPolicy) applyWeakPrior(
 
 func (p *LinUCBDisjointPolicy) validateFreshTargetForWeakPriorLocked() error {
 	if p.PriorDonorFunctionName != "" {
-		return fmt.Errorf(
-			"target LinUCB policy already has a weak prior from donor %q",
-			p.PriorDonorFunctionName,
-		)
+		return fmt.Errorf("target LinUCB policy already has a weak prior from donor %q", p.PriorDonorFunctionName)
 	}
 
 	if p.TotalInFlight != 0 {
@@ -274,14 +231,10 @@ func (p *LinUCBDisjointPolicy) validateFreshTargetForWeakPriorLocked() error {
 	return nil
 }
 
-func validateWeakMABPriorForApplication(
-	prior WeakMABPrior,
-) error {
+func validateWeakMABPriorForApplication(prior WeakMABPrior) error {
+
 	if prior.SchemaVersion != WeakMABPriorSchemaVersion {
-		return fmt.Errorf(
-			"unsupported weak MAB prior schema version %d",
-			prior.SchemaVersion,
-		)
+		return fmt.Errorf("unsupported weak MAB prior schema version %d", prior.SchemaVersion)
 	}
 
 	if prior.DonorFunctionName == "" {
@@ -299,18 +252,12 @@ func validateWeakMABPriorForApplication(
 		return fmt.Errorf("unsupported weak prior policy %q", prior.Policy)
 	}
 
-	if prior.SourceRealObservationCount < 0 ||
-		prior.SourceExcludedSyntheticObservationCount < 0 {
-
+	if prior.SourceRealObservationCount < 0 || prior.SourceExcludedSyntheticObservationCount < 0 {
 		return fmt.Errorf("weak prior source observation summaries cannot be negative")
 	}
 
 	if prior.ArmCount != len(prior.Arms) {
-		return fmt.Errorf(
-			"weak prior arm summary mismatch: arms=%d summary=%d",
-			len(prior.Arms),
-			prior.ArmCount,
-		)
+		return fmt.Errorf("weak prior arm summary mismatch: arms=%d summary=%d", len(prior.Arms), prior.ArmCount)
 	}
 
 	var totalReal int64
@@ -323,13 +270,8 @@ func validateWeakMABPriorForApplication(
 			return fmt.Errorf("weak prior arm name cannot be empty")
 		}
 
-		if priorArm.SourceRealObservationCount < 0 ||
-			priorArm.SourceExcludedSyntheticObservationCount < 0 {
-
-			return fmt.Errorf(
-				"weak prior arm %q has negative source observation counts",
-				arm,
-			)
+		if priorArm.SourceRealObservationCount < 0 || priorArm.SourceExcludedSyntheticObservationCount < 0 {
+			return fmt.Errorf("weak prior arm %q has negative source observation counts", arm)
 		}
 
 		totalReal += priorArm.SourceRealObservationCount
@@ -337,13 +279,7 @@ func validateWeakMABPriorForApplication(
 
 		if priorArm.Transferred {
 			transferred++
-
-			if err := validateTransferredWeakPriorArm(
-				arm,
-				prior.Policy,
-				prior.Config,
-				priorArm,
-			); err != nil {
+			if err := validateTransferredWeakPriorArm(arm, prior.Policy, prior.Config, priorArm); err != nil {
 				return err
 			}
 
@@ -352,35 +288,20 @@ func validateWeakMABPriorForApplication(
 
 		skipped++
 
-		if err := validateSkippedWeakPriorArm(
-			arm,
-			prior.Config,
-			priorArm,
-		); err != nil {
+		if err := validateSkippedWeakPriorArm(arm, prior.Config, priorArm); err != nil {
 			return err
 		}
 	}
 
 	if totalReal != prior.SourceRealObservationCount {
-		return fmt.Errorf(
-			"weak prior source real observation summary mismatch: arms=%d summary=%d",
-			totalReal,
-			prior.SourceRealObservationCount,
-		)
+		return fmt.Errorf("weak prior source real observation summary mismatch: arms=%d summary=%d", totalReal, prior.SourceRealObservationCount)
 	}
 
 	if totalSynthetic != prior.SourceExcludedSyntheticObservationCount {
-		return fmt.Errorf(
-			"weak prior source synthetic observation summary mismatch: arms=%d summary=%d",
-			totalSynthetic,
-			prior.SourceExcludedSyntheticObservationCount,
-		)
+		return fmt.Errorf("weak prior source synthetic observation summary mismatch: arms=%d summary=%d", totalSynthetic, prior.SourceExcludedSyntheticObservationCount)
 	}
 
-	if transferred != prior.TransferredArmCount ||
-		skipped != prior.SkippedArmCount ||
-		transferred+skipped != prior.ArmCount {
-
+	if transferred != prior.TransferredArmCount || skipped != prior.SkippedArmCount || transferred+skipped != prior.ArmCount {
 		return fmt.Errorf("weak prior transferred/skipped arm summary mismatch")
 	}
 
@@ -391,21 +312,13 @@ func validateWeakMABPriorForApplication(
 	return nil
 }
 
-func validateTransferredWeakPriorArm(
-	arm string,
-	policy BanditType,
-	config WeakMABPriorConfig,
-	priorArm WeakMABArmPrior,
-) error {
+func validateTransferredWeakPriorArm(arm string, policy BanditType, config WeakMABPriorConfig, priorArm WeakMABArmPrior) error {
 	if priorArm.SkipReason != "" {
 		return fmt.Errorf("transferred weak prior arm %q cannot have a skip reason", arm)
 	}
 
 	weight := priorArm.AppliedEquivalentObservationWeight
-	if !isFiniteNumber(weight) || weight <= 0.0 ||
-		weight > config.EquivalentObservationWeight ||
-		weight > float64(priorArm.SourceRealObservationCount) {
-
+	if !isFiniteNumber(weight) || weight <= 0.0 || weight > config.EquivalentObservationWeight || weight > float64(priorArm.SourceRealObservationCount) {
 		return fmt.Errorf("weak prior arm %q has invalid applied observation weight", arm)
 	}
 
@@ -414,9 +327,7 @@ func validateTransferredWeakPriorArm(
 	}
 
 	expectedScale := weight / float64(priorArm.SourceRealObservationCount)
-	if !isFiniteNumber(priorArm.AttenuationScale) ||
-		!weakPriorAlmostEqual(expectedScale, priorArm.AttenuationScale) {
-
+	if !isFiniteNumber(priorArm.AttenuationScale) || !weakPriorAlmostEqual(expectedScale, priorArm.AttenuationScale) {
 		return fmt.Errorf("weak prior arm %q has inconsistent attenuation scale", arm)
 	}
 
@@ -427,11 +338,7 @@ func validateTransferredWeakPriorArm(
 		}
 
 		payload := priorArm.UCB1
-		if !isFiniteNumber(payload.ObservationWeight) ||
-			!isFiniteNumber(payload.RewardSum) ||
-			!isFiniteNumber(payload.MeanReward) ||
-			!weakPriorAlmostEqual(payload.ObservationWeight, weight) {
-
+		if !isFiniteNumber(payload.ObservationWeight) || !isFiniteNumber(payload.RewardSum) || !isFiniteNumber(payload.MeanReward) || !weakPriorAlmostEqual(payload.ObservationWeight, weight) {
 			return fmt.Errorf("weak prior arm %q has invalid UCB1 statistics", arm)
 		}
 
@@ -447,22 +354,16 @@ func validateTransferredWeakPriorArm(
 
 		payload := priorArm.LinUCB
 		if payload.Dim <= 0 ||
-			!isFiniteNumber(payload.ObservationWeight) ||
-			!weakPriorAlmostEqual(payload.ObservationWeight, weight) {
-
+			!isFiniteNumber(payload.ObservationWeight) || !weakPriorAlmostEqual(payload.ObservationWeight, weight) {
 			return fmt.Errorf("weak prior arm %q has invalid LinUCB metadata", arm)
 		}
 
-		if len(payload.AContribution) != payload.Dim ||
-			len(payload.BContribution) != payload.Dim {
-
+		if len(payload.AContribution) != payload.Dim || len(payload.BContribution) != payload.Dim {
 			return fmt.Errorf("weak prior arm %q has invalid LinUCB dimensions", arm)
 		}
 
 		for i := 0; i < payload.Dim; i++ {
-			if len(payload.AContribution[i]) != payload.Dim ||
-				!isFiniteNumber(payload.BContribution[i]) {
-
+			if len(payload.AContribution[i]) != payload.Dim || !isFiniteNumber(payload.BContribution[i]) {
 				return fmt.Errorf("weak prior arm %q has invalid LinUCB dimensions", arm)
 			}
 
@@ -477,16 +378,8 @@ func validateTransferredWeakPriorArm(
 	return nil
 }
 
-func validateSkippedWeakPriorArm(
-	arm string,
-	config WeakMABPriorConfig,
-	priorArm WeakMABArmPrior,
-) error {
-	if priorArm.UCB1 != nil ||
-		priorArm.LinUCB != nil ||
-		priorArm.AppliedEquivalentObservationWeight != 0.0 ||
-		priorArm.AttenuationScale != 0.0 {
-
+func validateSkippedWeakPriorArm(arm string, config WeakMABPriorConfig, priorArm WeakMABArmPrior) error {
+	if priorArm.UCB1 != nil || priorArm.LinUCB != nil || priorArm.AppliedEquivalentObservationWeight != 0.0 || priorArm.AttenuationScale != 0.0 {
 		return fmt.Errorf("skipped weak prior arm %q contains transferable payload", arm)
 	}
 
@@ -497,9 +390,7 @@ func validateSkippedWeakPriorArm(
 		}
 
 	case WeakPriorSkipInsufficientRealObservations:
-		if priorArm.SourceRealObservationCount <= 0 ||
-			priorArm.SourceRealObservationCount >= config.MinRealObservationsPerArm {
-
+		if priorArm.SourceRealObservationCount <= 0 || priorArm.SourceRealObservationCount >= config.MinRealObservationsPerArm {
 			return fmt.Errorf("weak prior arm %q has inconsistent insufficient-evidence skip reason", arm)
 		}
 
@@ -510,10 +401,8 @@ func validateSkippedWeakPriorArm(
 	return nil
 }
 
-func denseIsIdentity(
-	matrix *mat.Dense,
-	dim int,
-) bool {
+func denseIsIdentity(matrix *mat.Dense, dim int) bool {
+
 	rows, cols := matrix.Dims()
 	if rows != dim || cols != dim {
 		return false
@@ -535,11 +424,8 @@ func denseIsIdentity(
 	return true
 }
 
-func denseIsZero(
-	matrix *mat.Dense,
-	rows int,
-	cols int,
-) bool {
+func denseIsZero(matrix *mat.Dense, rows int, cols int) bool {
+
 	actualRows, actualCols := matrix.Dims()
 	if actualRows != rows || actualCols != cols {
 		return false
@@ -556,10 +442,8 @@ func denseIsZero(
 	return true
 }
 
-func vectorIsZero(
-	vector *mat.VecDense,
-	dim int,
-) bool {
+func vectorIsZero(vector *mat.VecDense, dim int) bool {
+
 	if vector.Len() != dim {
 		return false
 	}

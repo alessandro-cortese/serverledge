@@ -12,6 +12,7 @@ func clampUnitInterval(value float64) float64 {
 	if value > 1.0 {
 		return 1.0
 	}
+
 	return value
 }
 

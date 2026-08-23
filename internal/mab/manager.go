@@ -57,49 +57,20 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 // the target policy can be fully initialized with a donor prior before it is
 // published in bm.bandits and becomes visible to request handling.
 func (bm *BanditManager) newBanditLocked(functionName string) Policy {
-	configuredPolicy :=
-		config.GetString(
-			config.MAB_POLICY,
-			string(UCB1),
-		)
-
-	log.Printf(
-		"BanditManager newBandit: policy type: %s\n",
-		configuredPolicy,
-	)
-
-	normalizedPolicy :=
-		strings.ToLower(
-			strings.TrimSpace(
-				configuredPolicy,
-			),
-		)
 
 	var newBandit Policy
+	configuredPolicy := config.GetString(config.MAB_POLICY, string(UCB1))
+	log.Printf("BanditManager newBandit: policy type: %s\n", configuredPolicy)
+
+	normalizedPolicy := strings.ToLower(strings.TrimSpace(configuredPolicy))
 
 	switch normalizedPolicy {
 	case "linucb":
-		alpha :=
-			config.GetFloat(
-				config.MAB_LINUCB_ALPHA,
-				0.1,
-			)
-
-		newBandit =
-			NewLinUCBDisjointPolicy(
-				functionName,
-				alpha,
-			)
+		alpha := config.GetFloat(config.MAB_LINUCB_ALPHA, 0.1)
+		newBandit = NewLinUCBDisjointPolicy(functionName, alpha)
 
 	default:
-		newBandit =
-			NewUCB1Bandit(
-				functionName,
-				config.GetFloat(
-					config.MAB_UCB1_C,
-					0.8,
-				),
-			)
+		newBandit = NewUCB1Bandit(functionName, config.GetFloat(config.MAB_UCB1_C, 0.8))
 	}
 
 	for _, arm := range bm.knownArms {

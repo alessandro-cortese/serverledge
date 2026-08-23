@@ -55,10 +55,7 @@ type UCB1Bandit struct {
 	PriorDonorFunctionName string
 }
 
-func NewUCB1Bandit(
-	functionName string,
-	exploration float64,
-) *UCB1Bandit {
+func NewUCB1Bandit(functionName string, exploration float64) *UCB1Bandit {
 	return &UCB1Bandit{
 		FunctionName: functionName,
 		Arms:         make(map[string]*ArmStats),
@@ -99,10 +96,7 @@ func (b *UCB1Bandit) SelectArm(ctx *Context) string {
 // InFlight and TotalInFlight account for selections that have not completed yet.
 // Pending selections affect exploration through Count+InFlight, but they never
 // enter AvgReward before a learning observation is accepted.
-func (b *UCB1Bandit) SelectArmFrom(
-	ctx *Context,
-	allowedArms []string,
-) string {
+func (b *UCB1Bandit) SelectArmFrom(ctx *Context, allowedArms []string) string {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
@@ -134,25 +128,15 @@ func (b *UCB1Bandit) SelectArmFrom(
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
 
-		effectiveCount :=
-			b.effectiveArmObservationWeightLocked(stats)
-
-		if effectiveCount <= 0.0 &&
-			effectiveCount < currentMinEffectiveCount {
-
-			currentMinEffectiveCount =
-				effectiveCount
-
-			leastTriedArm =
-				arm
+		effectiveCount := b.effectiveArmObservationWeightLocked(stats)
+		if effectiveCount <= 0.0 && effectiveCount < currentMinEffectiveCount {
+			currentMinEffectiveCount = effectiveCount
+			leastTriedArm = arm
 		}
 	}
 
 	if leastTriedArm != "" {
-		b.markSelectionLocked(
-			leastTriedArm,
-		)
-
+		b.markSelectionLocked(leastTriedArm)
 		logMABSelectArm(
 			string(b.GetType()),
 			b.FunctionName,
@@ -161,10 +145,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 			0.0,
 			b.TotalCounts,
 			b.TotalInFlight,
-			strings.Join(
-				candidateArms,
-				",",
-			),
+			strings.Join(candidateArms, ","),
 		)
 
 		return leastTriedArm
@@ -172,46 +153,23 @@ func (b *UCB1Bandit) SelectArmFrom(
 
 	bestScore := -math.MaxFloat64
 	bestArm := ""
-
-	totalPriorObservationWeight :=
-		b.totalPriorObservationWeightLocked()
-
-	effectiveTotalCounts :=
-		float64(b.TotalCounts) +
-			totalPriorObservationWeight +
-			float64(
-				b.TotalInFlight,
-			)
-
+	totalPriorObservationWeight := b.totalPriorObservationWeightLocked()
+	effectiveTotalCounts := float64(b.TotalCounts) + totalPriorObservationWeight + float64(b.TotalInFlight)
 	if effectiveTotalCounts < 1.0 {
 		effectiveTotalCounts = 1.0
 	}
 
 	for _, arm := range candidateArms {
 		stats := b.Arms[arm]
-
-		effectiveCount :=
-			b.effectiveArmObservationWeightLocked(stats)
+		effectiveCount := b.effectiveArmObservationWeightLocked(stats)
 
 		if effectiveCount <= 0.0 {
 			effectiveCount = 1.0
 		}
 
-		effectiveAvgReward :=
-			b.effectiveArmAverageRewardLocked(stats)
-
-		explorationBonus :=
-			b.c *
-				math.Sqrt(
-					math.Log(
-						effectiveTotalCounts,
-					)/
-						effectiveCount,
-				)
-
-		score :=
-			effectiveAvgReward +
-				explorationBonus
+		effectiveAvgReward := b.effectiveArmAverageRewardLocked(stats)
+		explorationBonus := b.c * math.Sqrt(math.Log(effectiveTotalCounts)/effectiveCount)
+		score := effectiveAvgReward + explorationBonus
 
 		logMABUCB1ArmScore(
 			string(b.GetType()),
@@ -237,8 +195,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 	}
 
 	if bestArm == "" {
-		log.Printf(
-			"[MAB] event=no_arm_selected ts=%d policy=%s function=%s allowed_arms=%v\n",
+		log.Printf("[MAB] event=no_arm_selected ts=%d policy=%s function=%s allowed_arms=%v\n",
 			nowMillis(),
 			string(b.GetType()),
 			b.FunctionName,
@@ -248,10 +205,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 		return ""
 	}
 
-	b.markSelectionLocked(
-		bestArm,
-	)
-
+	b.markSelectionLocked(bestArm)
 	logMABSelectArm(
 		string(b.GetType()),
 		b.FunctionName,
@@ -260,10 +214,7 @@ func (b *UCB1Bandit) SelectArmFrom(
 		bestScore,
 		b.TotalCounts,
 		b.TotalInFlight,
-		strings.Join(
-			candidateArms,
-			",",
-		),
+		strings.Join(candidateArms, ","),
 	)
 
 	return bestArm
@@ -271,66 +222,36 @@ func (b *UCB1Bandit) SelectArmFrom(
 
 // UpdateReward applies a standalone feedback sample. It does not resolve an
 // in-flight selection; production request handling uses ResolveSelection.
-func (b *UCB1Bandit) UpdateReward(
-	arm string,
-	ctx *Context,
-	feedback ExecutionFeedback,
-) {
+func (b *UCB1Bandit) UpdateReward(arm string, ctx *Context, feedback ExecutionFeedback) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-
-	b.updateRewardLocked(
-		arm,
-		ctx,
-		feedback,
-	)
+	b.updateRewardLocked(arm, ctx, feedback)
 }
 
 // ResolveSelection atomically closes the selected arm's pending request and,
 // when feedback is available, updates the arm that actually executed it.
-func (b *UCB1Bandit) ResolveSelection(
-	selectedArm string,
-	executionArm string,
-	ctx *Context,
-	feedback *ExecutionFeedback,
-	selectedArmReward *SyntheticReward,
-) {
+func (b *UCB1Bandit) ResolveSelection(selectedArm string, executionArm string, ctx *Context, feedback *ExecutionFeedback, selectedArmReward *SyntheticReward) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	if !b.completeSelectionLocked(
-		selectedArm,
-	) {
+	if !b.completeSelectionLocked(selectedArm) {
 		return
 	}
 
 	if selectedArmReward != nil {
-		b.updateSyntheticRewardLocked(
-			selectedArm,
-			*selectedArmReward,
-		)
+		b.updateSyntheticRewardLocked(selectedArm, *selectedArmReward)
 	}
 
-	if feedback == nil ||
-		executionArm == "" {
-
+	if feedback == nil || executionArm == "" {
 		return
 	}
 
-	b.updateRewardLocked(
-		executionArm,
-		ctx,
-		*feedback,
-	)
+	b.updateRewardLocked(executionArm, ctx, *feedback)
 }
 
-func (b *UCB1Bandit) updateSyntheticRewardLocked(
-	arm string,
-	synthetic SyntheticReward,
-) {
-	stats, ok :=
-		b.Arms[arm]
+func (b *UCB1Bandit) updateSyntheticRewardLocked(arm string, synthetic SyntheticReward) {
 
+	stats, ok := b.Arms[arm]
 	if !ok {
 		log.Printf(
 			"[MAB] event=unknown_synthetic_reward_arm policy=%s function=%s arm=%s reason=%s\n",
@@ -343,9 +264,7 @@ func (b *UCB1Bandit) updateSyntheticRewardLocked(
 		return
 	}
 
-	if !isFiniteNumber(
-		synthetic.Value,
-	) {
+	if !isFiniteNumber(synthetic.Value) {
 		log.Printf(
 			"[MAB] event=invalid_synthetic_reward policy=%s function=%s arm=%s reward=%f reason=%s\n",
 			string(b.GetType()),
@@ -361,16 +280,8 @@ func (b *UCB1Bandit) updateSyntheticRewardLocked(
 	stats.Count++
 	stats.SyntheticCount++
 	b.TotalCounts++
-
-	stats.SumRewards +=
-		synthetic.Value
-
-	stats.AvgReward =
-		stats.SumRewards /
-			float64(
-				stats.Count,
-			)
-
+	stats.SumRewards += synthetic.Value
+	stats.AvgReward = stats.SumRewards / float64(stats.Count)
 	logMABSyntheticReward(
 		string(b.GetType()),
 		b.FunctionName,
@@ -383,38 +294,19 @@ func (b *UCB1Bandit) updateSyntheticRewardLocked(
 	)
 }
 
-func (b *UCB1Bandit) markSelectionLocked(
-	arm string,
-) {
-	stats, ok :=
-		b.Arms[arm]
-
+func (b *UCB1Bandit) markSelectionLocked(arm string) {
+	stats, ok := b.Arms[arm]
 	if !ok {
 		return
 	}
 
-	stats.InFlight++
-	b.TotalInFlight++
-
-	logMABInFlightChanged(
-		string(b.GetType()),
-		b.FunctionName,
-		arm,
-		"started",
-		stats.InFlight,
-		b.TotalInFlight,
-	)
+	startInFlightSelection(string(b.GetType()), b.FunctionName, arm, &stats.InFlight, &b.TotalInFlight)
 }
 
-func (b *UCB1Bandit) completeSelectionLocked(
-	arm string,
-) bool {
-	stats, ok :=
-		b.Arms[arm]
+func (b *UCB1Bandit) completeSelectionLocked(arm string) bool {
+	stats, ok := b.Arms[arm]
 
-	if !ok ||
-		stats.InFlight <= 0 {
-
+	if !ok {
 		logMABInFlightIgnored(
 			string(b.GetType()),
 			b.FunctionName,
@@ -425,33 +317,18 @@ func (b *UCB1Bandit) completeSelectionLocked(
 		return false
 	}
 
-	stats.InFlight--
-
-	if b.TotalInFlight > 0 {
-		b.TotalInFlight--
-	}
-
-	logMABInFlightChanged(
+	return completeInFlightSelection(
 		string(b.GetType()),
 		b.FunctionName,
 		arm,
-		"resolved",
-		stats.InFlight,
-		b.TotalInFlight,
+		&stats.InFlight,
+		&b.TotalInFlight,
 	)
-
-	return true
 }
 
-func (b *UCB1Bandit) updateRewardLocked(
-	arm string,
-	ctx *Context,
-	feedback ExecutionFeedback,
-) {
+func (b *UCB1Bandit) updateRewardLocked(arm string, ctx *Context, feedback ExecutionFeedback) {
 	_ = ctx
-
-	stats, ok :=
-		b.Arms[arm]
+	stats, ok := b.Arms[arm]
 
 	if !ok {
 		log.Printf(
@@ -464,34 +341,16 @@ func (b *UCB1Bandit) updateRewardLocked(
 		return
 	}
 
-	policy :=
-		string(
-			b.GetType(),
-		)
-
-	if !validateExecutionFeedback(
-		policy,
-		b.FunctionName,
-		arm,
-		feedback,
-	) {
+	policy := string(b.GetType())
+	if !validateExecutionFeedback(policy, b.FunctionName, arm, feedback) {
 		return
 	}
 
-	if !shouldUpdateRewardFromFeedback(
-		policy,
-		b.FunctionName,
-		arm,
-		feedback,
-	) {
+	if !shouldUpdateRewardFromFeedback(policy, b.FunctionName, arm, feedback) {
 		return
 	}
 
-	rewardResult, err :=
-		CalculateExecutionReward(
-			feedback,
-		)
-
+	rewardResult, err := CalculateExecutionReward(feedback)
 	if err != nil {
 		log.Printf(
 			"[MAB] event=reward_calculation_failed policy=%s function=%s arm=%s error=%v",
@@ -505,18 +364,8 @@ func (b *UCB1Bandit) updateRewardLocked(
 	}
 
 	reward := rewardResult.Value
-
-	if !isFiniteNumber(
-		reward,
-	) {
-		recordInvalidExecutionFeedback(
-			policy,
-			b.FunctionName,
-			arm,
-			"non_finite_reward",
-			feedback,
-		)
-
+	if !isFiniteNumber(reward) {
+		recordInvalidExecutionFeedback(policy, b.FunctionName, arm, "non_finite_reward", feedback)
 		return
 	}
 
@@ -531,31 +380,11 @@ func (b *UCB1Bandit) updateRewardLocked(
 	stats.Count++
 	stats.RealCount++
 	b.TotalCounts++
-
-	stats.SumRewards +=
-		reward
-
-	stats.AvgReward =
-		stats.SumRewards /
-			float64(
-				stats.Count,
-			)
-
-	stats.RealSumRewards +=
-		reward
-
-	stats.RealAvgReward =
-		stats.RealSumRewards /
-			float64(
-				stats.RealCount,
-			)
-
-	recordAcceptedExecutionFeedback(
-		policy,
-		b.FunctionName,
-		arm,
-		feedback,
-	)
+	stats.SumRewards += reward
+	stats.AvgReward = stats.SumRewards / float64(stats.Count)
+	stats.RealSumRewards += reward
+	stats.RealAvgReward = stats.RealSumRewards / float64(stats.RealCount)
+	recordAcceptedExecutionFeedback(policy, b.FunctionName, arm, feedback)
 
 	logMABUpdateReward(
 		policy,
@@ -570,17 +399,11 @@ func (b *UCB1Bandit) updateRewardLocked(
 	)
 }
 
-func (b *UCB1Bandit) effectiveArmObservationWeightLocked(
-	stats *ArmStats,
-) float64 {
-	return float64(stats.Count) +
-		stats.PriorObservationWeight +
-		float64(stats.InFlight)
+func (b *UCB1Bandit) effectiveArmObservationWeightLocked(stats *ArmStats) float64 {
+	return float64(stats.Count) + stats.PriorObservationWeight + float64(stats.InFlight)
 }
 
-func (b *UCB1Bandit) effectiveArmAverageRewardLocked(
-	stats *ArmStats,
-) float64 {
+func (b *UCB1Bandit) effectiveArmAverageRewardLocked(stats *ArmStats) float64 {
 	// Preserve the historical UCB1 state exactly when no transfer prior is
 	// present. AvgReward remains the authoritative live mean maintained by the
 	// existing update path.
@@ -588,28 +411,21 @@ func (b *UCB1Bandit) effectiveArmAverageRewardLocked(
 		return stats.AvgReward
 	}
 
-	completedWeight :=
-		float64(stats.Count) +
-			stats.PriorObservationWeight
+	completedWeight := float64(stats.Count) + stats.PriorObservationWeight
 
 	if completedWeight <= 0.0 {
 		return 0.0
 	}
 
-	liveRewardSum :=
-		stats.AvgReward *
-			float64(stats.Count)
+	liveRewardSum := stats.AvgReward * float64(stats.Count)
 
-	return (liveRewardSum + stats.PriorRewardSum) /
-		completedWeight
+	return (liveRewardSum + stats.PriorRewardSum) / completedWeight
 }
 
 func (b *UCB1Bandit) totalPriorObservationWeightLocked() float64 {
 	total := 0.0
-
 	for _, stats := range b.Arms {
-		total +=
-			stats.PriorObservationWeight
+		total += stats.PriorObservationWeight
 	}
 
 	return total

@@ -34,124 +34,68 @@ type RuntimeTransferResult struct {
 // is currently extracted from live MAB state. Persisted donor knowledge and
 // automatic ingestion of the 10A donor-selection artifact are intentionally
 // left to the next runtime-integration step.
-func (bm *BanditManager) InitializeTargetFromDonor(
-	targetFunctionName string,
-	donorFunctionName string,
-	priorConfig WeakMABPriorConfig,
-) (
-	RuntimeTransferResult,
-	error,
-) {
+func (bm *BanditManager) InitializeTargetFromDonor(targetFunctionName string, donorFunctionName string, priorConfig WeakMABPriorConfig) (RuntimeTransferResult, error) {
+
 	if bm == nil {
-		return RuntimeTransferResult{},
-			fmt.Errorf("bandit manager cannot be nil")
+		return RuntimeTransferResult{}, fmt.Errorf("bandit manager cannot be nil")
 	}
 
 	if targetFunctionName == "" {
-		return RuntimeTransferResult{},
-			fmt.Errorf("target function name cannot be empty")
+		return RuntimeTransferResult{}, fmt.Errorf("target function name cannot be empty")
 	}
 
 	if donorFunctionName == "" {
-		return RuntimeTransferResult{},
-			fmt.Errorf("donor function name cannot be empty")
+		return RuntimeTransferResult{}, fmt.Errorf("donor function name cannot be empty")
 	}
 
 	if targetFunctionName == donorFunctionName {
-		return RuntimeTransferResult{},
-			fmt.Errorf("donor and target function must be different")
+		return RuntimeTransferResult{}, fmt.Errorf("donor and target function must be different")
 	}
 
 	bm.mu.Lock()
 	defer bm.mu.Unlock()
 
 	if _, exists := bm.bandits[targetFunctionName]; exists {
-		return RuntimeTransferResult{},
-			fmt.Errorf(
-				"target function %q already has a MAB policy",
-				targetFunctionName,
-			)
+		return RuntimeTransferResult{}, fmt.Errorf("target function %q already has a MAB policy", targetFunctionName)
 	}
 
 	donor, exists := bm.bandits[donorFunctionName]
 	if !exists {
 		return RuntimeTransferResult{},
-			fmt.Errorf(
-				"donor function %q does not have a live MAB policy",
-				donorFunctionName,
-			)
+			fmt.Errorf("donor function %q does not have a live MAB policy", donorFunctionName)
 	}
 
 	source, ok := transferableKnowledgeFromPolicy(donor)
 	if !ok {
-		return RuntimeTransferResult{},
-			fmt.Errorf(
-				"donor function %q uses an unsupported MAB policy type %T",
-				donorFunctionName,
-				donor,
-			)
+		return RuntimeTransferResult{}, fmt.Errorf("donor function %q uses an unsupported MAB policy type %T", donorFunctionName, donor)
 	}
 
-	prior, err := BuildWeakMABPrior(
-		source,
-		priorConfig,
-	)
-
+	prior, err := BuildWeakMABPrior(source, priorConfig)
 	if err != nil {
-		return RuntimeTransferResult{},
-			fmt.Errorf(
-				"build weak prior from donor %q: %w",
-				donorFunctionName,
-				err,
-			)
+		return RuntimeTransferResult{}, fmt.Errorf("build weak prior from donor %q: %w", donorFunctionName, err)
 	}
 
-	target :=
-		bm.newBanditLocked(
-			targetFunctionName,
-		)
-
+	target := bm.newBanditLocked(targetFunctionName)
 	if target.GetType() != source.Policy {
-		return RuntimeTransferResult{},
-			fmt.Errorf(
-				"runtime transfer policy mismatch: donor=%s target=%s",
-				source.Policy,
-				target.GetType(),
-			)
+		return RuntimeTransferResult{}, fmt.Errorf("runtime transfer policy mismatch: donor=%s target=%s", source.Policy, target.GetType())
 	}
 
 	result := RuntimeTransferResult{
 		TargetFunctionName: targetFunctionName,
-
-		DonorFunctionName: donorFunctionName,
-
-		Policy: source.Policy,
-
-		Applied: false,
-
-		Reason: RuntimeTransferReasonNoTransferablePrior,
-
-		Prior: prior,
+		DonorFunctionName:  donorFunctionName,
+		Policy:             source.Policy,
+		Applied:            false,
+		Reason:             RuntimeTransferReasonNoTransferablePrior,
+		Prior:              prior,
 	}
 
 	if prior.HasPrior {
-		if err :=
-			ApplyWeakMABPrior(
-				target,
-				prior,
-			); err != nil {
-
-			return RuntimeTransferResult{},
-				fmt.Errorf(
-					"apply weak prior to target %q: %w",
-					targetFunctionName,
-					err,
-				)
+		if err := ApplyWeakMABPrior(target, prior); err != nil {
+			return RuntimeTransferResult{}, fmt.Errorf("apply weak prior to target %q: %w", targetFunctionName, err)
 		}
 
 		result.Applied = true
-		result.Reason =
-			RuntimeTransferReasonApplied
+		result.Reason = RuntimeTransferReasonApplied
 	}
 
 	// Publish only after the target is fully initialized.
@@ -159,37 +103,21 @@ func (bm *BanditManager) InitializeTargetFromDonor(
 	// If no transferable prior was available, the ordinary fresh policy is
 	// still published so that the function can immediately continue with
 	// normal online learning from zero.
-	bm.bandits[targetFunctionName] =
-		target
-
-	logMABRuntimeTransfer(
-		result,
-	)
+	bm.bandits[targetFunctionName] = target
+	logMABRuntimeTransfer(result)
 
 	return result, nil
 }
 
-func transferableKnowledgeFromPolicy(
-	policy Policy,
-) (
-	TransferableMABKnowledge,
-	bool,
-) {
-	switch typed :=
-		policy.(type) {
-
+func transferableKnowledgeFromPolicy(policy Policy) (TransferableMABKnowledge, bool) {
+	switch typed := policy.(type) {
 	case *UCB1Bandit:
-		return typed.
-				TransferableKnowledge(),
-			true
+		return typed.TransferableKnowledge(), true
 
 	case *LinUCBDisjointPolicy:
-		return typed.
-				TransferableKnowledge(),
-			true
+		return typed.TransferableKnowledge(), true
 
 	default:
-		return TransferableMABKnowledge{},
-			false
+		return TransferableMABKnowledge{}, false
 	}
 }

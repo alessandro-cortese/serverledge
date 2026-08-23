@@ -94,10 +94,7 @@ type Policy interface {
 //
 // When no mask is supplied, the returned list is sorted to keep experiments
 // reproducible. When a mask is supplied, its order is preserved
-func filterAllowedArms[T any](
-	knownArms map[string]T,
-	allowedArms []string,
-) []string {
+func filterAllowedArms[T any](knownArms map[string]T, allowedArms []string) []string {
 	if allowedArms == nil {
 		arms := make([]string, 0, len(knownArms))
 

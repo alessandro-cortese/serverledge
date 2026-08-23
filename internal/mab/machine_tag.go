@@ -165,10 +165,7 @@ func machineTagMatchesStructuredRequirement(machineTag string, requirement strin
 	first := strings.TrimSpace(parts[0])
 	if first != "" && first != "*" {
 		if looksLikeBaseRequirement(first) {
-			if first != tagInfo.BaseTag &&
-				first != tagInfo.Architecture &&
-				first != tagInfo.Specialization &&
-				first != tagInfo.FullTag {
+			if first != tagInfo.BaseTag && first != tagInfo.Architecture && first != tagInfo.Specialization && first != tagInfo.FullTag {
 				return false
 			}
 		} else if !HasCapability(machineTag, first) {
@@ -204,10 +201,7 @@ func looksLikeBaseRequirement(value string) bool {
 }
 
 func looksLikeRegexOrWildcard(pattern string) bool {
-	return strings.Contains(pattern, "*") ||
-		strings.HasPrefix(pattern, "^") ||
-		strings.HasSuffix(pattern, "$") ||
-		strings.Contains(pattern, ".*")
+	return strings.Contains(pattern, "*") || strings.HasPrefix(pattern, "^") || strings.HasSuffix(pattern, "$") || strings.Contains(pattern, ".*")
 }
 
 func machineTagMatchesRegexOrWildcard(machineTag string, pattern string) bool {
@@ -229,9 +223,7 @@ func normalizeMachineTagPattern(pattern string) string {
 	if pattern == "" {
 		return ""
 	}
-	if strings.HasPrefix(pattern, "^") ||
-		strings.HasSuffix(pattern, "$") ||
-		strings.Contains(pattern, ".*") {
+	if strings.HasPrefix(pattern, "^") || strings.HasSuffix(pattern, "$") || strings.Contains(pattern, ".*") {
 		return pattern
 	}
 

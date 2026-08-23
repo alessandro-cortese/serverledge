@@ -572,7 +572,7 @@ func logMABSelectionRuntimeTransfer(
 	}
 
 	log.Printf(
-		"%s event=selection_runtime_transfer ts=%d selection_run_id=%s target_function=%s selection_status=%s selection_reason=%s selected_donor=%s transfer_attempted=%t transfer_applied=%t runtime_reason=%s prior_has_prior=%t source_real_observations=%d transferred_arms=%d skipped_arms=%d\n",
+		"%s event=selection_runtime_transfer ts=%d selection_run_id=%s target_function=%s selection_status=%s selection_reason=%s selected_donor=%s selection_required_same_cluster=%t transfer_attempted=%t transfer_applied=%t runtime_reason=%s prior_has_prior=%t source_real_observations=%d transferred_arms=%d skipped_arms=%d\n",
 		mabLogPrefix,
 		nowMillis(),
 		result.SelectionRunID,
@@ -580,6 +580,7 @@ func logMABSelectionRuntimeTransfer(
 		result.SelectionStatus,
 		selectionReason,
 		selectedDonor,
+		result.SelectionRequiredSameCluster,
 		result.TransferAttempted,
 		result.TransferApplied,
 		runtimeReason,

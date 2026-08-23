@@ -2,27 +2,14 @@ package mab
 
 import "math"
 
-func isFiniteNumber(
-	value float64,
-) bool {
-	return !math.IsNaN(value) &&
-		!math.IsInf(value, 0)
+func isFiniteNumber(value float64) bool {
+	return !math.IsNaN(value) && !math.IsInf(value, 0)
 }
 
-func validateExecutionFeedback(
-	policy string,
-	functionName string,
-	arm string,
-	feedback ExecutionFeedback,
-) bool {
+func validateExecutionFeedback(policy string, functionName string, arm string, feedback ExecutionFeedback) bool {
 	// Every invocation is first registered as observed. It can then be
 	// classified as accepted, skipped or invalid.
-	GlobalColdStartStats.RecordObserved(
-		functionName,
-		arm,
-		feedback,
-	)
-
+	GlobalColdStartStats.RecordObserved(functionName, arm, feedback)
 	logInvalidObservabilityMetrics(
 		policy,
 		functionName,
@@ -31,40 +18,19 @@ func validateExecutionFeedback(
 	)
 
 	switch {
-	case !isFiniteNumber(
-		feedback.DurationMs,
-	):
-		recordInvalidExecutionFeedback(
-			policy,
-			functionName,
-			arm,
-			"non_finite_duration",
-			feedback,
-		)
-
+	case !isFiniteNumber(feedback.DurationMs):
+		recordInvalidExecutionFeedback(policy, functionName, arm, "non_finite_duration", feedback)
 		return false
 
 	case feedback.DurationMs <= 0:
-		recordInvalidExecutionFeedback(
-			policy,
-			functionName,
-			arm,
-			"non_positive_duration",
-			feedback,
-		)
-
+		recordInvalidExecutionFeedback(policy, functionName, arm, "non_positive_duration", feedback)
 		return false
 	}
 
 	return true
 }
 
-func logInvalidObservabilityMetrics(
-	policy string,
-	functionName string,
-	arm string,
-	feedback ExecutionFeedback,
-) {
+func logInvalidObservabilityMetrics(policy string, functionName string, arm string, feedback ExecutionFeedback) {
 	metrics := []struct {
 		name  string
 		value float64
@@ -88,11 +54,7 @@ func logInvalidObservabilityMetrics(
 	}
 
 	for _, metric := range metrics {
-
-		if isFiniteNumber(
-			metric.value,
-		) && metric.value >= 0 {
-
+		if isFiniteNumber(metric.value) && metric.value >= 0 {
 			continue
 		}
 
@@ -106,18 +68,9 @@ func logInvalidObservabilityMetrics(
 	}
 }
 
-func recordInvalidExecutionFeedback(
-	policy string,
-	functionName string,
-	arm string,
-	reason string,
-	feedback ExecutionFeedback,
-) {
-	GlobalColdStartStats.RecordInvalid(
-		functionName,
-		arm,
-	)
+func recordInvalidExecutionFeedback(policy string, functionName string, arm string, reason string, feedback ExecutionFeedback) {
 
+	GlobalColdStartStats.RecordInvalid(functionName, arm)
 	logMABInvalidExecutionFeedback(
 		policy,
 		functionName,
@@ -133,18 +86,9 @@ func recordInvalidExecutionFeedback(
 	)
 }
 
-func recordAcceptedExecutionFeedback(
-	policy string,
-	functionName string,
-	arm string,
-	feedback ExecutionFeedback,
-) {
+func recordAcceptedExecutionFeedback(policy string, functionName string, arm string, feedback ExecutionFeedback) {
 	if !feedback.IsWarmStart {
-		GlobalColdStartStats.
-			RecordColdAccepted(
-				functionName,
-				arm,
-			)
+		GlobalColdStartStats.RecordColdAccepted(functionName, arm)
 	}
 
 	logCurrentColdStartStats(
@@ -154,18 +98,11 @@ func recordAcceptedExecutionFeedback(
 	)
 }
 
-func logCurrentColdStartStats(
-	policy string,
-	functionName string,
-	arm string,
-) {
+func logCurrentColdStartStats(policy string, functionName string, arm string) {
 	logMABColdStartStats(
 		policy,
 		functionName,
 		arm,
-		GlobalColdStartStats.Snapshot(
-			functionName,
-			arm,
-		),
+		GlobalColdStartStats.Snapshot(functionName, arm),
 	)
 }

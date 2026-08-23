@@ -102,31 +102,15 @@ func (p *LinUCBDisjointPolicy) InitArm(arm string) {
 	// Initialize b as Zero Vector (d)
 	b := mat.NewVecDense(p.Dim, nil)
 
-	realAContribution :=
-		mat.NewDense(
-			p.Dim,
-			p.Dim,
-			nil,
-		)
+	realAContribution := mat.NewDense(
+		p.Dim,
+		p.Dim,
+		nil,
+	)
 
-	realBContribution :=
-		mat.NewVecDense(
-			p.Dim,
-			nil,
-		)
-
-	priorAContribution :=
-		mat.NewDense(
-			p.Dim,
-			p.Dim,
-			nil,
-		)
-
-	priorBContribution :=
-		mat.NewVecDense(
-			p.Dim,
-			nil,
-		)
+	realBContribution := mat.NewVecDense(p.Dim, nil)
+	priorAContribution := mat.NewDense(p.Dim, p.Dim, nil)
+	priorBContribution := mat.NewVecDense(p.Dim, nil)
 
 	p.Arms[arm] = &LinUCBArmState{
 		A:                  A,
@@ -156,17 +140,12 @@ func (p *LinUCBDisjointPolicy) SelectArm(ctx *Context) string {
 // allowedArms semantics:
 //   - nil: consider every arm known by the policy;
 //   - non-nil: consider only the listed, known arms.
-func (p *LinUCBDisjointPolicy) SelectArmFrom(
-	ctx *Context,
-	allowedArms []string,
-) string {
+func (p *LinUCBDisjointPolicy) SelectArmFrom(ctx *Context, allowedArms []string) string {
+
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	candidateArms := filterAllowedArms(
-		p.Arms,
-		allowedArms,
-	)
+	candidateArms := filterAllowedArms(p.Arms, allowedArms)
 
 	if len(candidateArms) == 0 {
 		log.Printf(
@@ -183,62 +162,32 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 	bestScore := -math.MaxFloat64
 
 	for _, arm := range candidateArms {
+		var AInv mat.Dense
 		state := p.Arms[arm]
 
 		// Missing context is interpreted as zero utilization.
-		utilization := armUtilization(
-			ctx,
-			arm,
-		)
-
+		utilization := armUtilization(ctx, arm)
 		x := p.computeFeatures(utilization)
 
-		var AInv mat.Dense
-
 		if err := AInv.Inverse(state.A); err != nil {
-			log.Printf(
-				"[LinUCB] Error inverting matrix for arm %s: %v",
-				arm,
-				err,
-			)
-
+			log.Printf("[LinUCB] Error inverting matrix for arm %s: %v", arm, err)
 			return ""
 		}
 
 		// theta = A^-1 * b
 		var theta mat.VecDense
-		theta.MulVec(
-			&AInv,
-			state.b,
-		)
+		theta.MulVec(&AInv, state.b)
 
 		// Expected reward: x^T * theta
-		expectedReward :=
-			mat.Dot(
-				x,
-				&theta,
-			)
+		expectedReward := mat.Dot(x, &theta)
 
 		// Confidence: alpha * sqrt(x^T * A^-1 * x)
 		var tempVec mat.VecDense
-		tempVec.MulVec(
-			&AInv,
-			x,
-		)
+		tempVec.MulVec(&AInv, x)
 
-		variance :=
-			mat.Dot(
-				x,
-				&tempVec,
-			)
-
-		confidence :=
-			p.Alpha *
-				math.Sqrt(variance)
-
-		score :=
-			expectedReward +
-				confidence
+		variance := mat.Dot(x, &tempVec)
+		confidence := p.Alpha * math.Sqrt(variance)
+		score := expectedReward + confidence
 
 		logMABContextualArmScore(
 			string(p.GetType()),
@@ -270,9 +219,7 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 		return ""
 	}
 
-	p.markSelectionLocked(
-		bestArm,
-	)
+	p.markSelectionLocked(bestArm)
 
 	logMABContextualSelectArm(
 		string(p.GetType()),
@@ -281,10 +228,7 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 		"linucb_score",
 		bestScore,
 		p.TotalInFlight,
-		strings.Join(
-			candidateArms,
-			",",
-		),
+		strings.Join(candidateArms, ","),
 	)
 
 	return bestArm
@@ -292,66 +236,37 @@ func (p *LinUCBDisjointPolicy) SelectArmFrom(
 
 // UpdateReward applies a standalone feedback sample. It does not resolve an
 // in-flight selection; production request handling uses ResolveSelection.
-func (p *LinUCBDisjointPolicy) UpdateReward(
-	arm string,
-	ctx *Context,
-	feedback ExecutionFeedback,
-) {
+func (p *LinUCBDisjointPolicy) UpdateReward(arm string, ctx *Context, feedback ExecutionFeedback) {
+
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	p.updateRewardLocked(
-		arm,
-		ctx,
-		feedback,
-	)
+	p.updateRewardLocked(arm, ctx, feedback)
 }
 
-func (p *LinUCBDisjointPolicy) ResolveSelection(
-	selectedArm string,
-	executionArm string,
-	ctx *Context,
-	feedback *ExecutionFeedback,
-	selectedArmReward *SyntheticReward,
-) {
+func (p *LinUCBDisjointPolicy) ResolveSelection(selectedArm string, executionArm string, ctx *Context, feedback *ExecutionFeedback, selectedArmReward *SyntheticReward) {
+
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	if !p.completeSelectionLocked(
-		selectedArm,
-	) {
+	if !p.completeSelectionLocked(selectedArm) {
 		return
 	}
 
 	if selectedArmReward != nil {
-		p.updateSyntheticRewardLocked(
-			selectedArm,
-			ctx,
-			*selectedArmReward,
-		)
+		p.updateSyntheticRewardLocked(selectedArm, ctx, *selectedArmReward)
 	}
 
-	if feedback == nil ||
-		executionArm == "" {
-
+	if feedback == nil || executionArm == "" {
 		return
 	}
 
-	p.updateRewardLocked(
-		executionArm,
-		ctx,
-		*feedback,
-	)
+	p.updateRewardLocked(executionArm, ctx, *feedback)
 }
 
-func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
-	arm string,
-	ctx *Context,
-	synthetic SyntheticReward,
-) {
-	state, ok :=
-		p.Arms[arm]
+func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(arm string, ctx *Context, synthetic SyntheticReward) {
 
+	state, ok := p.Arms[arm]
 	if !ok {
 		log.Printf(
 			"[MAB] event=unknown_synthetic_reward_arm policy=%s function=%s arm=%s reason=%s\n",
@@ -376,9 +291,7 @@ func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
 		return
 	}
 
-	if !isFiniteNumber(
-		synthetic.Value,
-	) {
+	if !isFiniteNumber(synthetic.Value) {
 		log.Printf(
 			"[MAB] event=invalid_synthetic_reward policy=%s function=%s arm=%s reward=%f reason=%s\n",
 			string(p.GetType()),
@@ -391,42 +304,15 @@ func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
 		return
 	}
 
-	utilization :=
-		armUtilization(
-			ctx,
-			arm,
-		)
-
-	x :=
-		p.computeFeatures(
-			utilization,
-		)
-
 	var outerProduct mat.Dense
-
-	outerProduct.Outer(
-		1.0,
-		x,
-		x,
-	)
-
-	state.A.Add(
-		state.A,
-		&outerProduct,
-	)
-
 	var scaledX mat.VecDense
 
-	scaledX.ScaleVec(
-		synthetic.Value,
-		x,
-	)
-
-	state.b.AddVec(
-		state.b,
-		&scaledX,
-	)
-
+	utilization := armUtilization(ctx, arm)
+	x := p.computeFeatures(utilization)
+	outerProduct.Outer(1.0, x, x)
+	state.A.Add(state.A, &outerProduct)
+	scaledX.ScaleVec(synthetic.Value, x)
+	state.b.AddVec(state.b, &scaledX)
 	state.SyntheticObservationCount++
 
 	logMABSyntheticReward(
@@ -441,38 +327,26 @@ func (p *LinUCBDisjointPolicy) updateSyntheticRewardLocked(
 	)
 }
 
-func (p *LinUCBDisjointPolicy) markSelectionLocked(
-	arm string,
-) {
-	state, ok :=
-		p.Arms[arm]
+func (p *LinUCBDisjointPolicy) markSelectionLocked(arm string) {
 
+	state, ok := p.Arms[arm]
 	if !ok {
 		return
 	}
 
-	state.InFlight++
-	p.TotalInFlight++
-
-	logMABInFlightChanged(
+	startInFlightSelection(
 		string(p.GetType()),
 		p.FunctionName,
 		arm,
-		"started",
-		state.InFlight,
-		p.TotalInFlight,
+		&state.InFlight,
+		&p.TotalInFlight,
 	)
 }
 
-func (p *LinUCBDisjointPolicy) completeSelectionLocked(
-	arm string,
-) bool {
-	state, ok :=
-		p.Arms[arm]
+func (p *LinUCBDisjointPolicy) completeSelectionLocked(arm string) bool {
 
-	if !ok ||
-		state.InFlight <= 0 {
-
+	state, ok := p.Arms[arm]
+	if !ok {
 		logMABInFlightIgnored(
 			string(p.GetType()),
 			p.FunctionName,
@@ -483,88 +357,34 @@ func (p *LinUCBDisjointPolicy) completeSelectionLocked(
 		return false
 	}
 
-	state.InFlight--
-
-	if p.TotalInFlight > 0 {
-		p.TotalInFlight--
-	}
-
-	logMABInFlightChanged(
-		string(p.GetType()),
-		p.FunctionName,
-		arm,
-		"resolved",
-		state.InFlight,
-		p.TotalInFlight,
-	)
-
-	return true
+	return completeInFlightSelection(string(p.GetType()), p.FunctionName, arm, &state.InFlight, &p.TotalInFlight)
 }
 
-func (p *LinUCBDisjointPolicy) updateRewardLocked(
-	arm string,
-	ctx *Context,
-	feedback ExecutionFeedback,
-) {
-	policy :=
-		string(
-			p.GetType(),
-		)
+func (p *LinUCBDisjointPolicy) updateRewardLocked(arm string, ctx *Context, feedback ExecutionFeedback) {
 
-	state, ok :=
-		p.Arms[arm]
+	policy := string(p.GetType())
+	state, ok := p.Arms[arm]
 
 	if !ok {
-		log.Printf(
-			"[LinUCB] Warning: trying to update unknown arm %s",
-			arm,
-		)
-
+		log.Printf("[LinUCB] Warning: trying to update unknown arm %s", arm)
 		return
 	}
 
-	if !validateExecutionFeedback(
-		policy,
-		p.FunctionName,
-		arm,
-		feedback,
-	) {
+	if !validateExecutionFeedback(policy, p.FunctionName, arm, feedback) {
 		return
 	}
 
-	if !shouldUpdateRewardFromFeedback(
-		policy,
-		p.FunctionName,
-		arm,
-		feedback,
-	) {
+	if !shouldUpdateRewardFromFeedback(policy, p.FunctionName, arm, feedback) {
 		return
 	}
 
 	if ctx == nil {
-		recordInvalidExecutionFeedback(
-			policy,
-			p.FunctionName,
-			arm,
-			"missing_decision_context",
-			feedback,
-		)
-
+		recordInvalidExecutionFeedback(policy, p.FunctionName, arm, "missing_decision_context", feedback)
 		return
 	}
 
-	utilization :=
-		armUtilization(
-			ctx,
-			arm,
-		)
-
-	rewardResult,
-		err :=
-		CalculateExecutionReward(
-			feedback,
-		)
-
+	utilization := armUtilization(ctx, arm)
+	rewardResult, err := CalculateExecutionReward(feedback)
 	if err != nil {
 		log.Printf(
 			"[MAB] event=reward_calculation_failed policy=%s function=%s arm=%s error=%v",
@@ -577,12 +397,8 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 		return
 	}
 
-	reward :=
-		rewardResult.Value
-
-	if !isFiniteNumber(
-		reward,
-	) {
+	reward := rewardResult.Value
+	if !isFiniteNumber(reward) {
 		recordInvalidExecutionFeedback(
 			policy,
 			p.FunctionName,
@@ -602,46 +418,16 @@ func (p *LinUCBDisjointPolicy) updateRewardLocked(
 		rewardResult,
 	)
 
-	x :=
-		p.computeFeatures(
-			utilization,
-		)
-
 	var outerProduct mat.Dense
-
-	outerProduct.Outer(
-		1.0,
-		x,
-		x,
-	)
-
-	state.A.Add(
-		state.A,
-		&outerProduct,
-	)
-
 	var scaledX mat.VecDense
 
-	scaledX.ScaleVec(
-		reward,
-		x,
-	)
-
-	state.b.AddVec(
-		state.b,
-		&scaledX,
-	)
-
-	state.RealAContribution.Add(
-		state.RealAContribution,
-		&outerProduct,
-	)
-
-	state.RealBContribution.AddVec(
-		state.RealBContribution,
-		&scaledX,
-	)
-
+	x := p.computeFeatures(utilization)
+	outerProduct.Outer(1.0, x, x)
+	state.A.Add(state.A, &outerProduct)
+	scaledX.ScaleVec(reward, x)
+	state.b.AddVec(state.b, &scaledX)
+	state.RealAContribution.Add(state.RealAContribution, &outerProduct)
+	state.RealBContribution.AddVec(state.RealBContribution, &scaledX)
 	state.RealObservationCount++
 
 	recordAcceptedExecutionFeedback(
@@ -675,13 +461,7 @@ func (p *LinUCBDisjointPolicy) computeFeatures(utilization float64) *mat.VecDens
 	u := clampUnitInterval(utilization)
 	sigma := 1.0 / (1.0 - u + linUCBUtilizationEpsilon)
 
-	return mat.NewVecDense(
-		p.Dim,
-		[]float64{
-			bias,
-			sigma,
-		},
-	)
+	return mat.NewVecDense(p.Dim, []float64{bias, sigma})
 }
 
 func (p *LinUCBDisjointPolicy) GetType() BanditType {
