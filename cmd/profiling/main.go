@@ -13,67 +13,44 @@ import (
 type stringListFlag []string
 
 func (values *stringListFlag) String() string {
-	return strings.Join(
-		*values,
-		",",
-	)
+	return strings.Join(*values, ",")
 }
 
-func (values *stringListFlag) Set(
-	value string,
-) error {
-	value = strings.TrimSpace(
-		value,
-	)
+func (values *stringListFlag) Set(value string) error {
 
+	value = strings.TrimSpace(value)
 	if value == "" {
-		return fmt.Errorf(
-			"input path cannot be empty",
-		)
+		return fmt.Errorf("input path cannot be empty")
 	}
 
-	*values = append(
-		*values,
-		value,
-	)
-
+	*values = append(*values, value)
 	return nil
 }
 
 func main() {
-	log.SetFlags(
-		0,
-	)
+	log.SetFlags(0)
 
 	if len(os.Args) < 2 {
 		printUsage()
-
-		os.Exit(
-			2,
-		)
+		os.Exit(2)
 	}
 
 	switch os.Args[1] {
 
 	case "aggregate":
-		runAggregate(
-			os.Args[2:],
-		)
+		runAggregate(os.Args[2:])
 
 	case "export-csv":
-		runExportCSV(
-			os.Args[2:],
-		)
+		runExportCSV(os.Args[2:])
+
+	case "export-samples-csv":
+		runExportSamplesCSV(os.Args[2:])
 
 	case "aggregate-cold":
-		runAggregateCold(
-			os.Args[2:],
-		)
+		runAggregateCold(os.Args[2:])
 
 	case "export-cold-csv":
-		runExportColdCSV(
-			os.Args[2:],
-		)
+		runExportColdCSV(os.Args[2:])
 
 	case "help",
 		"-h",
@@ -82,102 +59,46 @@ func main() {
 		printUsage()
 
 	default:
-		log.Fatalf(
-			"unknown profiling command %q",
-			os.Args[1],
-		)
+		log.Fatalf("unknown profiling command %q", os.Args[1])
 	}
 }
 
-func runAggregate(
-	args []string,
-) {
-	flags := flag.NewFlagSet(
-		"aggregate",
-		flag.ExitOnError,
-	)
+func runAggregate(args []string) {
 
 	var inputPaths stringListFlag
 
-	flags.Var(
-		&inputPaths,
-		"input",
-		"input InvocationSample JSONL dataset; may be repeated for multiple nodes",
-	)
+	flags := flag.NewFlagSet("aggregate", flag.ExitOnError)
+	flags.Var(&inputPaths, "input", "input InvocationSample JSONL dataset; may be repeated for multiple nodes")
+	inputDir := flags.String("input-dir", "", "directory recursively containing per-node profiling-samples.jsonl datasets")
+	outputPath := flags.String("output", profiling.DefaultFunctionProfileExportPath, "output FunctionProfile JSONL dataset")
+	samplesPerProfile := flags.Int("samples", profiling.MaxFunctionProfileSamples, "number of most recent eligible warm samples per function profile (10-20)")
 
-	inputDir := flags.String(
-		"input-dir",
-		"",
-		"directory recursively containing per-node profiling-samples.jsonl datasets",
-	)
+	flags.Usage = func() {
+		fmt.Fprintf(flags.Output(), "Usage: serverledge-profiling aggregate [options]\n\n")
+		flags.PrintDefaults()
+	}
 
-	outputPath := flags.String(
-		"output",
-		profiling.DefaultFunctionProfileExportPath,
-		"output FunctionProfile JSONL dataset",
-	)
-
-	samplesPerProfile := flags.Int(
-		"samples",
-		profiling.MaxFunctionProfileSamples,
-		"number of most recent eligible warm samples per function profile (10-20)",
-	)
-
-	flags.Usage =
-		func() {
-			fmt.Fprintf(
-				flags.Output(),
-				"Usage: serverledge-profiling aggregate [options]\n\n",
-			)
-
-			flags.PrintDefaults()
-		}
-
-	if err := flags.Parse(
-		args,
-	); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	if err := flags.Parse(args); err != nil {
+		log.Fatal(err)
 	}
 
 	// Use either explicitly listed input files or one collection directory.
 	// Mixing the two forms is rejected to avoid accidentally loading the same
 	// raw dataset twice.
-	resolvedInputs, err :=
-		resolveInvocationSampleInputs(
-			inputPaths,
-			*inputDir,
-		)
-
+	resolvedInputs, err := resolveInvocationSampleInputs(inputPaths, *inputDir)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	samples, err :=
-		profiling.LoadInvocationSamplesJSONLFiles(
-			resolvedInputs,
-		)
-
+	samples, err := profiling.LoadInvocationSamplesJSONLFiles(resolvedInputs)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	result, err :=
-		profiling.BuildFunctionProfilesByGroup(
-			samples,
-			*samplesPerProfile,
-		)
+	result, err := profiling.BuildFunctionProfilesByGroup(samples, *samplesPerProfile)
 
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
 	if len(result.Profiles) == 0 {
@@ -193,21 +114,11 @@ func runAggregate(
 			)
 		}
 
-		log.Fatalf(
-			"no complete profiling groups: need at least %d eligible samples per group",
-			*samplesPerProfile,
-		)
+		log.Fatalf("no complete profiling groups: need at least %d eligible samples per group", *samplesPerProfile)
 	}
 
-	if err :=
-		profiling.ExportFunctionProfilesJSONL(
-			*outputPath,
-			result.Profiles,
-		); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	if err := profiling.ExportFunctionProfilesJSONL(*outputPath, result.Profiles); err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Printf(
@@ -222,10 +133,7 @@ func runAggregate(
 	)
 
 	for _, input := range resolvedInputs {
-		fmt.Printf(
-			"[input] %s\n",
-			input,
-		)
+		fmt.Printf("[input] %s\n", input)
 	}
 
 	for _, group := range result.Groups {
@@ -247,36 +155,16 @@ func runAggregate(
 		)
 	}
 
-	fmt.Printf(
-		"output=%s\n",
-		*outputPath,
-	)
+	fmt.Printf("output=%s\n", *outputPath)
 }
 
 func printUsage() {
-	fmt.Println(
-		"Usage: serverledge-profiling <command> [options]",
-	)
-
+	fmt.Println("Usage: serverledge-profiling <command> [options]")
 	fmt.Println()
-
-	fmt.Println(
-		"Commands:",
-	)
-
-	fmt.Println(
-		"  aggregate        build FunctionProfile records from one or more raw InvocationSample JSONL datasets",
-	)
-
-	fmt.Println(
-		"  export-csv       export separate mean and median CSV datasets from FunctionProfile JSONL",
-	)
-
-	fmt.Println(
-		"  aggregate-cold   build ColdStartProfile records from raw InvocationSample JSONL datasets",
-	)
-
-	fmt.Println(
-		"  export-cold-csv  export a cold-start CSV dataset from ColdStartProfile JSONL",
-	)
+	fmt.Println("Commands:")
+	fmt.Println("  aggregate        build FunctionProfile records from one or more raw InvocationSample JSONL datasets")
+	fmt.Println("  export-csv       export separate mean and median CSV datasets from FunctionProfile JSONL")
+	fmt.Println("  export-samples-csv  export one CSV row per eligible warm invocation, without aggregating")
+	fmt.Println("  aggregate-cold   build ColdStartProfile records from raw InvocationSample JSONL datasets")
+	fmt.Println("  export-cold-csv  export a cold-start CSV dataset from ColdStartProfile JSONL")
 }

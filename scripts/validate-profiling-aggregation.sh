@@ -1077,8 +1077,240 @@ for name in features:
     )
 PY
 
+# ---------------------------------------------------------------------------
+# Dataset per campione (Passo 09E)
+#
+# L'aggregato sopra e' l'input di clustering e donor selection. Qui si verifica
+# il dataset non aggregato, che alimenta la classificazione supervisionata della
+# preferenza architetturale: il paper di riferimento classifica le singole
+# esecuzioni e risolve per voto di maggioranza, quindi una riga per
+# funzione-configurazione non basterebbe ad addestrare.
+# ---------------------------------------------------------------------------
+
+SAMPLES_CSV_FILE="$ROOT_DIR/$LOG_DIR/samples.csv"
+SAMPLES_LOG="$LOG_DIR/export-samples.log"
+
+echo
+echo "[step] Export del dataset per campione..."
+
+if ! "$ROOT_DIR/bin/serverledge-profiling" export-samples-csv \
+  --input "$RAW_DATASET_FILE" \
+  --experiment-id "profiling-aggregation-$STAMP" \
+  --output "$SAMPLES_CSV_FILE" \
+  >"$SAMPLES_LOG" 2>&1; then
+
+  cat "$SAMPLES_LOG" >&2
+  fail "export-samples-csv non riuscito"
+fi
+
+cat "$SAMPLES_LOG"
+
+SAMPLES_CSV_FILE="$SAMPLES_CSV_FILE" \
+RAW_DATASET_FILE="$RAW_DATASET_FILE" \
+ROOT_DIR="$ROOT_DIR" \
+python3 - <<'PY'
+import csv
+import json
+import os
+import re
+import sys
+
+samples_path = os.environ["SAMPLES_CSV_FILE"]
+raw_path = os.environ["RAW_DATASET_FILE"]
+root_dir = os.environ["ROOT_DIR"]
+
+failures = []
+
+with open(
+    samples_path,
+    encoding="utf-8",
+    newline="",
+) as handle:
+    rows = list(
+        csv.reader(
+            handle
+        )
+    )
+
+if len(rows) < 2:
+    print(
+        "[FAIL] il dataset per campione "
+        "e' vuoto",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+header = rows[0]
+records = rows[1:]
+
+# 1. Il numero di righe deve coincidere con i campioni eleggibili del raw.
+eligible = 0
+
+with open(
+    raw_path,
+    encoding="utf-8",
+) as handle:
+    for line in handle:
+        line = line.strip()
+
+        if not line:
+            continue
+
+        sample = json.loads(
+            line
+        )
+
+        if (
+            sample.get(
+                "eligibility",
+                {},
+            ).get(
+                "resource_clustering"
+            )
+        ):
+            eligible += 1
+
+if len(records) != eligible:
+    failures.append(
+        f"righe={len(records)} ma "
+        f"campioni eleggibili={eligible}"
+    )
+
+# 2. Un request_id per riga, senza duplicati.
+request_ids = [
+    record[3]
+    for record in records
+]
+
+if len(set(request_ids)) != len(request_ids):
+    failures.append(
+        "request_id duplicati nel "
+        "dataset per campione"
+    )
+
+# 3. L'intestazione deve coincidere con quella attesa dal lato Python.
+#
+# FEATURE_NAMES viene letto testualmente da preprocess.py per non dipendere
+# dall'ambiente virtuale di analisi: il controllo deve poter girare ovunque
+# giri questo script.
+preprocess_source = open(
+    os.path.join(
+        root_dir,
+        "analysis",
+        "profiling",
+        "preprocess.py",
+    ),
+    encoding="utf-8",
+).read()
+
+python_features = re.findall(
+    r'"([^"]+)"',
+    re.search(
+        r"FEATURE_NAMES = \[(.*?)\]",
+        preprocess_source,
+        re.S,
+    ).group(1),
+)
+
+expected_metadata = [
+    "sample_csv_schema_version",
+    "experiment_id",
+    "feature_vector_schema_version",
+    "request_id",
+    "function_name",
+    "machine_tag",
+    "configured_cpus",
+    "configured_memory_mb",
+]
+
+expected_header = (
+    expected_metadata
+    + python_features
+)
+
+if header != expected_header:
+    failures.append(
+        "intestazione CSV disallineata "
+        "rispetto a preprocess.FEATURE_NAMES: "
+        f"{header} != {expected_header}"
+    )
+
+# 4. Le sei feature devono essere numeriche e finite su ogni riga.
+for index, record in enumerate(
+    records,
+    start=2,
+):
+    if len(record) != len(expected_header):
+        failures.append(
+            f"riga {index}: "
+            f"{len(record)} colonne invece di "
+            f"{len(expected_header)}"
+        )
+
+        continue
+
+    for offset, name in enumerate(
+        python_features
+    ):
+        raw_value = record[
+            len(expected_metadata) + offset
+        ]
+
+        try:
+            value = float(
+                raw_value
+            )
+
+        except ValueError:
+            failures.append(
+                f"riga {index}: {name} "
+                "non numerico"
+            )
+
+            continue
+
+        if value != value or value in (
+            float("inf"),
+            float("-inf"),
+        ):
+            failures.append(
+                f"riga {index}: {name} "
+                "non finito"
+            )
+
+if failures:
+    for failure in failures:
+        print(
+            f"[FAIL] {failure}",
+            file=sys.stderr,
+        )
+
+    sys.exit(1)
+
+print(
+    "[PASS] Il dataset per campione ha una "
+    f"riga per ciascuno dei {eligible} "
+    "campioni eleggibili."
+)
+
+print(
+    "[PASS] I request_id sono univoci."
+)
+
+print(
+    "[PASS] L'intestazione CSV coincide con "
+    "preprocess.FEATURE_NAMES."
+)
+
+print(
+    "[PASS] Le sei feature sono numeriche e "
+    "finite su tutte le righe."
+)
+PY
+
 echo
 echo "[done] Raw dataset:       $RAW_DATASET_FILE"
 echo "[done] Function profiles: $PROFILE_DATASET_FILE"
 echo "[done] Aggregate log:     $AGGREGATE_LOG"
+echo "[done] Sample dataset:    $SAMPLES_CSV_FILE"
 echo "[done] Log directory:     $LOG_DIR"

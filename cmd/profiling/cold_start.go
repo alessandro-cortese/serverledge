@@ -10,145 +10,63 @@ import (
 	"github.com/serverledge-faas/serverledge/internal/profiling"
 )
 
-func runAggregateCold(
-	args []string,
-) {
-	flags :=
-		flag.NewFlagSet(
-			"aggregate-cold",
-			flag.ExitOnError,
-		)
+func runAggregateCold(args []string) {
 
 	var inputPaths stringListFlag
+	flags := flag.NewFlagSet("aggregate-cold", flag.ExitOnError)
+	flags.Var(&inputPaths, "input", "input InvocationSample JSONL dataset; may be repeated for multiple nodes")
 
-	flags.Var(
-		&inputPaths,
-		"input",
-		"input InvocationSample JSONL dataset; may be repeated for multiple nodes",
-	)
+	inputDir := flags.String("input-dir", "", "directory recursively containing per-node profiling-samples.jsonl datasets")
+	outputPath := flags.String("output", profiling.DefaultColdStartProfileExportPath, "output ColdStartProfile JSONL dataset")
 
-	inputDir :=
-		flags.String(
-			"input-dir",
-			"",
-			"directory recursively containing per-node profiling-samples.jsonl datasets",
-		)
+	samplesPerProfile := flags.Int("samples", 0, "number of most recent eligible cold starts per profile (required; use 1 only for local smoke tests)")
 
-	outputPath :=
-		flags.String(
-			"output",
-			profiling.
-				DefaultColdStartProfileExportPath,
-			"output ColdStartProfile JSONL dataset",
-		)
+	flags.Usage = func() {
+		fmt.Fprintf(flags.Output(), "Usage: serverledge-profiling aggregate-cold [options]\n\n")
+		flags.PrintDefaults()
+	}
 
-	samplesPerProfile :=
-		flags.Int(
-			"samples",
-			0,
-			"number of most recent eligible cold starts per profile (required; use 1 only for local smoke tests)",
-		)
-
-	flags.Usage =
-		func() {
-			fmt.Fprintf(
-				flags.Output(),
-				"Usage: serverledge-profiling aggregate-cold [options]\n\n",
-			)
-
-			flags.PrintDefaults()
-		}
-
-	if err :=
-		flags.Parse(
-			args,
-		); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	if err := flags.Parse(args); err != nil {
+		log.Fatal(err)
 	}
 
 	if *samplesPerProfile <= 0 {
-		log.Fatal(
-			"--samples must be explicitly set to a positive value",
-		)
+		log.Fatal("--samples must be explicitly set to a positive value")
 	}
 
-	resolvedInputs, err :=
-		resolveInvocationSampleInputs(
-			inputPaths,
-			*inputDir,
-		)
-
+	resolvedInputs, err := resolveInvocationSampleInputs(inputPaths, *inputDir)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	samples, err :=
-		profiling.
-			LoadInvocationSamplesJSONLFiles(
-				resolvedInputs,
-			)
-
+	samples, err := profiling.LoadInvocationSamplesJSONLFiles(resolvedInputs)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	result, err :=
-		profiling.
-			BuildColdStartProfilesByGroup(
-				samples,
-				*samplesPerProfile,
-			)
-
+	result, err := profiling.BuildColdStartProfilesByGroup(samples, *samplesPerProfile)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	if len(
-		result.Profiles,
-	) == 0 {
-
+	if len(result.Profiles) == 0 {
 		for _, group := range result.Groups {
-
 			fmt.Printf(
 				"[skip] function=%s machine_tag=%s cpus=%g memory_mb=%d eligible=%d required=%d\n",
 				group.FunctionName,
 				group.MachineTag,
-				group.
-					FunctionConfiguration.
-					ConfiguredCPUs,
-				group.
-					FunctionConfiguration.
-					ConfiguredMemoryMB,
+				group.FunctionConfiguration.ConfiguredCPUs,
+				group.FunctionConfiguration.ConfiguredMemoryMB,
 				group.EligibleSampleCount,
 				*samplesPerProfile,
 			)
 		}
 
-		log.Fatalf(
-			"no complete cold-start groups: need at least %d eligible cold starts per group",
-			*samplesPerProfile,
-		)
+		log.Fatalf("no complete cold-start groups: need at least %d eligible cold starts per group", *samplesPerProfile)
 	}
 
-	if err :=
-		profiling.
-			ExportColdStartProfilesJSONL(
-				*outputPath,
-				result.Profiles,
-			); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	if err := profiling.ExportColdStartProfilesJSONL(*outputPath, result.Profiles); err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Printf(
@@ -163,17 +81,11 @@ func runAggregateCold(
 	)
 
 	for _, input := range resolvedInputs {
-
-		fmt.Printf(
-			"[input] %s\n",
-			input,
-		)
+		fmt.Printf("[input] %s\n", input)
 	}
 
 	for _, group := range result.Groups {
-
 		status := "skipped"
-
 		if group.Built {
 			status = "built"
 		}
@@ -183,134 +95,49 @@ func runAggregateCold(
 			status,
 			group.FunctionName,
 			group.MachineTag,
-			group.
-				FunctionConfiguration.
-				ConfiguredCPUs,
-			group.
-				FunctionConfiguration.
-				ConfiguredMemoryMB,
+			group.FunctionConfiguration.ConfiguredCPUs,
+			group.FunctionConfiguration.ConfiguredMemoryMB,
 			group.EligibleSampleCount,
 			group.SelectedSampleCount,
 		)
 	}
 
-	fmt.Printf(
-		"output=%s\n",
-		*outputPath,
-	)
+	fmt.Printf("output=%s\n", *outputPath)
 }
 
-func runExportColdCSV(
-	args []string,
-) {
-	flags :=
-		flag.NewFlagSet(
-			"export-cold-csv",
-			flag.ExitOnError,
-		)
+func runExportColdCSV(args []string) {
 
-	inputPath :=
-		flags.String(
-			"input",
-			profiling.
-				DefaultColdStartProfileExportPath,
-			"input ColdStartProfile JSONL dataset",
-		)
-
-	experimentID :=
-		flags.String(
-			"experiment-id",
-			"",
-			"experiment identifier stored as CSV metadata (required)",
-		)
-
-	outputPath :=
-		flags.String(
-			"output",
-			"",
-			"cold-start CSV output path; default is next to the input dataset",
-		)
-
-	flags.Usage =
-		func() {
-			fmt.Fprintf(
-				flags.Output(),
-				"Usage: serverledge-profiling export-cold-csv [options]\n\n",
-			)
-
-			flags.PrintDefaults()
-		}
-
-	if err :=
-		flags.Parse(
-			args,
-		); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	flags := flag.NewFlagSet("export-cold-csv", flag.ExitOnError)
+	inputPath := flags.String("input", profiling.DefaultColdStartProfileExportPath, "input ColdStartProfile JSONL dataset")
+	experimentID := flags.String("experiment-id", "", "experiment identifier stored as CSV metadata (required)")
+	outputPath := flags.String("output", "", "cold-start CSV output path; default is next to the input dataset")
+	flags.Usage = func() {
+		fmt.Fprintf(flags.Output(), "Usage: serverledge-profiling export-cold-csv [options]\n\n")
+		flags.PrintDefaults()
 	}
 
-	*experimentID =
-		strings.TrimSpace(
-			*experimentID,
-		)
+	if err := flags.Parse(args); err != nil {
+		log.Fatal(err)
+	}
 
+	*experimentID = strings.TrimSpace(*experimentID)
 	if *experimentID == "" {
-		log.Fatal(
-			"--experiment-id is required",
-		)
+		log.Fatal("--experiment-id is required")
 	}
 
-	if strings.TrimSpace(
-		*outputPath,
-	) == "" {
-
-		*outputPath =
-			filepath.Join(
-				filepath.Dir(
-					*inputPath,
-				),
-				filepath.Base(
-					profiling.
-						DefaultColdStartProfileCSVPath,
-				),
-			)
+	if strings.TrimSpace(*outputPath) == "" {
+		*outputPath = filepath.Join(filepath.Dir(*inputPath), filepath.Base(profiling.DefaultColdStartProfileCSVPath))
 	}
 
-	profiles, err :=
-		profiling.
-			LoadColdStartProfilesJSONL(
-				*inputPath,
-			)
-
+	profiles, err := profiling.LoadColdStartProfilesJSONL(*inputPath)
 	if err != nil {
-		log.Fatal(
-			err,
-		)
+		log.Fatal(err)
 	}
 
-	if err :=
-		profiling.
-			ExportColdStartProfilesCSV(
-				*outputPath,
-				*experimentID,
-				profiles,
-			); err != nil {
-
-		log.Fatal(
-			err,
-		)
+	if err := profiling.ExportColdStartProfilesCSV(*outputPath, *experimentID, profiles); err != nil {
+		log.Fatal(err)
 	}
 
-	fmt.Printf(
-		"profiles=%d experiment_id=%s\n",
-		len(profiles),
-		*experimentID,
-	)
-
-	fmt.Printf(
-		"output=%s\n",
-		*outputPath,
-	)
+	fmt.Printf("profiles=%d experiment_id=%s\n", len(profiles), *experimentID)
+	fmt.Printf("output=%s\n", *outputPath)
 }
