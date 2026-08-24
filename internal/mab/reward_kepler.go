@@ -33,7 +33,7 @@ type KeplerRewardInput struct {
 const keplerEnergyReferenceJoules = 1.0
 
 // ConfiguredKeplerRewardZone returns the Kepler zone explicitly selected for
-// the future energy reward.
+// the energy reward used by RewardModeKeplerEnergy.
 //
 // There is intentionally no default zone. Choosing package, core, or another
 // hardware domain is an experimental decision and must therefore be explicit.

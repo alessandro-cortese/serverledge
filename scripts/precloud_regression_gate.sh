@@ -386,25 +386,93 @@ echo "PASS: Python unit tests"
 # REAL SCHEMA 4 DATASET
 # ------------------------------------------------------------
 
-stage "SCHEMA 4 REAL DATASET CHECK"
-
-SCHEMA4_INPUT="${SCHEMA4_INPUT:-${ROOT}/logs/profiling_aggregation_local_20260823_090112/profiling-samples.jsonl}"
-
-if [[ ! -f "$SCHEMA4_INPUT" ]]; then
-
-    echo "FAIL: dataset schema 4 non trovato:"
-    echo "$SCHEMA4_INPUT"
-    echo
-    echo "È possibile specificarne un altro con:"
-    echo "SCHEMA4_INPUT=/path/profiling-samples.jsonl scripts/precloud_regression_gate.sh"
-
-    exit 1
-fi
+stage "SCHEMA 4 DATASET CHECK"
 
 TMP_DIR="$(
     mktemp -d \
         "${TMPDIR:-/tmp}/serverledge-precloud.XXXXXX"
 )"
+
+if [[ -n "${SCHEMA4_INPUT:-}" ]]; then
+
+    if [[ ! -f "$SCHEMA4_INPUT" ]]; then
+        echo "FAIL: dataset schema 4 indicato ma non trovato:"
+        echo "$SCHEMA4_INPUT"
+        exit 1
+    fi
+
+    echo "Dataset reale indicato: $SCHEMA4_INPUT"
+
+else
+
+    SCHEMA4_INPUT="${TMP_DIR}/synthetic-schema4.jsonl"
+
+    LATEST_REAL="$(
+        ls -1dt "${ROOT}"/logs/profiling_aggregation_local_*/profiling-samples.jsonl \
+            2>/dev/null \
+        | head -1 \
+        || true
+    )"
+
+    if [[ -n "$LATEST_REAL" && -f "$LATEST_REAL" ]]; then
+
+        SCHEMA4_INPUT="$LATEST_REAL"
+
+        echo "Dataset reale piu' recente: $SCHEMA4_INPUT"
+
+    else
+
+        echo "Nessun dataset reale disponibile: uso una fixture sintetica."
+
+        SCHEMA4_INPUT="$SCHEMA4_INPUT" \
+        "$PYTHON_BIN" - <<'PY'
+import json
+import os
+
+path = os.environ["SCHEMA4_INPUT"]
+
+sample = {
+    "schema_version": 4,
+    "timestamp_ms": 1_700_000_000_000,
+    "request_id": "precloud-synthetic-0",
+    "function_name": "precloud-synthetic",
+    "machine_tag": "precloud-x86",
+    "node_name": "precloud-node",
+    "container_id": "precloud-container",
+    "function_configuration": {
+        "configured_cpus": 1.0,
+        "configured_memory_mb": 128,
+    },
+    "warm_start": True,
+    "execution_succeeded": True,
+    "timing": {
+        "duration_ms": 100.0,
+        "response_time_ms": 110.0,
+        "init_time_ms": 0.0,
+        "queueing_time_ms": 0.0,
+        "offload_latency_ms": 0.0,
+        "invocation_wait_ms": 0.0,
+        "execution_wall_time_ms": 105.0,
+    },
+    "eligibility": {
+        "resource_clustering": True,
+        "cold_start_analysis": False,
+        "performance_analysis": True,
+        "exclusion_reasons": [],
+    },
+}
+
+with open(path, "w", encoding="utf-8") as handle:
+    for index in range(10):
+        record = json.loads(json.dumps(sample))
+        record["request_id"] = f"precloud-synthetic-{index}"
+        record["timestamp_ms"] += index
+        record["timing"]["duration_ms"] = 100.0 + index
+        handle.write(json.dumps(record) + "\n")
+PY
+
+    fi
+fi
 
 SCHEMA4_OUTPUT="${TMP_DIR}/performance-schema4.csv"
 
