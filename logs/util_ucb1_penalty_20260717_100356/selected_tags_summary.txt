@@ -1,2 +1,0 @@
-     35 selected_tag=x86-large/gpu/amd
-     25 selected_tag=x86-tiny/gpu/nvidia

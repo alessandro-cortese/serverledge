@@ -1,2 +1,0 @@
-      6 selected_arm=arm
-      6 selected_arm=x86
