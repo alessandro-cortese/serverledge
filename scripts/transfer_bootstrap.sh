@@ -72,7 +72,7 @@ Optional:
       Default: arm64
 
   --samples-per-arch <N>
-      Default: 2
+      Default: 10
 
   --experiment <id>
       Default: timestamp

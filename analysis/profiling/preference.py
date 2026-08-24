@@ -13,7 +13,11 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-INVOCATION_SAMPLE_SCHEMA_VERSION = 3
+# It must remain aligned with InvocationSampleSchemaVersion in
+# internal/profiling/sample.go: the loaders compare the version using
+# strict equality, so a misalignment renders the dataset
+# unreadable rather than failing silently.
+INVOCATION_SAMPLE_SCHEMA_VERSION = 4
 
 PERFORMANCE_PROFILE_CSV_SCHEMA_VERSION = 1
 
@@ -251,7 +255,7 @@ def validate_performance_sample(sample: dict) -> None:
 
 def build_performance_profiles(samples: list[dict], samples_per_profile: int) -> tuple[list[dict], dict]:
     if not (
-        MIN_PERFORMANCE_PROFILE_SAMPLES <= samples_per_profile <= MAX_PERFORMANCE_PROFILE_SAMPLES
+            MIN_PERFORMANCE_PROFILE_SAMPLES <= samples_per_profile <= MAX_PERFORMANCE_PROFILE_SAMPLES
     ):
         raise ValueError(
             "samples per performance "
@@ -290,13 +294,13 @@ def build_performance_profiles(samples: list[dict], samples_per_profile: int) ->
     statuses: list[dict] = []
 
     for key in sorted(
-        groups,
-        key=lambda item: (
-            item.function_name,
-            item.machine_tag,
-            item.configured_cpus,
-            item.configured_memory_mb,
-        ),
+            groups,
+            key=lambda item: (
+                    item.function_name,
+                    item.machine_tag,
+                    item.configured_cpus,
+                    item.configured_memory_mb,
+            ),
     ):
         candidates = sorted(groups[key], key=lambda item: (item[0], item[1]))
 
@@ -412,8 +416,8 @@ def build_architecture_preferences(profiles: list[dict], x86_tag: str, arm_tag: 
     metric_field = f"duration_{aggregation}_ms"
 
     for key in sorted(
-        pair_keys,
-        key=lambda item: (item.function_name, item.configured_cpus, item.configured_memory_mb),
+            pair_keys,
+            key=lambda item: (item.function_name, item.configured_cpus, item.configured_memory_mb),
     ):
         x86_profile = by_identity.get((key.function_name, x86_tag, key.configured_cpus, key.configured_memory_mb))
         arm_profile = by_identity.get((key.function_name, arm_tag, key.configured_cpus, key.configured_memory_mb))
@@ -549,7 +553,7 @@ def load_performance_profiles(path: Path) -> tuple[list[dict], dict]:
 
     for row_number, row in enumerate(rows, start=2):
         if row["performance_profile_csv_schema_version"] != str(
-            PERFORMANCE_PROFILE_CSV_SCHEMA_VERSION
+                PERFORMANCE_PROFILE_CSV_SCHEMA_VERSION
         ):
             raise ValueError(f"row {row_number}: " "unsupported performance " "profile CSV schema")
 
@@ -597,10 +601,10 @@ def load_performance_profiles(path: Path) -> tuple[list[dict], dict]:
         }
 
         for field in (
-            "duration_mean_ms",
-            "duration_median_ms",
-            "response_time_mean_ms",
-            "response_time_median_ms",
+                "duration_mean_ms",
+                "duration_median_ms",
+                "response_time_mean_ms",
+                "response_time_median_ms",
         ):
             value = parse_finite(row[field], field)
 
@@ -620,11 +624,11 @@ def load_performance_profiles(path: Path) -> tuple[list[dict], dict]:
 
 
 def write_architecture_preferences(
-    path: Path,
-    preference_run_id: str,
-    performance_run_id: str,
-    performance_profiles_sha256: str,
-    preferences: list[dict],
+        path: Path,
+        preference_run_id: str,
+        performance_run_id: str,
+        performance_profiles_sha256: str,
+        preferences: list[dict],
 ) -> None:
     preference_run_id = preference_run_id.strip()
 

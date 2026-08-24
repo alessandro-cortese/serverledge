@@ -117,7 +117,7 @@ COMMON_ARGS=(
   1.0
 
   --samples-per-arch
-  2
+  10
 
   --experiment
   bootstrap-script-test
@@ -151,10 +151,10 @@ grep \
 
 grep \
   -q \
-  'samples_per_arch:     10' \
+  'bootstrap_samples:     10' \
   "$PLAN_OUTPUT" ||
   fail \
-    "samples-per-arch non propagato"
+    "bootstrap_samples non propagato"
 
 grep \
   -q \

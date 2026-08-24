@@ -175,7 +175,7 @@ def load_performance_profiles(path: Path):
     expected_schema = getattr(preference, "PERFORMANCE_PROFILE_CSV_SCHEMA_VERSION", 1)
 
     for row_number, row in enumerate(rows, start=2):
-        if row["performance_profile_csv_schema_version"] != strexpected_schema:
+        if row["performance_profile_csv_schema_version"] != str(expected_schema):
             raise ValueError(f"row {row_number}: unsupported PerformanceProfile schema")
 
         run_id = row["performance_run_id"].strip()
@@ -183,7 +183,7 @@ def load_performance_profiles(path: Path):
         function_name = row["function_name"].strip()
         machine_tag = row["machine_tag"].strip()
 
-        if not all(run_id, input_sha256, function_name, machine_tag):
+        if not all((run_id, input_sha256, function_name, machine_tag)):
             raise ValueError(f"row {row_number}: empty PerformanceProfile metadata")
 
         cpus = parse_finite(row["configured_cpus"], "configured_cpus")
@@ -194,10 +194,10 @@ def load_performance_profiles(path: Path):
             raise ValueError(f"row {row_number}: configured_cpus must be positive")
 
         for field in (
-            "duration_mean_ms",
-            "duration_median_ms",
-            "response_time_mean_ms",
-            "response_time_median_ms",
+                "duration_mean_ms",
+                "duration_median_ms",
+                "response_time_mean_ms",
+                "response_time_median_ms",
         ):
             value = parse_finite(row[field], field)
 
@@ -306,16 +306,16 @@ def preference_distribution(rows: list[dict], field: str):
 
 
 def build_readiness(
-    function_profiles_mean_path: Path,
-    function_profiles_median_path: Path,
-    performance_profiles_path: Path,
-    preferences_mean_path: Path,
-    preferences_median_path: Path,
-    x86_tag: str,
-    arm_tag: str,
-    run_id: str,
-    min_samples: int,
-    max_samples: int,
+        function_profiles_mean_path: Path,
+        function_profiles_median_path: Path,
+        performance_profiles_path: Path,
+        preferences_mean_path: Path,
+        preferences_median_path: Path,
+        x86_tag: str,
+        arm_tag: str,
+        run_id: str,
+        min_samples: int,
+        max_samples: int,
 ):
     run_id = run_id.strip()
     x86_tag = x86_tag.strip()
@@ -352,11 +352,11 @@ def build_readiness(
     accepted_tags = {x86_tag, arm_tag}
 
     all_keys = (
-        source_function_keys(mean_profiles, accepted_tags)
-        | source_function_keys(median_profiles, accepted_tags)
-        | source_function_keys(performance_profiles, accepted_tags)
-        | set(preferences_mean)
-        | set(preferences_median)
+            source_function_keys(mean_profiles, accepted_tags)
+            | source_function_keys(median_profiles, accepted_tags)
+            | source_function_keys(performance_profiles, accepted_tags)
+            | set(preferences_mean)
+            | set(preferences_median)
     )
 
     report_rows = []
@@ -386,12 +386,12 @@ def build_readiness(
                 issues.append(issue)
 
         for name, item in (
-            ("mean_x86", mean_x86),
-            ("mean_arm", mean_arm),
-            ("median_x86", median_x86),
-            ("median_arm", median_arm),
-            ("performance_x86", performance_x86),
-            ("performance_arm", performance_arm),
+                ("mean_x86", mean_x86),
+                ("mean_arm", mean_arm),
+                ("median_x86", median_x86),
+                ("median_arm", median_arm),
+                ("performance_x86", performance_x86),
+                ("performance_arm", performance_arm),
         ):
             append_sample_issue(issues, name, item, min_samples, max_samples)
 
@@ -408,9 +408,9 @@ def build_readiness(
             issues.append("median_cross_arch_sample_mismatch")
 
         if (
-            performance_x86
-            and performance_arm
-            and performance_x86["sample_count"] != performance_arm["sample_count"]
+                performance_x86
+                and performance_arm
+                and performance_x86["sample_count"] != performance_arm["sample_count"]
         ):
             issues.append("performance_cross_arch_sample_mismatch")
 
@@ -480,9 +480,9 @@ def build_readiness(
 
     other_tags = sorted(
         (
-            set(mean_meta["machine_tags"])
-            | set(median_meta["machine_tags"])
-            | set(performance_meta["machine_tags"])
+                set(mean_meta["machine_tags"])
+                | set(median_meta["machine_tags"])
+                | set(performance_meta["machine_tags"])
         )
         - accepted_tags
     )
@@ -515,7 +515,7 @@ def build_readiness(
             "all_three_preference_classes_present_mean": all_mean_classes,
             "all_three_preference_classes_present_median": all_median_classes,
             "ready_for_three_class_evaluation": (
-                structural_ready and all_mean_classes and all_median_classes
+                    structural_ready and all_mean_classes and all_median_classes
             ),
             "mean_median_preference_agreement_count": agreement_count,
             "mean_median_preference_disagreement_count": disagreement_count,
@@ -586,7 +586,7 @@ def write_function_report(path: Path, run_id: str, rows: list[dict]):
                         row["preference_agreement"],
                         row["status"],
                         ";".join(row["issues"]),
-                    ]
+                        ]
                 )
 
             handle.flush()

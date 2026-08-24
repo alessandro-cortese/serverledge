@@ -23,8 +23,12 @@ Input:
                    `serverledge-profiling export-samples-csv`
     --preferences  architecture preference CSV produced by
                    `preference.py preferences`
-    --model        preprocessing model JSON produced by
-                   `preprocess.py fit-transform`
+
+The six features are used raw, without standardization. A Random Forest is
+invariant to monotone transformations of individual features, so scaling would
+change nothing in the decision boundaries; reusing the scaler fitted on the
+whole FunctionProfile dataset would instead let the held-out function influence
+the preprocessing parameters, which is leakage with no compensating benefit.
 
 Output: a JSON report with per-sample and per-function accuracy, the confusion
 matrix over the three classes, and permutation feature importance.
@@ -184,16 +188,6 @@ def join(samples: list[dict], labels: dict[tuple, str]) -> tuple[np.ndarray, np.
     return np.asarray(matrix, dtype=np.float64),np.asarray(targets, dtype=object),np.asarray(groups, dtype=object)
 
 
-def scale(matrix: np.ndarray, model: dict, aggregation: str) -> np.ndarray:
-    """Apply the same affine transform used by clustering and donor selection.
-
-    Reusing the fitted model keeps the classifier in the same feature space as
-    the rest of the pipeline, so that a single preprocessing decision governs
-    every downstream consumer.
-    """
-    return preprocess.apply_model(matrix, model, aggregation)
-
-
 def build_classifier(trees: int, random_state: int) -> RandomForestClassifier:
     """Random Forest, as in the reference paper.
 
@@ -309,26 +303,26 @@ def feature_importance(matrix: np.ndarray, targets: np.ndarray, trees: int, rand
     ]
 
 
-def run(samples_path: Path,preferences_path: Path,model_path: Path,reference_machine_tag: str,aggregation: str,trees: int,random_state: int,output_path: Path) -> None:
-    model = preprocess.load_model(model_path)
-
-    if list(model["feature_names"]) != list(preprocess.FEATURE_NAMES):
-        raise ValueError("preprocessing model feature " "names or order are invalid")
-
+def run(
+        samples_path: Path,
+        preferences_path: Path,
+        reference_machine_tag: str,
+        trees: int,
+        random_state: int,
+        output_path: Path,
+) -> None:
     samples = load_samples(samples_path, reference_machine_tag)
     labels = load_labels(preferences_path)
     matrix, targets, groups = join(samples, labels)
-    scaled = scale(matrix, model, aggregation)
 
     report = {
         "classification_report_schema_version": CLASSIFICATION_REPORT_SCHEMA_VERSION,
         "reference_machine_tag": reference_machine_tag,
-        "aggregation": aggregation,
-        "scaler": model["scaler"],
+        "feature_scaling": "none",
         "feature_names": list(preprocess.FEATURE_NAMES),
         "class_distribution": dict(Counter(targets.tolist())),
-        "validation": leave_one_function_out(scaled, targets, groups, trees, random_state),
-        "feature_importance": feature_importance(scaled, targets, trees, random_state),
+        "validation": leave_one_function_out(matrix, targets, groups, trees, random_state),
+        "feature_importance": feature_importance(matrix, targets, trees, random_state),
     }
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -367,9 +361,7 @@ def parser() -> argparse.ArgumentParser:
 
     root.add_argument("--samples", required=True)
     root.add_argument("--preferences", required=True)
-    root.add_argument("--model", required=True)
     root.add_argument("--reference-machine-tag", required=True)
-    root.add_argument("--aggregation", required=True, choices=["mean", "median"])
     root.add_argument("--trees", type=int, default=100)
     root.add_argument("--random-state", type=int, default=0)
     root.add_argument("--output", required=True)
@@ -383,9 +375,7 @@ def main() -> None:
     run(
         Path(arguments.samples),
         Path(arguments.preferences),
-        Path(arguments.model),
         arguments.reference_machine_tag.strip(),
-        arguments.aggregation,
         arguments.trees,
         arguments.random_state,
         Path(arguments.output),

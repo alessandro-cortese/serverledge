@@ -144,8 +144,10 @@ const FUNCTION_PROFILING_EXPORT_PATH = "profiling.export.path"
 
 // Enables optional Kepler-based energy profiling.
 //
-// Kepler metrics remain observability data in the first integration stage and
-// do not directly modify MAB rewards or contextual features.
+// Kepler metrics are observability data by default. They become the MAB reward
+// only when mab.reward.mode is set to kepler_energy, which selects
+// RewardModeKeplerEnergy; in every other mode they do not influence arm
+// selection nor the contextual features.
 const FUNCTION_PROFILING_KEPLER_ENABLED = "profiling.kepler.enabled"
 
 // Prometheus exposition endpoint exported by the node-local Kepler instance.

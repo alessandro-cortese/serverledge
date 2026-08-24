@@ -15,6 +15,8 @@ cd "$ROOT_DIR"
 
 PYTHON_BIN="${PYTHON_BIN:-./.venv-analysis/bin/python}"
 
+POLICY="${POLICY:-UCB1}"
+
 SAMPLES_PER_ARCH="${SAMPLES_PER_ARCH:-10}"
 
 # Architecture used for the initial profiling phase of the target function.
@@ -109,6 +111,14 @@ fail() {
 
   exit 1
 }
+
+case "$POLICY" in
+  UCB1|LinUCB)
+    ;;
+  *)
+    fail "POLICY deve essere UCB1 oppure LinUCB, ricevuto: $POLICY"
+    ;;
+esac
 
 cleanup() {
   status=$?
@@ -267,7 +277,7 @@ echo \
   "ARM logical node:   127.0.0.1:$ARM_PORT tag=arm64"
 
 echo \
-  "LB:                  127.0.0.1:$LB_PORT policy=UCB1"
+  "LB:                  127.0.0.1:$LB_PORT policy=$POLICY"
 
 echo
 
@@ -370,8 +380,9 @@ registry.area: TRANSFER_LOCAL_SMOKE
 lb.arch_awareness: true
 lb.mode: MAB
 
-mab.policy: UCB1
+mab.policy: ${POLICY}
 mab.ucb1.c: 0.8
+mab.linucb.alpha: 0.1
 mab.cold_start.mode: skip
 
 mab.transfer.control.enabled: true
@@ -1930,12 +1941,58 @@ grep \
   fail \
     "Nessuna decisione MAB trovata per il target dopo il transfer."
 
-grep \
-  -q \
-  "event=arm_score.*function=${TARGET_FUNCTION}.*prior_observation_weight=" \
-  "$LB_LOG" ||
-  fail \
-    "Nessun arm_score con prior trovato per il target."
+case "$POLICY" in
+
+  UCB1)
+
+    grep \
+      -q \
+      "event=arm_score.*function=${TARGET_FUNCTION}.*prior_observation_weight=" \
+      "$LB_LOG" ||
+      fail \
+        "Nessun arm_score UCB1 con prior trovato per il target."
+
+    ;;
+
+
+  LinUCB)
+
+    LINUCB_TRANSFER_LINE="$(
+      grep \
+        "event=runtime_transfer" \
+        "$LB_LOG" |
+        grep \
+          "target_function=${TARGET_FUNCTION}" |
+        tail -n 1 ||
+        true
+    )"
+
+    [[ -n "$LINUCB_TRANSFER_LINE" ]] ||
+      fail \
+        "Nessun runtime_transfer LinUCB trovato per il target."
+
+    [[ "$LINUCB_TRANSFER_LINE" == *"policy=LinUCB"* ]] ||
+      fail \
+        "Il runtime_transfer del target non usa LinUCB."
+
+    [[ "$LINUCB_TRANSFER_LINE" == *"applied=true"* ]] ||
+      fail \
+        "Il transfer LinUCB non risulta applicato al target."
+
+    [[ "$LINUCB_TRANSFER_LINE" == *"prior_has_prior=true"* ]] ||
+      fail \
+        "Il transfer LinUCB non contiene un weak prior valido."
+
+    grep \
+      -q \
+      "event=arm_score.*policy=LinUCB.*function=${TARGET_FUNCTION}" \
+      "$LB_LOG" ||
+      fail \
+        "Nessun arm_score LinUCB trovato per il target."
+
+    ;;
+
+esac
 
 # ============================================================
 # PASS
@@ -1982,7 +2039,7 @@ echo \
   "✓ weak prior applicato al target via control API"
 
 echo \
-  "✓ successiva richiesta target gestita dal normale UCB1"
+  "✓ successiva richiesta target gestita dal normale $POLICY"
 
 echo
 
