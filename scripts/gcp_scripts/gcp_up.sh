@@ -15,7 +15,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/gcp-config.sh"
+source "${SCRIPT_DIR}/gcp_config.sh"
 
 banner "CLUSTER SERVERLEDGE — CREAZIONE"
 

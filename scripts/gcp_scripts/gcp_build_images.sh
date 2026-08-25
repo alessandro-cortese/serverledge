@@ -19,7 +19,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/gcp-config.sh"
+source "${SCRIPT_DIR}/gcp_config.sh"
 
 REPO_URL="${REPO_URL:-https://github.com/alessandro-cortese/serverledge.git}"
 REPO_BRANCH="${REPO_BRANCH:-main}"
