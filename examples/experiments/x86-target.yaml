@@ -1,0 +1,12 @@
+registry:
+  area: "cloud-region"
+  udp.port: 9877
+
+
+
+etcd:
+  address: "5.6.7.8:2379" # set to IP of VM hosting the LB (public one)
+
+container:
+  pool:
+    memory: 4096

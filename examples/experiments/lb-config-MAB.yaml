@@ -1,0 +1,14 @@
+
+registry:
+  area: "cloud-region"
+  udp.port: 9877
+
+lb:
+  replicas: 128
+  mode: "MAB"
+  refresh_interval: 30
+
+mab.policy: "LinUCB"
+
+etcd:
+  address: "127.0.0.1:2379"

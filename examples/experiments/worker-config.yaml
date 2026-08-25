@@ -1,0 +1,15 @@
+registry:
+  area: "cloud-region"
+  udp.port: 9877
+
+
+
+etcd:
+  address: "1.2.3.4:2379"
+
+container:
+  pool:
+    memory: 12000
+
+janitor:
+  interval: 60
