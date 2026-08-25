@@ -41,11 +41,23 @@ fi
 
 banner "REGOLE FIREWALL"
 
-MY_IP="$(curl -s --max-time 10 ifconfig.me || true)"
+# Serve l'indirizzo IPv4: le VM create qui hanno solo indirizzi IPv4, quindi le
+# connessioni in uscita dal portatile useranno IPv4 anche se la rete locale ha
+# anche IPv6. Senza -4, curl puo' restituire un indirizzo IPv6 che GCP rifiuta
+# in un intervallo /32.
+if [[ -z "${MY_IP:-}" ]]; then
+    for service in "https://ifconfig.me" "https://api.ipify.org" "https://ipv4.icanhazip.com"; do
+        MY_IP="$(curl -4 -s --max-time 10 "$service" | tr -d '[:space:]' || true)"
+        [[ -n "$MY_IP" ]] && break
+    done
+fi
 
-if [[ -z "$MY_IP" ]]; then
-    echo "Impossibile determinare l'IP pubblico locale."
-    echo "Imposta MY_IP a mano ed esegui di nuovo."
+if [[ ! "$MY_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Impossibile determinare un indirizzo IPv4 pubblico valido."
+    echo "Ottenuto: '${MY_IP:-vuoto}'"
+    echo
+    echo "Indicalo a mano, per esempio:"
+    echo "    MY_IP=1.2.3.4 ./gcp_up.sh"
     exit 1
 fi
 

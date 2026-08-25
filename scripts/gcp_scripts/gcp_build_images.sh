@@ -49,6 +49,11 @@ cat > "$STARTUP" <<EOF
 #!/bin/bash
 set -euxo pipefail
 
+# Se una qualsiasi istruzione fallisce viene scritta una sentinella di errore:
+# senza, chi attende il completamento resta bloccato fino al timeout anche
+# quando il setup e' gia' morto dopo pochi secondi.
+trap 'touch /var/log/serverledge-setup-failed' ERR
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
@@ -76,7 +81,17 @@ curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-\${GOARCH}.tar.gz" \\
 rm -rf /usr/local/go
 tar -C /usr/local -xzf /tmp/go.tar.gz
 echo 'export PATH=\$PATH:/usr/local/go/bin' > /etc/profile.d/go.sh
+
+# Lo startup script gira come root ma con un ambiente minimo in cui HOME non e'
+# impostata. Go ricava GOPATH e GOMODCACHE da \$HOME e senza di essa fallisce
+# con "module cache not found: neither GOMODCACHE nor GOPATH is set".
+export HOME=/root
+export GOPATH=/root/go
+export GOMODCACHE=/root/go/pkg/mod
+export GOCACHE=/root/.cache/go-build
 export PATH=\$PATH:/usr/local/go/bin
+
+mkdir -p "\$GOMODCACHE" "\$GOCACHE"
 
 # Serverledge
 git clone --branch "${REPO_BRANCH}" "${REPO_URL}" /opt/serverledge
@@ -84,9 +99,19 @@ cd /opt/serverledge
 make
 
 # Le immagini runtime vanno costruite sull'architettura di destinazione:
-# il Makefile usa "docker build" senza buildx, quindi un'immagine costruita
-# su x86 non gira su ARM.
-make images || true
+# le basi dei Dockerfile sono multi-arch, quindi su ARM si ottengono immagini
+# arm64 con lo stesso tag che runtimes.go si aspetta.
+#
+# Un fallimento qui non deve interrompere il setup — l'immagine della VM resta
+# comunque utile — ma va reso visibile invece di essere ingoiato.
+if make images; then
+    echo ok > /var/log/serverledge-images-status
+else
+    echo failed > /var/log/serverledge-images-status
+fi
+
+docker images --format '{{.Repository}}:{{.Tag}} {{.Size}}' \
+    > /var/log/serverledge-images.txt 2>&1 || true
 
 # L'utente che entrerà via SSH deve poter usare Docker senza sudo.
 groupadd -f docker
@@ -123,21 +148,40 @@ build_one() {
     echo "VM $name creata, attendo il completamento del setup..."
 
     local waited=0
-    local timeout=2400
+    local timeout=5400
 
     while (( waited < timeout )); do
 
-        if gc compute ssh "$name" --zone="$ZONE" --quiet \
-            --command="test -f /var/log/serverledge-setup-done" \
-            >/dev/null 2>&1; then
+        local state
+        state="$(
+            gc compute ssh "$name" --zone="$ZONE" --quiet --command="
+                if [ -f /var/log/serverledge-setup-done ]; then echo done;
+                elif [ -f /var/log/serverledge-setup-failed ]; then echo failed;
+                else echo running; fi
+            " 2>/dev/null | tr -d '[:space:]' || echo unreachable
+        )"
 
-            echo "Setup completato dopo ${waited}s."
-            break
-        fi
+        case "$state" in
+            done)
+                echo "Setup completato dopo ${waited}s."
+                break
+                ;;
+            failed)
+                echo
+                echo "Il setup e' fallito. Ultime righe del log:"
+                gc compute ssh "$name" --zone="$ZONE" --quiet --command="
+                    sudo journalctl -u google-startup-scripts --no-pager | tail -30
+                " || true
+                echo
+                echo "La VM $name resta accesa per l'analisi. Cancellala con:"
+                echo "    gcloud compute instances delete $name --zone=$ZONE --quiet"
+                exit 1
+                ;;
+        esac
 
         sleep 30
         waited=$(( waited + 30 ))
-        echo "  ...${waited}s"
+        echo "  ...${waited}s  ($state)"
     done
 
     if (( waited >= timeout )); then
@@ -145,6 +189,18 @@ build_one() {
         echo "    gcloud compute ssh $name --zone=$ZONE --command='sudo journalctl -u google-startup-scripts'"
         exit 1
     fi
+
+    echo
+    echo "Esito della costruzione delle immagini runtime:"
+    gc compute ssh "$name" --zone="$ZONE" --quiet --command="
+        echo -n '  make images: '
+        cat /var/log/serverledge-images-status 2>/dev/null || echo sconosciuto
+        echo '  immagini Docker presenti:'
+        sed 's/^/    /' /var/log/serverledge-images.txt 2>/dev/null || echo '    (nessuna)'
+        echo -n '  commit del repository: '
+        git -C /opt/serverledge rev-parse --short HEAD 2>/dev/null || echo sconosciuto
+    " || echo "  (lettura non riuscita)"
+    echo
 
     gc compute instances stop "$name" --zone="$ZONE" --quiet
 
