@@ -1,5 +1,6 @@
 FROM alpine:latest
 
+RUN apk add --no-cache sysbench
 COPY images/go125/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
