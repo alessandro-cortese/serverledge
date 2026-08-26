@@ -28,8 +28,12 @@ EXPERIMENTS_DIR="${EXPERIMENTS_DIR:-/opt/serverledge/examples/experiments}"
 # Memoria e CPU per funzione. Filippo usava container.pool.memory 4096 per nodo;
 # con 512 MB a funzione e nove funzioni il pool da 12000 MB regge senza che le
 # richieste vengano rifiutate per memoria insufficiente.
+# CPUDemand a 0 significa nessuna riserva: Serverledge tiene impegnate le
+# risorse dei container warm anche a funzione ferma, quindi con dieci funzioni
+# distribuite sull'anello una riserva di 1 CPU ciascuna esaurirebbe i quattro
+# core di un nodo non appena quattro funzioni vi finissero sopra.
 FUNC_MEMORY="${FUNC_MEMORY:-512}"
-FUNC_CPU="${FUNC_CPU:-1.0}"
+FUNC_CPU="${FUNC_CPU:-0.0}"
 
 banner "ESPERIMENTO — policy $POLICY, durata $DURATION"
 
@@ -90,7 +94,7 @@ remote "
         name=\$(basename \"\$tar\" .tar)
         \$CLI delete -f \"\$name\" >/dev/null 2>&1 || true
         if out=\$(\$CLI create -f \"\$name\" --runtime go125 --src \"\$tar\" \
-             --memory ${FUNC_MEMORY} --cpu ${FUNC_CPU} 2>&1); then
+             --memory ${FUNC_MEMORY} --cpu ${FUNC_CPU} --update 2>&1); then
             echo \"  \$name registrata\"
         else
             echo \"  \$name NON registrata: \$out\"
