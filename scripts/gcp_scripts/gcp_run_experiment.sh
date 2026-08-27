@@ -23,17 +23,37 @@ DURATION="${2:-20m}"
 USERS="${USERS:-9}"
 SPAWN_RATE="${SPAWN_RATE:-9}"
 
+# Sorgenti delle funzioni: nel repository, di proprieta' di root.
 EXPERIMENTS_DIR="${EXPERIMENTS_DIR:-/opt/serverledge/examples/experiments}"
+
+# Directory di lavoro di locust. Deve essere scrivibile dall'utente SSH:
+# il locustfile scrive experiment_results.csv nella directory corrente, e in
+# /opt/serverledge l'open() fallisce dentro l'event listener senza che
+# l'eccezione risalga — l'esperimento gira ma il CSV per-richiesta, che e'
+# l'unico a contenere l'architettura di esecuzione, non viene mai creato.
+WORK_DIR="${WORK_DIR:-\$HOME/experiments}"
 
 # Memoria e CPU per funzione. Filippo usava container.pool.memory 4096 per nodo;
 # con 512 MB a funzione e nove funzioni il pool da 12000 MB regge senza che le
 # richieste vengano rifiutate per memoria insufficiente.
-# CPUDemand a 0 significa nessuna riserva: Serverledge tiene impegnate le
-# risorse dei container warm anche a funzione ferma, quindi con dieci funzioni
-# distribuite sull'anello una riserva di 1 CPU ciascuna esaurirebbe i quattro
-# core di un nodo non appena quattro funzioni vi finissero sopra.
+# CPUDemand deve essere piccolo ma STRETTAMENTE POSITIVO.
+#
+# Serverledge tiene impegnate le risorse dei container warm anche a funzione
+# ferma: con nove funzioni distribuite sull'anello, una riserva di 1 CPU
+# ciascuna esaurirebbe i quattro core di un nodo non appena quattro funzioni vi
+# finissero sopra, e le invocazioni successive verrebbero rifiutate con
+# "Node has not enough resources".
+#
+# Zero pero' non e' ammesso: la CPU configurata fa parte dell'identita' del
+# FunctionProfile — e' uno dei quattro campi della chiave di raggruppamento — e
+# la pipeline di profiling la valida con finitePositive in quattro punti. Con
+# CPUDemand a zero l'aggregazione fallisce con "configured CPUs are invalid: 0"
+# e i campioni raccolti risultano inutilizzabili.
+#
+# 0.25 soddisfa entrambi i vincoli: nel caso peggiore nove funzioni sullo stesso
+# nodo impegnano 2,25 core su 4.
 FUNC_MEMORY="${FUNC_MEMORY:-512}"
-FUNC_CPU="${FUNC_CPU:-0.0}"
+FUNC_CPU="${FUNC_CPU:-0.25}"
 
 banner "ESPERIMENTO — policy $POLICY, durata $DURATION"
 
@@ -55,20 +75,37 @@ remote() {
 
 banner "PREPARAZIONE"
 
+# locust va installato in un virtualenv dedicato.
+#
+# Con "pip3 install --break-system-packages" su Ubuntu 24.04 l'installazione
+# riesce ma lascia le dipendenze di gevent incomplete, e locust muore all'avvio
+# con "ModuleNotFoundError: No module named 'zope.event'". Il virtualenv le
+# risolve correttamente ed e' comunque la forma corretta.
+#
+# LOCUST_BIN e' il percorso assoluto: affidarsi al PATH non basta, perche' una
+# eventuale installazione rotta in ~/.local/bin verrebbe trovata per prima.
+LOCUST_BIN="\$HOME/locust-venv/bin/locust"
+
 remote "
     cd /opt/serverledge && sudo git pull --quiet || true
 
-    # pip installa gli eseguibili in ~/.local/bin, che non e' nel PATH delle
-    # sessioni SSH non interattive.
-    export PATH=\$HOME/.local/bin:\$PATH
-
-    if ! command -v locust >/dev/null 2>&1; then
-        echo 'Installo locust...'
-        pip3 install --quiet --break-system-packages locust 2>&1 | grep -v WARNING || true
+    if [ ! -x ${LOCUST_BIN} ]; then
+        echo 'Creo il virtualenv e installo locust...'
+        python3 -m venv \$HOME/locust-venv
+        \$HOME/locust-venv/bin/pip install --quiet --upgrade pip
+        \$HOME/locust-venv/bin/pip install --quiet locust
     fi
 
-    locust --version
-    ls ${EXPERIMENTS_DIR}/locustfile.py
+    # Se locust non parte, l'esperimento non puo' procedere: meglio fermarsi
+    # qui che scoprirlo dopo aver registrato le funzioni.
+    if ! ${LOCUST_BIN} --version; then
+        echo 'FATAL: locust non funziona.'
+        exit 1
+    fi
+
+    mkdir -p ${WORK_DIR}
+    cp ${EXPERIMENTS_DIR}/locustfile.py ${WORK_DIR}/
+    ls -la ${WORK_DIR}/locustfile.py
 "
 
 # --- 2. Registrazione delle funzioni -----------------------------------------
@@ -79,40 +116,97 @@ remote "
 
 banner "REGISTRAZIONE FUNZIONI"
 
-remote "
-    cd ${EXPERIMENTS_DIR}
-    export SERVERLEDGE_HOST=${LB_IP}
-    export SERVERLEDGE_PORT=1323
-    CLI=/opt/serverledge/bin/serverledge-cli
+# Tabella esplicita invece di un glob su *.tar, per tre ragioni:
+#
+#   - il nome di registrazione deve coincidere con quello invocato dal
+#     locustfile, e non sempre corrisponde al nome del file: primenum.tar
+#     va registrato come "primenumber";
+#   - due funzioni sono Python e richiedono runtime e handler diversi;
+#   - la memoria varia per funzione ed e' stata derivata dai requisiti reali
+#     di ciascuna (vedi passo_12_setup_sperimentale_gcp.md, sezione 4.3).
+#
+# Le due funzioni sintetiche usano i bundle V2. Le versioni senza suffisso
+# allocano 256 MB e vi eseguono cinque passate di AES-GCM: impiegano oltre
+# dieci secondi e superano il timeout che il locustfile impone proprio a
+# queste due, fallendo sistematicamente. Le V2 completano in 1-2 secondi, in
+# linea con i risultati della tesi precedente, e sono quindi le versioni su
+# cui il locustfile era stato tarato. Il nome di registrazione resta pero'
+# amd_faster e arm_faster, perche' e' quello che il locustfile invoca.
+#
+# Formato: nome|runtime|sorgente|memoria|handler
+FUNCTIONS=(
+    "primenumber|go125|primenum.tar|512|"
+    "chacha20|go125|chacha20.tar|1024|"
+    "readdisk|go125|readdisk.tar|512|"
+    "readmemory|go125|readmemory.tar|512|"
+    "thread|go125|thread.tar|512|"
+    "amd_faster|go125|amd_fasterV2.tar|1024|"
+    "arm_faster|go125|arm_fasterV2.tar|1024|"
+    "linpack|python312ml|linpack.py|2048|linpack.handler"
+    "filehandle|python314|filehandle.py|512|filehandle.handler"
+)
 
-    # I bundle di Filippo sono TAR contenenti uno ZIP con due binari Go,
-    # handler_amd64 e handler_arm64. L'entrypoint del runtime go125 scompatta
-    # lo zip e sceglie il binario in base a uname -m: e' cosi' che la stessa
-    # funzione gira su entrambe le architetture.
-    for tar in *.tar; do
-        [ -e \"\$tar\" ] || continue
-        name=\$(basename \"\$tar\" .tar)
-        \$CLI delete -f \"\$name\" >/dev/null 2>&1 || true
-        if out=\$(\$CLI create -f \"\$name\" --runtime go125 --src \"\$tar\" \
-             --memory ${FUNC_MEMORY} --cpu ${FUNC_CPU} --update 2>&1); then
-            echo \"  \$name registrata\"
-        else
-            echo \"  \$name NON registrata: \$out\"
-        fi
-    done
-
-    echo
-    echo 'Funzioni registrate:'
-    \$CLI list
+REGISTER_SCRIPT="cd ${EXPERIMENTS_DIR}
+export SERVERLEDGE_HOST=${LB_IP}
+export SERVERLEDGE_PORT=1323
+CLI=/opt/serverledge/bin/serverledge-cli
 "
+
+for entry in "${FUNCTIONS[@]}"; do
+    IFS='|' read -r name runtime src memory handler <<< "$entry"
+
+    handler_flag=""
+    if [[ -n "$handler" ]]; then
+        handler_flag="--handler \"${handler}\""
+    fi
+
+    # --update sovrascrive una funzione gia' presente: senza, create fallisce
+    # con 409 Conflict e i parametri restano quelli della registrazione
+    # precedente.
+    REGISTER_SCRIPT+="
+echo -n \"  ${name}: \"
+\$CLI create -f ${name} --runtime ${runtime} --src ${src} \
+    --memory ${memory} --cpu ${FUNC_CPU} ${handler_flag} --update 2>&1 | tr -d '\n '
+echo
+"
+done
+
+remote "$REGISTER_SCRIPT"
+
+# --- Verifica: una invocazione per funzione ---------------------------------
+#
+# Registrare non basta. Una funzione che risponde in fase di registrazione puo'
+# comunque fallire all'esecuzione — per un comando esterno mancante
+# nell'immagine o per memoria insufficiente — e l'esperimento la conterebbe
+# come fallimento per tutta la sua durata.
+
+banner "VERIFICA — una invocazione per funzione"
+
+VERIFY_SCRIPT="LB=${LB_IP}
+"
+for entry in "${FUNCTIONS[@]}"; do
+    IFS='|' read -r name _ _ _ _ <<< "$entry"
+    VERIFY_SCRIPT+="
+r=\$(curl -s -m 300 -X POST \"http://\${LB}:1323/invoke/${name}\" \
+    -H 'Content-Type: application/json' -d '{\"params\":{}}')
+case \"\$r\" in
+    *'\"Success\":true'*) echo \"  ${name}: OK\" ;;
+    *)                     echo \"  ${name}: FALLITA — \$(echo \$r | head -c 80)\" ;;
+esac
+"
+done
+
+remote "$VERIFY_SCRIPT"
 
 banner "CONTROLLO"
 
 cat <<EOF
-Verifica sopra che tutte le funzioni attese siano presenti prima di procedere.
-Se qualcuna manca, il comando di registrazione va adattato al formato dei
-bundle di Filippo: interrompi qui e sistemalo, perché un esperimento con
-funzioni mancanti non è confrontabile con i suoi risultati.
+Tutte le funzioni sopra devono riportare OK.
+
+Una funzione FALLITA produrrebbe errori per l'intera durata dell'esperimento e
+renderebbe i risultati non confrontabili: interrompi e sistemala prima di
+proseguire. La diagnosi parte sempre dal log del container sul nodo che ha
+eseguito, non dal messaggio restituito al chiamante.
 
 Premi INVIO per lanciare locust per $DURATION, oppure Ctrl-C per fermarti.
 EOF
@@ -129,14 +223,13 @@ RESULT_DIR="/opt/serverledge/results/${POLICY}_${STAMP}"
 remote "
     sudo mkdir -p ${RESULT_DIR}
     sudo chmod 777 ${RESULT_DIR}
-    cd ${EXPERIMENTS_DIR}
+    cd ${WORK_DIR}
 
-    export PATH=\$HOME/.local/bin:\$PATH
     export LB_POLICY=${POLICY}
 
     rm -f experiment_results.csv
 
-    locust -f locustfile.py \
+    \$HOME/locust-venv/bin/locust -f locustfile.py \
         --headless \
         --users ${USERS} \
         --spawn-rate ${SPAWN_RATE} \

@@ -1,0 +1,25 @@
+esperimento:      UCB1
+raccolto il:      2026-08-27T12:03:57+02:00
+zona:             europe-west4-a
+progetto:         serverledge-tesi-ale
+
+nodi x86:         3 (n2-standard-4)
+nodi ARM:         3 (t2a-standard-4)
+load balancer:    n2-standard-4
+registry:         n2-standard-2
+generatore:       e2-standard-2
+provisioning:     STANDARD
+
+commit del codice: 1ef9f5a53a978b8781a815b1bcd4dd79f1cee88c
+
+macchine attive al momento della raccolta:
+  NAME         MACHINE_TYPE    STATUS
+  sl-arm-1     t2a-standard-4  RUNNING
+  sl-arm-2     t2a-standard-4  RUNNING
+  sl-arm-3     t2a-standard-4  RUNNING
+  sl-lb        n2-standard-4   RUNNING
+  sl-registry  n2-standard-2   RUNNING
+  sl-workload  e2-standard-2   RUNNING
+  sl-x86-1     n2-standard-4   RUNNING
+  sl-x86-2     n2-standard-4   RUNNING
+  sl-x86-3     n2-standard-4   RUNNING

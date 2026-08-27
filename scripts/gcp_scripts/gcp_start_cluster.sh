@@ -21,6 +21,12 @@ source "${SCRIPT_DIR}/gcp_config.sh"
 
 POLICY="${1:-RoundRobin}"
 
+# PROFILING=1 attiva la scrittura dei campioni di profiling sui worker.
+# Serve solo per le sessioni di raccolta dati destinate al clustering e al
+# transfer learning: negli esperimenti di confronto fra policy resta spento,
+# perche' la scrittura del JSONL a ogni invocazione altera i tempi misurati.
+PROFILING="${PROFILING:-0}"
+
 case "$POLICY" in
     RoundRobin|LinUCB|UCB1) ;;
     *)
@@ -157,6 +163,20 @@ remote "$NAME_REGISTRY" "
 
 # --- 3. Worker ---------------------------------------------------------------
 
+if [[ "$PROFILING" == "1" ]]; then
+    PROFILING_BLOCK="
+profiling:
+  enabled: true
+  export:
+    enabled: true
+    path: \"/var/lib/serverledge/profiling-samples.jsonl\""
+    echo
+    echo "Profiling ATTIVO: i campioni verranno scritti in"
+    echo "  /var/lib/serverledge/profiling-samples.jsonl su ciascun worker"
+else
+    PROFILING_BLOCK=""
+fi
+
 banner "WORKER"
 
 for host in "${WORKERS[@]}"; do
@@ -178,7 +198,11 @@ container:
 
 janitor:
   interval: 60
+${PROFILING_BLOCK}
 EOF
+
+        sudo mkdir -p /var/lib/serverledge
+        sudo chmod 777 /var/lib/serverledge
 
         sudo sh -c 'cd /opt/serverledge && nohup ./bin/serverledge worker.yaml > /var/log/serverledge-node.log 2>&1 &'
     " >/dev/null

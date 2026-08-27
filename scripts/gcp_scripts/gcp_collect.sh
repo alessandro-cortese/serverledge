@@ -51,12 +51,22 @@ fetch() {
 
 banner "LOCUST"
 
-gc compute ssh "$NAME_WORKLOAD" --zone="$ZONE" --quiet --command="
-    sudo chmod -R a+r /opt/serverledge/results 2>/dev/null || true
-    ls -1d /opt/serverledge/results/*/ 2>/dev/null | tail -5
-" || true
+# Viene raccolto solo il run piu' recente: scaricare l'intera cartella results
+# mescolerebbe nella stessa consegna esperimenti diversi, compresi quelli
+# interrotti o falliti, rendendo ambiguo a quale run appartengano i dati.
+LATEST_RUN="$(
+    gc compute ssh "$NAME_WORKLOAD" --zone="$ZONE" --quiet --command="
+        sudo chmod -R a+r /opt/serverledge/results 2>/dev/null || true
+        ls -1dt /opt/serverledge/results/*/ 2>/dev/null | head -1
+    " </dev/null | tr -d '[:space:]' || true
+)"
 
-fetch "$NAME_WORKLOAD" "/opt/serverledge/results/*" "locust/"
+if [[ -z "$LATEST_RUN" ]]; then
+    echo "Nessun run trovato sul generatore di workload."
+else
+    echo "run piu' recente: $LATEST_RUN"
+    fetch "$NAME_WORKLOAD" "${LATEST_RUN}*" "locust/"
+fi
 
 # --- Log del load balancer ---------------------------------------------------
 #
@@ -73,16 +83,23 @@ fetch "$NAME_LB" "/tmp/lb.log" "logs/load-balancer.log"
 
 # --- Log dei worker ----------------------------------------------------------
 
+# I nomi vengono raccolti in un array PRIMA del ciclo: ssh legge dallo stdin
+# ereditato, e in un "while read" alimentato da una pipe consumerebbe le righe
+# rimanenti facendo terminare il ciclo dopo la prima iterazione. E' il motivo
+# per cui una raccolta precedente ha salvato il log di un solo worker su sei.
+WORKER_HOSTS=()
 while read -r host; do
-    [[ -z "$host" ]] && continue
+    [[ -n "$host" ]] && WORKER_HOSTS+=("$host")
+done < <(x86_node_names; arm_node_names)
+
+for host in "${WORKER_HOSTS[@]}"; do
 
     gc compute ssh "$host" --zone="$ZONE" --quiet \
         --command="sudo cp /var/log/serverledge-node.log /tmp/node.log && sudo chmod a+r /tmp/node.log" \
-        >/dev/null 2>&1 || true
+        </dev/null >/dev/null 2>&1 || true
 
     fetch "$host" "/tmp/node.log" "logs/${host}.log"
-
-done < <(x86_node_names; arm_node_names)
+done
 
 # --- Manifest ----------------------------------------------------------------
 #
@@ -91,9 +108,21 @@ done < <(x86_node_names; arm_node_names)
 
 banner "MANIFEST"
 
+# Il modello di provisioning viene letto dalle istanze ancora attive invece
+# che dalla variabile SPOT: quest'ultima riflette come e' stato invocato
+# gcp_up.sh, non come sono realmente le macchine, e un manifest che dichiara
+# on-demand macchine spot renderebbe non riproducibile l'esperimento.
+PROVISIONING_REALE="$(
+    gc compute instances list --zones="$ZONE" \
+        --format="value(scheduling.provisioningModel)" 2>/dev/null \
+    | sort -u | tr '\n' ' ' | sed 's/ $//' || echo sconosciuto
+)"
+
+[[ -z "$PROVISIONING_REALE" ]] && PROVISIONING_REALE="sconosciuto (istanze gia' distrutte)"
+
 CODE_COMMIT="$(
     gc compute ssh "$NAME_LB" --zone="$ZONE" --quiet \
-        --command="sudo git -C /opt/serverledge rev-parse HEAD" 2>/dev/null | tr -d '[:space:]' || echo sconosciuto
+        --command="sudo git -C /opt/serverledge rev-parse HEAD" </dev/null 2>/dev/null | tr -d '[:space:]' || echo sconosciuto
 )"
 
 cat > "${DEST}/manifest.txt" <<EOF
@@ -107,7 +136,7 @@ nodi ARM:         ${N_ARM} (${MT_ARM})
 load balancer:    ${MT_LB}
 registry:         ${MT_REGISTRY}
 generatore:       ${MT_WORKLOAD}
-provisioning:     $([[ "$SPOT" == "1" ]] && echo SPOT || echo on-demand)
+provisioning:     ${PROVISIONING_REALE}
 
 commit del codice: ${CODE_COMMIT}
 
