@@ -106,7 +106,7 @@ def load_preprocessed_dataset(path: Path) -> tuple[list[dict[str, str]], np.ndar
             raise ValueError(f"row {row_number}: " "unsupported source CSV schema")
 
         if row["function_profile_schema_version"] != str(
-            preprocess.FUNCTION_PROFILE_SCHEMA_VERSION
+                preprocess.FUNCTION_PROFILE_SCHEMA_VERSION
         ):
             raise ValueError(f"row {row_number}: " "unsupported " "FunctionProfile schema")
 
@@ -315,13 +315,13 @@ def predict_kmeans_from_artifact(matrix: np.ndarray, model: dict) -> np.ndarray:
 
 
 def build_artifact(
-    input_path: Path,
-    run_id: str,
-    metadata: dict,
-    algorithm: str,
-    sample_count: int,
-    parameters: dict,
-    result: dict,
+        input_path: Path,
+        run_id: str,
+        metadata: dict,
+        algorithm: str,
+        sample_count: int,
+        parameters: dict,
+        result: dict,
 ) -> dict:
     run_id = run_id.strip()
 
