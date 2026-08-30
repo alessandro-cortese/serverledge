@@ -27,6 +27,13 @@ POLICY="${1:-RoundRobin}"
 # perche' la scrittura del JSONL a ogni invocazione altera i tempi misurati.
 PROFILING="${PROFILING:-0}"
 
+# TRANSFER=1 abilita l'endpoint POST /mab/transfer/initialize sul load
+# balancer. E' disattivato di default perche' e' una superficie di controllo
+# sperimentale: non altera UCB1 ne' LinUCB, si limita a invocare il percorso
+# donor-selection -> inizializzazione gia' validato, ma va acceso solo nei run
+# della condizione "con transfer".
+TRANSFER="${TRANSFER:-0}"
+
 case "$POLICY" in
     RoundRobin|LinUCB|UCB1) ;;
     *)
@@ -227,6 +234,14 @@ fi
 
 # --- 4. Load balancer --------------------------------------------------------
 
+if [[ "$TRANSFER" == "1" ]]; then
+    TRANSFER_ENABLED="true"
+    echo
+    echo "Transfer control API ATTIVA: POST /mab/transfer/initialize"
+else
+    TRANSFER_ENABLED="false"
+fi
+
 banner "LOAD BALANCER"
 
 remote "$NAME_LB" "
@@ -244,6 +259,11 @@ lb:
   refresh_interval: 30
 
 mab.policy: \"${POLICY}\"
+
+mab:
+  transfer:
+    control:
+      enabled: ${TRANSFER_ENABLED}
 
 etcd:
   address: \"${REGISTRY_IP}:2379\"
