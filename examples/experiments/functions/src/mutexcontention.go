@@ -23,11 +23,10 @@ func myHandler(params map[string]interface{}) (interface{}, error) {
 		workers = int(val)
 	}
 
-	// Ridotto da 400.000 a 150.000 in fase di taratura. Il numero di worker
-	// resta legato a NumCPU() di proposito: questa e' l'unica funzione la cui
-	// durata dipende esplicitamente dal numero di core, ed e' quindi la piu'
-	// utile nello scenario con famiglie di macchine di potenza diversa.
-	incrementsPerWorker := 150000
+	// Il numero di worker resta legato a NumCPU(): questa e' l'unica funzione
+	// la cui durata dipende esplicitamente dal numero di core, ed e' quindi la
+	// piu' utile nello scenario con famiglie di macchine di potenza diversa.
+	incrementsPerWorker := 400000
 	if val, ok := params["increments"].(float64); ok {
 		incrementsPerWorker = int(val)
 	}

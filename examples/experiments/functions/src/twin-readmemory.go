@@ -2,19 +2,30 @@ package main
 
 // twin-readmemory — SINTETICA, gruppo "gemelle".
 //
-// Scopo: replicare il profilo di readmemory con un'implementazione diversa.
-// L'originale invoca "sysbench memory"; qui si scorre un buffer in modo
-// sequenziale con passo pari alla linea di cache.
+// Replica il PROFILO DI RISORSE di readmemory con un'implementazione diversa.
+// L'originale invoca "sysbench memory"; qui si scorre un buffer con passo pari
+// alla linea di cache.
 //
-// L'accesso e' sequenziale e prevedibile, quindi il prefetch hardware lavora
-// bene e i page fault restano bassi: e' l'opposto di randomaccess, che opera
-// sullo stesso volume di memoria ma in ordine casuale. Le tre funzioni
-// insieme — readmemory, twin-readmemory, randomaccess — permettono di
-// verificare se lo spazio delle feature separi il pattern di accesso dal
-// volume di memoria toccato.
+// TARATURA. I valori predefiniti colpiscono il profilo misurato
+// dell'originale sulla campagna x86 a trenta funzioni:
 //
-// VERIFICA ATTESA: il donor selezionato per questa funzione deve essere
-// readmemory, non randomaccess.
+//     readmemory         page fault 778    CPU utente 14.046 ms    kernel 16 ms
+//
+// La prima versione usava passes=30 su un buffer allocato una volta sola, e
+// produceva 764 ms di CPU utente e ZERO page fault. Entrambi i valori erano
+// sbagliati rispetto al bersaglio, e per ragioni diverse.
+//
+// Il tempo CPU si corregge con piu' passate. I page fault richiedono invece un
+// cambiamento strutturale: un buffer allocato una volta e poi riletto non ne
+// genera, perche' le pagine restano assegnate. sysbench memory alloca e
+// rilascia ripetutamente, ed e' quello a produrre i 778 page fault
+// dell'originale. Qui il buffer viene quindi riallocato a blocchi durante
+// l'esecuzione.
+//
+// VERIFICA ATTESA: il donor selezionato deve essere readmemory, non
+// randomaccess, benche' quest'ultima operi su un volume di memoria analogo:
+// la differenza sta nel pattern di accesso, sequenziale contro casuale, ed e'
+// precisamente cio' che lo spazio delle feature dovrebbe distinguere.
 
 import (
 	"runtime"
@@ -28,38 +39,58 @@ func myHandler(params map[string]interface{}) (interface{}, error) {
 		sizeMB = int(val)
 	}
 
-	passes := 30
+	// 550 passate portano la CPU utente da 764 ms a circa 14 secondi, il
+	// valore misurato per readmemory.
+	passes := 550
 	if val, ok := params["passes"].(float64); ok {
 		passes = int(val)
 	}
 
-	size := sizeMB * 1024 * 1024
-	buffer := make([]byte, size)
-
-	for i := range buffer {
-		buffer[i] = byte(i)
+	// Ogni quante passate rilasciare e riallocare il buffer. La riallocazione
+	// costringe il sistema operativo a riassegnare le pagine, generando i page
+	// fault che l'originale produce e che una singola allocazione non
+	// genererebbe.
+	reallocEvery := 25
+	if val, ok := params["realloc_every"].(float64); ok {
+		reallocEvery = int(val)
 	}
 
+	size := sizeMB * 1024 * 1024
+
 	// Passo di 64 byte: una linea di cache. Leggere ogni byte sarebbe
-	// ridondante, perche' il primo accesso a una linea porta in cache anche
-	// i successivi 63.
+	// ridondante, perche' il primo accesso a una linea porta in cache anche i
+	// successivi 63.
 	const stride = 64
 
 	checksum := uint64(0)
+	riallocazioni := 0
+
+	var buffer []byte
 
 	for p := 0; p < passes; p++ {
+		if p%reallocEvery == 0 {
+			buffer = make([]byte, size)
+
+			for i := 0; i < size; i += stride {
+				buffer[i] = byte(i)
+			}
+
+			riallocazioni++
+		}
+
 		for i := 0; i < size; i += stride {
 			checksum += uint64(buffer[i])
 		}
 	}
 
 	return map[string]interface{}{
-		"message":      "Sequential memory scan completed",
-		"size_mb":      sizeMB,
-		"passes":       passes,
-		"processed_gb": (float64(size) * float64(passes)) / 1024 / 1024 / 1024,
-		"checksum":     checksum,
-		"arch":         runtime.GOARCH,
+		"message":       "Sequential memory scan completed",
+		"size_mb":       sizeMB,
+		"passes":        passes,
+		"reallocations": riallocazioni,
+		"processed_gb":  (float64(size) * float64(passes)) / 1024 / 1024 / 1024,
+		"checksum":      checksum,
+		"arch":          runtime.GOARCH,
 	}, nil
 }
 

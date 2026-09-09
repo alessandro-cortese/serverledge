@@ -47,9 +47,39 @@ banner() {
     echo "############################################################"
 }
 
+# pulisci_known_hosts rimuove le chiavi host memorizzate per gli indirizzi IP
+# attualmente assegnati ai worker.
+#
+# GCP riassegna gli indirizzi pubblici fra un cluster e l'altro: un IP usato
+# ieri da un nodo x86 puo' essere assegnato oggi a un nodo ARM. La chiave host
+# e' diversa, e ssh rifiuta la connessione con
+# "REMOTE HOST IDENTIFICATION HAS CHANGED" perche' non puo' distinguere questo
+# caso da un attacco.
+#
+# Il problema si manifesta nella fase di raccolta, che usa scp: la copia
+# fallisce e i campioni restano sulle VM. Se a quel punto il cluster viene
+# distrutto, i dati della campagna sono persi.
+pulisci_known_hosts() {
+    local h ip
+
+    for h in "${WORKERS[@]}"; do
+        ip=$(gcloud compute instances describe "$h" --zone="$ZONE" \
+             --format="value(networkInterfaces[0].accessConfigs[0].natIP)" 2>/dev/null || true)
+
+        [ -z "$ip" ] && continue
+
+        ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip" >/dev/null 2>&1 || true
+        echo "  $h ($ip)"
+    done
+}
+
 banner "1/6  CREAZIONE VM — $NODI nodi $ARCH, on-demand"
 
 ./gcp_up.sh
+
+echo
+echo "Pulizia delle chiavi host per gli indirizzi appena assegnati:"
+pulisci_known_hosts
 
 banner "2/6  AVVIO CLUSTER con profiling"
 
@@ -91,6 +121,9 @@ echo
 USERS="$UTENTI" SPAWN_RATE="$UTENTI" ./gcp_run_experiment.sh RoundRobin "$DURATA"
 
 banner "6/6  RACCOLTA E AGGREGAZIONE"
+
+echo "Pulizia delle chiavi host prima della raccolta:"
+pulisci_known_hosts
 
 cd ../..
 
@@ -140,6 +173,16 @@ bin/serverledge-profiling aggregate \
 bin/serverledge-profiling export-csv \
     --input "data/profiling/raw/${EXPERIMENT}/function-profiles.jsonl" \
     --experiment-id "$EXPERIMENT"
+
+# La raccolta e' l'unico momento in cui i dati passano dalle VM effimere al
+# disco locale: se fallisce, distruggere il cluster significa perdere la
+# campagna. Meglio interrompere con un errore esplicito.
+if [ ! -f "data/profiling/raw/${EXPERIMENT}/function-profiles.jsonl" ]; then
+    echo
+    echo "ERRORE: l'aggregazione non ha prodotto il file dei profili."
+    echo "I campioni sono ancora sulle VM: NON distruggere il cluster."
+    exit 1
+fi
 
 banner "FATTO — $EXPERIMENT"
 

@@ -16,8 +16,7 @@ import (
 )
 
 func myHandler(params map[string]interface{}) (interface{}, error) {
-	// Ridotto da 400 a 150 in fase di taratura.
-	batches := 150
+	batches := 400
 	if val, ok := params["batches"].(float64); ok {
 		batches = int(val)
 	}

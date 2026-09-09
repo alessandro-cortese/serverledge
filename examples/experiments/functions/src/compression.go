@@ -25,8 +25,7 @@ func myHandler(params map[string]interface{}) (interface{}, error) {
 		sizeMB = int(val)
 	}
 
-	// Ridotto da 6 a 2 in fase di taratura.
-	rounds := 2
+	rounds := 6
 	if val, ok := params["rounds"].(float64); ok {
 		rounds = int(val)
 	}

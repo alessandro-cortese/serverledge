@@ -32,8 +32,7 @@ func myHandler(params map[string]interface{}) (interface{}, error) {
 		records = int(val)
 	}
 
-	// Ridotto da 20 a 8 in fase di taratura.
-	rounds := 8
+	rounds := 20
 	if val, ok := params["rounds"].(float64); ok {
 		rounds = int(val)
 	}

@@ -23,10 +23,10 @@ func myHandler(params map[string]interface{}) (interface{}, error) {
 		nodes = int(val)
 	}
 
-	// Ridotto da 60 a 15 milioni in fase di taratura: ogni passo dipende dal
-	// precedente, quindi il tempo cresce linearmente con la latenza di
-	// memoria e sulle VM il carico originario risultava eccessivo.
-	steps := 15 * 1000 * 1000
+	// Ogni passo dipende dal precedente, quindi il tempo cresce linearmente con
+	// la latenza di memoria: e' esattamente la proprieta' che questa funzione
+	// deve esibire, e ridurre i passi la attenuerebbe.
+	steps := 60 * 1000 * 1000
 	if val, ok := params["steps"].(float64); ok {
 		steps = int(val)
 	}

@@ -15,11 +15,9 @@ import (
 )
 
 func myHandler(params map[string]interface{}) (interface{}, error) {
-	// Ridotto da 20 a 5 milioni dopo la caratterizzazione: con 20 milioni la
-	// funzione superava i 35 secondi gia' su una macchina a 32 core, e sulle VM
-	// sperimentali non avrebbe raggiunto i dieci campioni eleggibili nella
-	// finestra di venti minuti.
-	elements := 5 * 1000 * 1000
+	// Il carico non e' stato ridotto per adattarlo alla finestra di misura: i
+	// campioni devono descrivere la funzione, non una sua versione alleggerita.
+	elements := 20 * 1000 * 1000
 	if val, ok := params["elements"].(float64); ok {
 		elements = int(val)
 	}
