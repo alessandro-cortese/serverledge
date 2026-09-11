@@ -11,7 +11,8 @@ def _int_param(params, name, default, minimum, maximum):
 
 def handler(params, context):
     params = params or {}
-    records = _int_param(params, "records", 12000, 1000, 50000)
+
+    records = _int_param(params, "records", 12_000, 1_000, 50_000)
     rounds = _int_param(params, "rounds", 20, 1, 100)
 
     payload = [
@@ -30,19 +31,11 @@ def handler(params, context):
     encoded_bytes = 0
 
     for _ in range(rounds):
-        encoded = json.dumps(
-            payload,
-            separators=(",", ":"),
-            sort_keys=True,
-        )
+        encoded = json.dumps(payload, separators=(",", ":"), sort_keys=True)
         decoded = json.loads(encoded)
 
         encoded_bytes += len(encoded)
-        checksum = (
-                           checksum
-                           + decoded[-1]["id"]
-                           + decoded[records // 2]["group"]
-                   ) & 0xFFFFFFFF
+        checksum = (checksum + decoded[-1]["id"] + decoded[records // 2]["group"]) & 0xFFFFFFFF
 
     return {
         "benchmark": "json_dumps",
