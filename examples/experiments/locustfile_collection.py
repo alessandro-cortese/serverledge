@@ -254,3 +254,6 @@ def make_user_class(function_name):
 for _function_name in FUNCTIONS_TO_RUN:
     _user_class = make_user_class(_function_name)
     globals()[_user_class.__name__] = _user_class
+
+del _function_name
+del _user_class
