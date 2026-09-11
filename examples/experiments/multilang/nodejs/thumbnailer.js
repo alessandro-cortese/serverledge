@@ -79,7 +79,7 @@ function fnv1a32(data) {
   return value >>> 0;
 }
 
-exports.handler = async function handler(params, context) {
+module.exports = async function handler(params, context) {
   params = params || {};
   const srcWidth = intParam(params, "src_width", 1024, 64, 4096);
   const srcHeight = intParam(params, "src_height", 768, 64, 4096);
