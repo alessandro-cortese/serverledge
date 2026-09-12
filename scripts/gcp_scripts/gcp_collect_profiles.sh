@@ -24,12 +24,15 @@
 #   9. scarica CSV e profiling-samples.jsonl in locale.
 #
 # Variabili opzionali:
-#   BATCH_SIZE=3
-#   REQUESTS_PER_FUNCTION=16
+#   BATCH_SIZE=1
+#   REQUESTS_PER_FUNCTION=20
 #   MAX_RUNTIME=90m
 #   DEST_ROOT=./risultati
 #   ONLY_FUNCTIONS=nome1,nome2,...   # opzionale, utile per preflight/rerun
 #   MIN_WARM_VALID=10                 # soglia controllo finale
+#   GCLOUD_RETRIES=8                  # retry per errori transitori gcloud/DNS/API
+#   GCLOUD_RETRY_DELAY=5              # secondi tra i retry
+#   CLUSTER_START_RETRIES=5           # retry dell'avvio cluster
 #
 set -euo pipefail
 
@@ -38,8 +41,8 @@ source "${SCRIPT_DIR}/gcp_config.sh"
 
 ARCH="${1:-}"
 POLICY="RoundRobin"
-BATCH_SIZE="${BATCH_SIZE:-3}"
-REQUESTS_PER_FUNCTION="${REQUESTS_PER_FUNCTION:-16}"
+BATCH_SIZE="${BATCH_SIZE:-1}"
+REQUESTS_PER_FUNCTION="${REQUESTS_PER_FUNCTION:-20}"
 MAX_RUNTIME="${MAX_RUNTIME:-90m}"
 FUNC_CPU="1"
 EXPERIMENTS_DIR="/opt/serverledge/examples/experiments"
@@ -48,6 +51,9 @@ LOCUST_BIN="\$HOME/locust-venv/bin/locust"
 DEST_ROOT="${DEST_ROOT:-${SCRIPT_DIR}/risultati}"
 ONLY_FUNCTIONS="${ONLY_FUNCTIONS:-}"
 MIN_WARM_VALID="${MIN_WARM_VALID:-10}"
+GCLOUD_RETRIES="${GCLOUD_RETRIES:-8}"
+GCLOUD_RETRY_DELAY="${GCLOUD_RETRY_DELAY:-5}"
+CLUSTER_START_RETRIES="${CLUSTER_START_RETRIES:-5}"
 
 case "$ARCH" in
     amd64|arm64) ;;
@@ -69,6 +75,21 @@ fi
 
 if ! [[ "$MIN_WARM_VALID" =~ ^[1-9][0-9]*$ ]]; then
     echo "MIN_WARM_VALID deve essere un intero > 0"
+    exit 1
+fi
+
+if ! [[ "$GCLOUD_RETRIES" =~ ^[1-9][0-9]*$ ]]; then
+    echo "GCLOUD_RETRIES deve essere un intero > 0"
+    exit 1
+fi
+
+if ! [[ "$GCLOUD_RETRY_DELAY" =~ ^[0-9]+$ ]]; then
+    echo "GCLOUD_RETRY_DELAY deve essere un intero >= 0"
+    exit 1
+fi
+
+if ! [[ "$CLUSTER_START_RETRIES" =~ ^[1-9][0-9]*$ ]]; then
+    echo "CLUSTER_START_RETRIES deve essere un intero > 0"
     exit 1
 fi
 
@@ -170,18 +191,58 @@ if [[ -n "$ONLY_FUNCTIONS" ]]; then
     FUNCTIONS=("${filtered[@]}")
 fi
 
-remote() {
+# Esegue un comando gcloud/idempotente con retry. I messaggi di retry vanno
+# su stderr, quindi non contaminano gli output catturati con $(...).
+retry_cmd() {
+    local max_attempts="$1"
+    local delay="$2"
+    shift 2
+
+    local attempt=1
+    local status=0
+
+    while true; do
+        if "$@"; then
+            return 0
+        else
+            status=$?
+        fi
+
+        if (( attempt >= max_attempts )); then
+            echo "ERRORE: comando fallito dopo ${attempt} tentativi: $*" >&2
+            return "$status"
+        fi
+
+        echo "ATTENZIONE: comando fallito (tentativo ${attempt}/${max_attempts})." >&2
+        echo "Riprovo tra ${delay}s: $*" >&2
+        sleep "$delay"
+        attempt=$((attempt + 1))
+    done
+}
+
+# SSH senza retry: usato per Locust, perché ripetere automaticamente una
+# campagna già partita potrebbe duplicare i campioni.
+remote_once() {
     local host="$1"
     shift
     gc compute ssh "$host" --zone="$ZONE" --quiet --command="$*"
 }
 
+# SSH con retry soltanto per operazioni infrastrutturali/idempotenti.
+remote_retry() {
+    local host="$1"
+    shift
+    retry_cmd "$GCLOUD_RETRIES" "$GCLOUD_RETRY_DELAY" \
+        gc compute ssh "$host" --zone="$ZONE" --quiet --command="$*"
+}
+
 running_workers() {
     local prefix="$1"
-    gc compute instances list \
-        --zones="$ZONE" \
-        --filter="name~'^${prefix}-[0-9]+$' AND status=RUNNING" \
-        --format="value(name)" | sort -V
+    retry_cmd "$GCLOUD_RETRIES" "$GCLOUD_RETRY_DELAY" \
+        gc compute instances list \
+            --zones="$ZONE" \
+            --filter="name~'^${prefix}-[0-9]+$' AND status=RUNNING" \
+            --format="value(name)" | sort -V
 }
 
 mapfile -t X86_WORKERS < <(running_workers "sl-x86")
@@ -213,8 +274,9 @@ if (( ${#OTHER_WORKERS[@]} > 0 )); then
 fi
 
 LB_IP="$(
-    gc compute instances describe "$NAME_LB" --zone="$ZONE" \
-        --format="value(networkInterfaces[0].networkIP)"
+    retry_cmd "$GCLOUD_RETRIES" "$GCLOUD_RETRY_DELAY" \
+        gc compute instances describe "$NAME_LB" --zone="$ZONE" \
+            --format="value(networkInterfaces[0].networkIP)"
 )"
 
 STAMP="$(date +%Y%m%d_%H%M%S)"
@@ -233,6 +295,8 @@ echo "richieste per funzione: $REQUESTS_PER_FUNCTION"
 echo "warm validi minimi:     $MIN_WARM_VALID"
 echo "CPU per funzione:       $FUNC_CPU"
 echo "cold start:             conservati"
+echo "retry gcloud:           ${GCLOUD_RETRIES} tentativi ogni ${GCLOUD_RETRY_DELAY}s"
+echo "retry avvio cluster:    ${CLUSTER_START_RETRIES}"
 echo "output locale:          $LOCAL_RESULT_ROOT"
 
 # -----------------------------------------------------------------------------
@@ -241,7 +305,7 @@ echo "output locale:          $LOCAL_RESULT_ROOT"
 
 banner "PREPARAZIONE WORKLOAD"
 
-remote "$NAME_WORKLOAD" "
+remote_retry "$NAME_WORKLOAD" "
     cd /opt/serverledge
     sudo git -c safe.directory=/opt/serverledge pull --ff-only --quiet
 
@@ -273,7 +337,7 @@ remote "$NAME_WORKLOAD" "
 banner "AZZERAMENTO PROFILI PRECEDENTI"
 
 for host in "${ACTIVE_WORKERS[@]}"; do
-    remote "$host" "
+    remote_retry "$host" "
         sudo mkdir -p /var/lib/serverledge
         sudo rm -f /var/lib/serverledge/profiling-samples.jsonl
         sudo chmod 777 /var/lib/serverledge
@@ -308,7 +372,7 @@ fi
 echo 'Catalogo OK: ${#FUNCTIONS[@]} sorgenti presenti.'
 "
 
-remote "$NAME_WORKLOAD" "$CHECK_SCRIPT"
+remote_retry "$NAME_WORKLOAD" "$CHECK_SCRIPT"
 
 # -----------------------------------------------------------------------------
 # Reset del cluster prima di ogni batch.
@@ -321,7 +385,7 @@ reset_cluster_for_batch() {
     banner "RESET CONTAINER"
 
     for host in "${ACTIVE_WORKERS[@]}"; do
-        remote "$host" "
+        remote_retry "$host" "
             sudo pkill -x serverledge >/dev/null 2>&1 || true
             ids=\$(sudo docker ps -aq)
             if [ -n \"\$ids\" ]; then
@@ -331,10 +395,12 @@ reset_cluster_for_batch() {
         echo "  $host: container rimossi"
     done
 
-    N_X86="$ACTIVE_N_X86" \
-    N_ARM="$ACTIVE_N_ARM" \
-    PROFILING=1 \
-        "${SCRIPT_DIR}/gcp_start_cluster.sh" "$POLICY"
+    retry_cmd "$CLUSTER_START_RETRIES" "$GCLOUD_RETRY_DELAY" \
+        env \
+            N_X86="$ACTIVE_N_X86" \
+            N_ARM="$ACTIVE_N_ARM" \
+            PROFILING=1 \
+            "${SCRIPT_DIR}/gcp_start_cluster.sh" "$POLICY"
 }
 
 # -----------------------------------------------------------------------------
@@ -372,7 +438,7 @@ echo
 "
     done
 
-    remote "$NAME_WORKLOAD" "$register_script"
+    remote_retry "$NAME_WORKLOAD" "$register_script"
 }
 
 # -----------------------------------------------------------------------------
@@ -410,7 +476,7 @@ run_batch() {
 
     banner "LOCUST ${batch_tag}"
 
-    remote "$NAME_WORKLOAD" "
+    remote_once "$NAME_WORKLOAD" "
         mkdir -p '${remote_batch_dir}'
         cd ${WORK_DIR}
 
@@ -430,7 +496,7 @@ run_batch() {
 
     banner "CONTROLLO ${batch_tag}"
 
-    remote "$NAME_WORKLOAD" "python3 - '${remote_batch_dir}/experiment_results.csv' <<'PY'
+    remote_retry "$NAME_WORKLOAD" "python3 - '${remote_batch_dir}/experiment_results.csv' <<'PY'
 import csv
 import sys
 from collections import defaultdict
@@ -498,18 +564,20 @@ banner "DOWNLOAD RISULTATI"
 mkdir -p "${LOCAL_RESULT_ROOT}/locust" "${LOCAL_RESULT_ROOT}/raw"
 
 # Risultati Locust di tutti i batch.
-gc compute scp --zone="$ZONE" --quiet --recurse \
-    "${NAME_WORKLOAD}:${REMOTE_RESULT_ROOT}" \
-    "${LOCAL_RESULT_ROOT}/locust/"
+retry_cmd "$GCLOUD_RETRIES" "$GCLOUD_RETRY_DELAY" \
+    gc compute scp --zone="$ZONE" --quiet --recurse \
+        "${NAME_WORKLOAD}:${REMOTE_RESULT_ROOT}" \
+        "${LOCAL_RESULT_ROOT}/locust/"
 
 # Profiling JSONL cumulativo di ogni worker.
 for host in "${ACTIVE_WORKERS[@]}"; do
-    remote "$host" "sudo chmod a+r /var/lib/serverledge/profiling-samples.jsonl" \
+    remote_retry "$host" "sudo chmod a+r /var/lib/serverledge/profiling-samples.jsonl" \
         >/dev/null 2>&1 || true
 
-    if gc compute scp --zone="$ZONE" --quiet \
-        "${host}:/var/lib/serverledge/profiling-samples.jsonl" \
-        "${LOCAL_RESULT_ROOT}/raw/${host}.jsonl"; then
+    if retry_cmd "$GCLOUD_RETRIES" "$GCLOUD_RETRY_DELAY" \
+        gc compute scp --zone="$ZONE" --quiet \
+            "${host}:/var/lib/serverledge/profiling-samples.jsonl" \
+            "${LOCAL_RESULT_ROOT}/raw/${host}.jsonl"; then
         echo "  ${host}: profiling JSONL scaricato"
     else
         echo "ERRORE: profiling JSONL assente su ${host}"
@@ -518,7 +586,7 @@ for host in "${ACTIVE_WORKERS[@]}"; do
 done
 
 REMOTE_COMMIT="$(
-    remote "$NAME_WORKLOAD" \
+    remote_retry "$NAME_WORKLOAD" \
         "git -c safe.directory=/opt/serverledge -C /opt/serverledge rev-parse HEAD" \
         </dev/null | tr -d '[:space:]'
 )"
@@ -536,6 +604,9 @@ CPU funzione:            ${FUNC_CPU}
 batch size:              ${BATCH_SIZE}
 richieste per funzione:  ${REQUESTS_PER_FUNCTION}
 warm validi minimi:      ${MIN_WARM_VALID}
+retry gcloud:            ${GCLOUD_RETRIES}
+retry delay secondi:     ${GCLOUD_RETRY_DELAY}
+retry avvio cluster:     ${CLUSTER_START_RETRIES}
 numero funzioni:         ${TOTAL_FUNCTIONS}
 numero batch:            ${TOTAL_BATCHES}
 commit remoto:           ${REMOTE_COMMIT}
