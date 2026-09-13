@@ -284,7 +284,7 @@ if [[ "$ACTUAL_UNAME" != "$EXPECTED_UNAME" ]]; then
 fi
 
 PHYSICAL_MEM_MB="$(
-    remote_retry "$WORKER" "awk '/MemTotal:/ {printf \"%d\n\", \\$2/1024}' /proc/meminfo" \
+    remote_retry "$WORKER" "awk '/MemTotal:/ {printf \"%d\n\", \$2/1024}' /proc/meminfo" \
         </dev/null | tr -d '[:space:]'
 )"
 if [[ ! "$PHYSICAL_MEM_MB" =~ ^[0-9]+$ ]]; then
