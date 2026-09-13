@@ -45,6 +45,23 @@ from locust.exception import StopUser
 CSV_FILE = os.environ.get("COLLECTION_CSV", "experiment_results.csv")
 REQUESTS_PER_FUNCTION = int(os.environ.get("REQUESTS_PER_FUNCTION", "16"))
 
+# Tetto massimo di invocazioni per funzione. Resta REQUESTS_PER_FUNCTION per
+# compatibilita' con gli script esistenti; MAX_REQUESTS_PER_FUNCTION e' un
+# alias piu' esplicito usato dalla raccolta veloce.
+MAX_REQUESTS_PER_FUNCTION = int(
+    os.environ.get("MAX_REQUESTS_PER_FUNCTION", str(REQUESTS_PER_FUNCTION))
+)
+
+# Numero di campioni warm VALIDI oltre il quale la funzione si ferma in
+# anticipo. 0 disattiva lo stop anticipato e ripristina il comportamento
+# precedente: esattamente MAX_REQUESTS_PER_FUNCTION invocazioni.
+TARGET_WARM_VALID = int(os.environ.get("TARGET_WARM_VALID", "0"))
+
+# Riepilogo per funzione, scritto a fine test accanto al CSV.
+SUMMARY_FILE = os.environ.get("COLLECTION_SUMMARY", "")
+
+_function_outcomes = {}
+
 _raw_functions = os.environ.get("FUNCTIONS_TO_RUN", "")
 FUNCTIONS_TO_RUN = [
     function_name.strip()
@@ -60,6 +77,18 @@ if not FUNCTIONS_TO_RUN:
 
 if REQUESTS_PER_FUNCTION <= 0:
     raise RuntimeError("REQUESTS_PER_FUNCTION deve essere > 0")
+
+if MAX_REQUESTS_PER_FUNCTION <= 0:
+    raise RuntimeError("MAX_REQUESTS_PER_FUNCTION deve essere > 0")
+
+if TARGET_WARM_VALID < 0:
+    raise RuntimeError("TARGET_WARM_VALID deve essere >= 0")
+
+if TARGET_WARM_VALID > MAX_REQUESTS_PER_FUNCTION:
+    raise RuntimeError(
+        "TARGET_WARM_VALID non puo' superare MAX_REQUESTS_PER_FUNCTION: "
+        f"{TARGET_WARM_VALID} > {MAX_REQUESTS_PER_FUNCTION}"
+    )
 
 if len(set(FUNCTIONS_TO_RUN)) != len(FUNCTIONS_TO_RUN):
     raise RuntimeError("FUNCTIONS_TO_RUN contiene nomi duplicati")
@@ -109,19 +138,44 @@ def on_test_start(environment, **kwargs):
             csv.writer(csv_file).writerow(CSV_HEADER)
 
     print(f"[COLLECTION] functions={','.join(FUNCTIONS_TO_RUN)}")
-    print(f"[COLLECTION] requests_per_function={REQUESTS_PER_FUNCTION}")
+    print(f"[COLLECTION] max_requests_per_function={MAX_REQUESTS_PER_FUNCTION}")
+    print(f"[COLLECTION] target_warm_valid={TARGET_WARM_VALID}")
+
+
+@events.test_stop.add_listener
+def on_test_stop(environment, **kwargs):
+    """Riepilogo per funzione: consumato dallo script di raccolta."""
+    if not SUMMARY_FILE:
+        return
+
+    with _completion_lock:
+        rows = [
+            (
+                name,
+                _function_outcomes.get(name, {}).get("requests", 0),
+                _function_outcomes.get(name, {}).get("warm_valid", 0),
+                _function_outcomes.get(name, {}).get("target_reached", False),
+            )
+            for name in FUNCTIONS_TO_RUN
+        ]
+
+    with open(SUMMARY_FILE, "w", newline="") as summary_file:
+        writer = csv.writer(summary_file)
+        writer.writerow(["function", "requests", "warm_valid", "target_reached"])
+        for name, requests_made, warm_valid, reached in rows:
+            writer.writerow([name, requests_made, warm_valid, int(reached)])
 
 
 @events.request.add_listener
 def on_request(
-        request_type,
-        name,
-        response_time,
-        response_length,
-        response,
-        exception,
-        context,
-        **kwargs,
+    request_type,
+    name,
+    response_time,
+    response_length,
+    response,
+    exception,
+    context,
+    **kwargs,
 ):
     policy = os.environ.get("LB_POLICY", "unknown")
     sample_index = context.get("sample_index", "") if context else ""
@@ -173,23 +227,60 @@ def on_request(
         response_time or 0,
         profile_valid,
         exclusive_container,
-        ]
+    ]
 
     with _csv_lock:
         with open(CSV_FILE, "a", newline="") as csv_file:
             csv.writer(csv_file).writerow(row)
 
 
-def mark_function_completed(function_name, environment):
+def is_valid_warm_sample(data):
+    """Campione warm utilizzabile per il clustering.
+
+    Devono valere contemporaneamente: esecuzione riuscita, container warm,
+    ResourceProfile valido e container esclusivo durante la misura.
+    """
+    if not data.get("Success", False):
+        return False
+
+    if not data.get("IsWarmStart", False):
+        return False
+
+    profile = data.get("ResourceProfile") or {}
+
+    return bool(profile.get("valid")) and bool(profile.get("exclusive_container"))
+
+
+def mark_function_completed(
+        function_name,
+        environment,
+        requests_made=0,
+        warm_valid=0,
+):
     should_quit = False
 
     with _completion_lock:
         _completed_functions.add(function_name)
+        _function_outcomes[function_name] = {
+            "requests": requests_made,
+            "warm_valid": warm_valid,
+            "target_reached": (
+                TARGET_WARM_VALID == 0 or warm_valid >= TARGET_WARM_VALID
+            ),
+        }
 
-        print(
-            f"[COLLECTION] completed {function_name} "
-            f"({len(_completed_functions)}/{len(FUNCTIONS_TO_RUN)})"
-        )
+        if TARGET_WARM_VALID > 0 and warm_valid < TARGET_WARM_VALID:
+            print(
+                f"[COLLECTION] INCOMPLETE {function_name} "
+                f"warm_valid={warm_valid}/{TARGET_WARM_VALID} "
+                f"dopo {requests_made} invocazioni"
+            )
+        else:
+            print(
+                f"[COLLECTION] completed {function_name} "
+                f"({len(_completed_functions)}/{len(FUNCTIONS_TO_RUN)}) "
+                f"requests={requests_made} warm_valid={warm_valid}"
+            )
 
         if len(_completed_functions) == len(FUNCTIONS_TO_RUN):
             should_quit = True
@@ -211,21 +302,23 @@ def make_user_class(function_name):
 
         def on_start(self):
             self.sample_index = 0
+            self.warm_valid = 0
 
         @task
         def invoke(self):
-            if self.sample_index >= REQUESTS_PER_FUNCTION:
+            if self.sample_index >= MAX_REQUESTS_PER_FUNCTION:
                 raise StopUser()
 
             self.sample_index += 1
+            counts_as_valid_warm = False
 
             with self.client.post(
-                    f"/invoke/{self.function}",
-                    json={"params": {}},
-                    name=self.function,
-                    timeout=self.function_timeout,
-                    context={"sample_index": self.sample_index},
-                    catch_response=True,
+                f"/invoke/{self.function}",
+                json={"params": {}},
+                name=self.function,
+                timeout=self.function_timeout,
+                context={"sample_index": self.sample_index},
+                catch_response=True,
             ) as response:
                 if response.status_code != 200:
                     response.failure(f"HTTP {response.status_code}")
@@ -238,8 +331,22 @@ def make_user_class(function_name):
                         if not data.get("Success", False):
                             response.failure("Serverledge Success=false")
 
-            if self.sample_index >= REQUESTS_PER_FUNCTION:
-                mark_function_completed(self.function, self.environment)
+                        counts_as_valid_warm = is_valid_warm_sample(data)
+
+            if counts_as_valid_warm:
+                self.warm_valid += 1
+
+            reached_target = (
+                TARGET_WARM_VALID > 0 and self.warm_valid >= TARGET_WARM_VALID
+            )
+
+            if reached_target or self.sample_index >= MAX_REQUESTS_PER_FUNCTION:
+                mark_function_completed(
+                    self.function,
+                    self.environment,
+                    self.sample_index,
+                    self.warm_valid,
+                )
                 raise StopUser()
 
     safe_name = re.sub(r"[^A-Za-z0-9]+", "_", function_name)

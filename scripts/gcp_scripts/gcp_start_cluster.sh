@@ -184,6 +184,42 @@ else
     PROFILING_BLOCK=""
 fi
 
+# -----------------------------------------------------------------------------
+# Parametri del pool container e del janitor.
+#
+# I default riproducono esattamente il comportamento precedente: interval 60 e
+# nessuna chiave container.expiration nel worker.yaml, quindi Serverledge usa il
+# proprio default di 600 secondi. La raccolta profili veloce li sovrascrive con
+# valori brevi per far recuperare il container dal janitor invece di riavviare
+# l'intero cluster fra una funzione e l'altra.
+# -----------------------------------------------------------------------------
+
+JANITOR_INTERVAL="${JANITOR_INTERVAL:-60}"
+CONTAINER_EXPIRATION="${CONTAINER_EXPIRATION:-}"
+CONTAINER_POOL_MEMORY="${CONTAINER_POOL_MEMORY:-12000}"
+
+if ! [[ "$JANITOR_INTERVAL" =~ ^[1-9][0-9]*$ ]]; then
+    echo "JANITOR_INTERVAL deve essere un intero > 0"
+    exit 1
+fi
+
+if ! [[ "$CONTAINER_POOL_MEMORY" =~ ^[1-9][0-9]*$ ]]; then
+    echo "CONTAINER_POOL_MEMORY deve essere un intero > 0"
+    exit 1
+fi
+
+if [[ -n "$CONTAINER_EXPIRATION" ]]; then
+    if ! [[ "$CONTAINER_EXPIRATION" =~ ^[1-9][0-9]*$ ]]; then
+        echo "CONTAINER_EXPIRATION deve essere un intero > 0"
+        exit 1
+    fi
+    EXPIRATION_BLOCK="  expiration: ${CONTAINER_EXPIRATION}"
+    echo
+    echo "Container expiration: ${CONTAINER_EXPIRATION}s, janitor ogni ${JANITOR_INTERVAL}s"
+else
+    EXPIRATION_BLOCK=""
+fi
+
 banner "WORKER"
 
 for host in "${WORKERS[@]}"; do
@@ -201,10 +237,10 @@ etcd:
 
 container:
   pool:
-    memory: 12000
-
+    memory: ${CONTAINER_POOL_MEMORY}
+${EXPIRATION_BLOCK}
 janitor:
-  interval: 60
+  interval: ${JANITOR_INTERVAL}
 ${PROFILING_BLOCK}
 EOF
 
