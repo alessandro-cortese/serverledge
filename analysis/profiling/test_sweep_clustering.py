@@ -215,6 +215,42 @@ class SweepClusteringTest(unittest.TestCase):
 
         self.assertFalse(row["external_metrics_defined"])
 
+
+    def test_dbscan_metric_sweep_is_recorded(self):
+        manifest, rows = sweep_clustering.run_sweep(
+            self.create_reference(),
+            self.create_preferences(),
+            "metric-test",
+            self.root / "metric-sweep",
+            ["standard"],
+            ["dbscan"],
+            [],
+            [0.2],
+            [3],
+            10,
+            42,
+            ["euclidean", "manhattan", "cosine"],
+        )
+
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(
+            {row["metric"] for row in rows},
+            {"euclidean", "manhattan", "cosine"},
+        )
+        self.assertEqual(
+            manifest["dbscan_metrics"],
+            ["euclidean", "manhattan", "cosine"],
+        )
+
+        for row in rows:
+            self.assertIn(row["metric"], row["configuration_id"])
+
+    def test_duplicate_dbscan_metric_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "duplicate DBSCAN metric"):
+            sweep_clustering.selected_dbscan_metrics(
+                ["euclidean", "euclidean"]
+            )
+
     def test_reference_machine_tag_must_match_ground_truth(self):
         manifest = {"reference": {"aggregation": "mean", "machine_tag": "profiling-test"}}
 

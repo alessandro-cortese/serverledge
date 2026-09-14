@@ -132,6 +132,42 @@ class ClusterTest(unittest.TestCase):
 
         self.assertIsNone(result["silhouette_clustered_only"])
 
+
+    def test_dbscan_supports_multiple_distance_metrics(self):
+        points = [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+            [10.0, 10.0, 10.0, 10.0, 10.0, 10.0],
+            [10.1, 10.1, 10.1, 10.1, 10.1, 10.1],
+        ]
+
+        path = self.write_preprocessed(points)
+        _, matrix, _ = cluster.load_preprocessed_dataset(path)
+
+        for metric in cluster.DBSCAN_METRICS:
+            with self.subTest(metric=metric):
+                labels, parameters, result = cluster.fit_dbscan(
+                    matrix, eps=1.0, min_samples=2, metric=metric
+                )
+
+                self.assertEqual(parameters["metric"], metric)
+                self.assertEqual(len(labels), len(points))
+                self.assertGreaterEqual(result["cluster_count"], 0)
+                self.assertGreaterEqual(result["noise_count"], 0)
+                self.assertGreaterEqual(result["coverage"], 0.0)
+                self.assertLessEqual(result["coverage"], 1.0)
+
+    def test_dbscan_rejects_unsupported_metric(self):
+        matrix = np.asarray(
+            [[0.0] * 6, [1.0] * 6],
+            dtype=np.float64,
+        )
+
+        with self.assertRaisesRegex(ValueError, "unsupported DBSCAN metric"):
+            cluster.fit_dbscan(
+                matrix, eps=0.5, min_samples=1, metric="chebyshev"
+            )
+
     def test_kmeans_rejects_more_clusters_than_samples(self):
         points = [[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1]]
 

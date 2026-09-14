@@ -25,8 +25,8 @@ from analysis.profiling import (
     preprocess,
 )
 
-SWEEP_MANIFEST_SCHEMA_VERSION = 1
-SWEEP_CSV_SCHEMA_VERSION = 1
+SWEEP_MANIFEST_SCHEMA_VERSION = 2
+SWEEP_CSV_SCHEMA_VERSION = 2
 
 SWEEP_SUMMARY_HEADER = [
     "sweep_csv_schema_version",
@@ -38,6 +38,7 @@ SWEEP_SUMMARY_HEADER = [
     "threshold_percent",
     "scaler",
     "algorithm",
+    "metric",
     "configuration_id",
     "status",
     "reason",
@@ -137,6 +138,29 @@ def selected_algorithms(requested: list[str]) -> list[str]:
 
         seen.add(algorithm)
         result.append(algorithm)
+
+    return result
+
+
+def selected_dbscan_metrics(requested: list[str]) -> list[str]:
+    if not requested:
+        return ["euclidean"]
+
+    result = []
+    seen = set()
+
+    for metric in requested:
+        if metric not in cluster.DBSCAN_METRICS:
+            raise ValueError(
+                "unsupported DBSCAN metric "
+                f"{metric!r}; expected one of {cluster.DBSCAN_METRICS}"
+            )
+
+        if metric in seen:
+            raise ValueError(f"duplicate DBSCAN metric {metric!r}")
+
+        seen.add(metric)
+        result.append(metric)
 
     return result
 
@@ -311,6 +335,7 @@ def base_summary_row(
         "threshold_percent": preference_meta["threshold_percent"],
         "scaler": scaler,
         "algorithm": algorithm,
+        "metric": "euclidean" if algorithm == "kmeans" else None,
         "configuration_id": configuration_id,
         "status": None,
         "reason": None,
@@ -433,6 +458,7 @@ def run_sweep(
     min_samples_values: list[int],
     n_init: int,
     random_state: int,
+    dbscan_metrics: list[str] | None = None,
 ) -> tuple[dict, list[dict]]:
     run_id = run_id.strip()
 
@@ -446,6 +472,7 @@ def run_sweep(
     k_values = unique_ints(k_values, "K-Means k", 2)
     eps_values = unique_floats(eps_values, "DBSCAN eps")
     min_samples_values = unique_ints(min_samples_values, "DBSCAN min_samples", 1)
+    dbscan_metrics = selected_dbscan_metrics(dbscan_metrics or [])
 
     if "kmeans" in algorithms and not k_values:
         raise ValueError("at least one --k is " "required when K-Means " "is selected")
@@ -521,53 +548,58 @@ def run_sweep(
                 summary_rows.append(summary)
 
         if "dbscan" in algorithms:
-            for eps in eps_values:
-                for min_samples in min_samples_values:
-                    configuration_number += 1
+            for metric in dbscan_metrics:
+                for eps in eps_values:
+                    for min_samples in min_samples_values:
+                        configuration_number += 1
 
-                    configuration_id = (
-                        f"{configuration_number:04d}_"
-                        f"{scaler}_dbscan_"
-                        f"eps{slug_float(eps)}_"
-                        f"min{min_samples}"
-                    )
+                        configuration_id = (
+                            f"{configuration_number:04d}_"
+                            f"{scaler}_dbscan_"
+                            f"{metric}_"
+                            f"eps{slug_float(eps)}_"
+                            f"min{min_samples}"
+                        )
 
-                    run_dir = runs_dir / configuration_id
-                    summary = base_summary_row(
-                        run_id,
-                        manifest,
-                        preference_meta,
-                        scaler,
-                        "dbscan",
-                        configuration_id,
-                        run_dir,
-                    )
+                        run_dir = runs_dir / configuration_id
+                        summary = base_summary_row(
+                            run_id,
+                            manifest,
+                            preference_meta,
+                            scaler,
+                            "dbscan",
+                            configuration_id,
+                            run_dir,
+                        )
 
-                    summary["eps"] = eps
-                    summary["min_samples"] = min_samples
-                    summary["sample_count"] = len(rows)
-                    labels, parameters, result = cluster.fit_dbscan(matrix, eps, min_samples)
-                    metrics = evaluate_configuration(
-                        run_id,
-                        configuration_id,
-                        run_dir,
-                        preprocessed_path,
-                        rows,
-                        matrix,
-                        metadata,
-                        labels,
-                        parameters,
-                        result,
-                        "dbscan",
-                        manifest["reference"]["machine_tag"],
-                        preferences_path,
-                        preferences,
-                        preference_meta,
-                    )
+                        summary["metric"] = metric
+                        summary["eps"] = eps
+                        summary["min_samples"] = min_samples
+                        summary["sample_count"] = len(rows)
+                        labels, parameters, result = cluster.fit_dbscan(
+                            matrix, eps, min_samples, metric=metric
+                        )
+                        metrics = evaluate_configuration(
+                            run_id,
+                            configuration_id,
+                            run_dir,
+                            preprocessed_path,
+                            rows,
+                            matrix,
+                            metadata,
+                            labels,
+                            parameters,
+                            result,
+                            "dbscan",
+                            manifest["reference"]["machine_tag"],
+                            preferences_path,
+                            preferences,
+                            preference_meta,
+                        )
 
-                    summary.update(metrics)
-                    summary["status"] = "ok"
-                    summary_rows.append(summary)
+                        summary.update(metrics)
+                        summary["status"] = "ok"
+                        summary_rows.append(summary)
 
     summary_path = output_dir / "sweep-summary.csv"
     atomic_summary_csv(summary_path, summary_rows)
@@ -592,6 +624,7 @@ def run_sweep(
         "k_values": k_values,
         "eps_values": eps_values,
         "min_samples_values": min_samples_values,
+        "dbscan_metrics": dbscan_metrics,
         "n_init": n_init,
         "random_state": random_state,
         "configuration_count": len(summary_rows),
@@ -601,7 +634,11 @@ def run_sweep(
         "automatic_winner_selection": False,
         "metric_policy": {
             "dbscan_external_metrics": "noise excluded; coverage " "reported separately",
-            "dbscan_silhouette": "computed on clustered " "samples only",
+            "dbscan_silhouette": (
+                "computed on clustered samples only using the same "
+                "distance metric as DBSCAN"
+            ),
+            "kmeans_distance": "euclidean (fixed by standard K-Means)",
             "kmeans_inertia": "do not compare directly " "across different scalers",
             "selection": "no composite score and " "no automatic winner",
         },
@@ -626,6 +663,7 @@ def run(args: argparse.Namespace) -> None:
         args.min_samples,
         args.n_init,
         args.random_state,
+        args.dbscan_metric,
     )
 
     print(
@@ -652,6 +690,7 @@ def run(args: argparse.Namespace) -> None:
         print(
             "[ok] "
             f"id={row['configuration_id']} "
+            f"metric={row['metric']} "
             f"clusters="
             f"{row['cluster_count']} "
             f"noise={row['noise_count']} "
@@ -731,6 +770,17 @@ def parser() -> argparse.ArgumentParser:
         type=int,
         default=[],
         help=("DBSCAN min_samples; repeat " "for multiple values."),
+    )
+
+    root.add_argument(
+        "--dbscan-metric",
+        action="append",
+        default=[],
+        choices=cluster.DBSCAN_METRICS,
+        help=(
+            "DBSCAN distance metric; repeat for multiple metrics. "
+            "Default: euclidean. K-Means always remains Euclidean."
+        ),
     )
 
     root.add_argument("--n-init", type=int, default=10)

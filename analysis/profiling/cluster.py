@@ -32,6 +32,8 @@ CLUSTERING_MODEL_SCHEMA_VERSION = 1
 
 CLUSTERING_CSV_SCHEMA_VERSION = 1
 
+DBSCAN_METRICS = ("euclidean", "manhattan", "cosine")
+
 FEATURE_NAMES = preprocess.FEATURE_NAMES
 
 INPUT_HEADER = preprocess.OUTPUT_HEADER
@@ -185,7 +187,11 @@ def cluster_sizes(labels: np.ndarray) -> dict[str, int]:
     return result
 
 
-def silhouette_if_defined(matrix: np.ndarray, labels: np.ndarray) -> float | None:
+def silhouette_if_defined(
+    matrix: np.ndarray,
+    labels: np.ndarray,
+    metric: str = "euclidean",
+) -> float | None:
     unique_labels = set(int(value) for value in labels)
     number_of_labels = len(unique_labels)
     number_of_samples = matrix.shape[0]
@@ -193,10 +199,14 @@ def silhouette_if_defined(matrix: np.ndarray, labels: np.ndarray) -> float | Non
     if not (2 <= number_of_labels <= number_of_samples - 1):
         return None
 
-    return float(silhouette_score(matrix, labels, metric="euclidean"))
+    return float(silhouette_score(matrix, labels, metric=metric))
 
 
-def dbscan_silhouette(matrix: np.ndarray, labels: np.ndarray) -> float | None:
+def dbscan_silhouette(
+    matrix: np.ndarray,
+    labels: np.ndarray,
+    metric: str = "euclidean",
+) -> float | None:
     # Noise is deliberately excluded.
     #
     # Treating DBSCAN noise (-1) as if it were a normal cluster
@@ -208,7 +218,7 @@ def dbscan_silhouette(matrix: np.ndarray, labels: np.ndarray) -> float | None:
     if clustered_matrix.shape[0] == 0:
         return None
 
-    return silhouette_if_defined(clustered_matrix, clustered_labels)
+    return silhouette_if_defined(clustered_matrix, clustered_labels, metric=metric)
 
 
 def fit_kmeans(matrix: np.ndarray, clusters: int, n_init: int, random_state: int) -> tuple[np.ndarray, dict, dict]:
@@ -256,20 +266,31 @@ def fit_kmeans(matrix: np.ndarray, clusters: int, n_init: int, random_state: int
     return labels.astype(np.int64), parameters, result
 
 
-def fit_dbscan(matrix: np.ndarray, eps: float, min_samples: int) -> tuple[np.ndarray, dict, dict]:
+def fit_dbscan(
+    matrix: np.ndarray,
+    eps: float,
+    min_samples: int,
+    metric: str = "euclidean",
+) -> tuple[np.ndarray, dict, dict]:
     if not math.isfinite(eps) or eps <= 0:
         raise ValueError("DBSCAN eps must be " "finite and positive")
 
     if min_samples <= 0:
         raise ValueError("DBSCAN min_samples " "must be positive")
 
-    model = DBSCAN(eps=eps, min_samples=min_samples, metric="euclidean")
+    if metric not in DBSCAN_METRICS:
+        raise ValueError(
+            "unsupported DBSCAN metric "
+            f"{metric!r}; expected one of {DBSCAN_METRICS}"
+        )
+
+    model = DBSCAN(eps=eps, min_samples=min_samples, metric=metric)
     labels = (model.fit_predict(matrix)).astype(np.int64)
     cluster_labels = sorted(set(int(value) for value in labels if int(value) >= 0))
     noise_count = int(np.sum(labels == -1))
     clustered_sample_count = int(matrix.shape[0]) - noise_count
     coverage = clustered_sample_count / matrix.shape[0]
-    silhouette = dbscan_silhouette(matrix, labels)
+    silhouette = dbscan_silhouette(matrix, labels, metric=metric)
     core_samples = []
 
     for index in model.core_sample_indices_:
@@ -282,7 +303,7 @@ def fit_dbscan(matrix: np.ndarray, eps: float, min_samples: int) -> tuple[np.nda
             }
         )
 
-    parameters = {"eps": float(eps), "min_samples": int(min_samples), "metric": "euclidean"}
+    parameters = {"eps": float(eps), "min_samples": int(min_samples), "metric": metric}
 
     result = {
         "cluster_count": len(cluster_labels),
@@ -444,7 +465,9 @@ def run_kmeans(args: argparse.Namespace) -> None:
 def run_dbscan(args: argparse.Namespace) -> None:
     input_path = Path(args.input)
     rows, matrix, metadata = load_preprocessed_dataset(input_path)
-    labels, parameters, result = fit_dbscan(matrix, args.eps, args.min_samples)
+    labels, parameters, result = fit_dbscan(
+        matrix, args.eps, args.min_samples, metric=args.metric
+    )
     artifact = build_artifact(input_path, args.run_id, metadata, "dbscan", len(rows), parameters, result)
     atomic_json(Path(args.model), artifact)
     write_assignments(Path(args.output), rows, matrix, labels, artifact)
@@ -454,6 +477,7 @@ def run_dbscan(args: argparse.Namespace) -> None:
         f"rows={len(rows)} "
         f"features={len(FEATURE_NAMES)} "
         f"algorithm=dbscan "
+        f"metric={args.metric} "
         f"clusters={result['cluster_count']} "
         f"noise={result['noise_count']} "
         f"coverage={result['coverage']} "
@@ -486,6 +510,12 @@ def parser() -> argparse.ArgumentParser:
     dbscan.add_argument("--run-id", required=True)
     dbscan.add_argument("--eps", type=float, required=True)
     dbscan.add_argument("--min-samples", type=int, required=True)
+    dbscan.add_argument(
+        "--metric",
+        choices=DBSCAN_METRICS,
+        default="euclidean",
+        help="distance metric used by DBSCAN and its silhouette score",
+    )
     dbscan.add_argument("--model", required=True)
     dbscan.add_argument("--output", required=True)
     dbscan.set_defaults(func=run_dbscan)
