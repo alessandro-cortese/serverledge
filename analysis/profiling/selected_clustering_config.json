@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "selection_id": "clustering-shortlist-v1-20260915",
+  "selection_rule": "Configurations were frozen before inspecting ground-truth metrics. They were selected using only x86/reference-architecture internal structure: silhouette, cluster balance/singletons for K-Means, and coverage, silhouette, cluster balance/noise for DBSCAN.",
+  "feature_sets": {
+    "paper6": {"label": "PAPER-6", "role": "reference-paper baseline"},
+    "paper6_no_framework_runtime_ms": {"label": "PAPER-5", "role": "primary Serverledge candidate; framework_runtime_ms excluded"}
+  },
+  "kmeans": {
+    "source_dir": "kmeans-scaler-minmax",
+    "scaler": "minmax",
+    "configurations": [
+      {"id": "KM-P6-K4", "feature_set": "paper6", "k": 4, "role": "baseline"},
+      {"id": "KM-P6-K5", "feature_set": "paper6", "k": 5, "role": "baseline"},
+      {"id": "KM-P6-K7", "feature_set": "paper6", "k": 7, "role": "granularity-control"},
+      {"id": "KM-P5-K4", "feature_set": "paper6_no_framework_runtime_ms", "k": 4, "role": "primary-candidate"},
+      {"id": "KM-P5-K5", "feature_set": "paper6_no_framework_runtime_ms", "k": 5, "role": "primary-candidate"},
+      {"id": "KM-P5-K7", "feature_set": "paper6_no_framework_runtime_ms", "k": 7, "role": "granularity-control"}
+    ]
+  },
+  "dbscan": {
+    "source_dir": "dbscan-scaler-robust",
+    "scaler": "robust",
+    "metric": "cosine",
+    "configurations": [
+      {"id": "DB-P6-MS4-Q95", "feature_set": "paper6", "min_samples": 4, "eps_quantile": 0.95, "role": "baseline-high-coverage"},
+      {"id": "DB-P6-MS4-Q80", "feature_set": "paper6", "min_samples": 4, "eps_quantile": 0.80, "role": "baseline-balanced"},
+      {"id": "DB-P6-MS3-Q80", "feature_set": "paper6", "min_samples": 3, "eps_quantile": 0.80, "role": "baseline-more-granular"},
+      {"id": "DB-P6-MS4-Q70", "feature_set": "paper6", "min_samples": 4, "eps_quantile": 0.70, "role": "baseline-more-selective"},
+      {"id": "DB-P6-MS3-Q70", "feature_set": "paper6", "min_samples": 3, "eps_quantile": 0.70, "role": "baseline-aggressive-sensitivity"},
+      {"id": "DB-P5-MS4-Q95", "feature_set": "paper6_no_framework_runtime_ms", "min_samples": 4, "eps_quantile": 0.95, "role": "high-coverage"},
+      {"id": "DB-P5-MS4-Q80", "feature_set": "paper6_no_framework_runtime_ms", "min_samples": 4, "eps_quantile": 0.80, "role": "primary-balanced"},
+      {"id": "DB-P5-MS3-Q80", "feature_set": "paper6_no_framework_runtime_ms", "min_samples": 3, "eps_quantile": 0.80, "role": "primary-more-granular"},
+      {"id": "DB-P5-MS4-Q70", "feature_set": "paper6_no_framework_runtime_ms", "min_samples": 4, "eps_quantile": 0.70, "role": "primary-more-selective"},
+      {"id": "DB-P5-MS3-Q70", "feature_set": "paper6_no_framework_runtime_ms", "min_samples": 3, "eps_quantile": 0.70, "role": "aggressive-sensitivity"}
+    ]
+  },
+  "ground_truth_thresholds_percent": [2.5, 5, 10, 15, 20, 25],
+  "primary_reporting_threshold_percent": 15
+}
