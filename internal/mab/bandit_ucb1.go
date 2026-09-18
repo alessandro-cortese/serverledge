@@ -36,8 +36,9 @@ type ArmStats struct {
 	// Prior* contains donor-derived weak statistical evidence applied before
 	// the target function starts learning. Prior state influences selection,
 	// but it is never counted as real or synthetic target experience.
-	PriorObservationWeight float64
-	PriorRewardSum         float64
+	PriorObservationWeight            float64
+	PriorExplorationObservationWeight float64
+	PriorRewardSum                    float64
 }
 
 // UCB1Bandit is the bandit that handles decision for ONE function

@@ -70,20 +70,22 @@ func (bm *BanditManager) InitializeTargetFromDonor(targetFunctionName string, do
 		return RuntimeTransferResult{}, fmt.Errorf("donor function %q uses an unsupported MAB policy type %T", donorFunctionName, donor)
 	}
 
-	prior, err := BuildWeakMABPrior(source, priorConfig)
-	if err != nil {
-		return RuntimeTransferResult{}, fmt.Errorf("build weak prior from donor %q: %w", donorFunctionName, err)
-	}
-
+	// Construct the target before building the prior so that prior semantics are
+	// determined by the target policy, not by the policy variant that happened
+	// to collect the donor's real feedback. The target is still private here
+	// and is published only after successful prior construction/application.
 	target := bm.newBanditLocked(targetFunctionName)
-	if target.GetType() != source.Policy {
-		return RuntimeTransferResult{}, fmt.Errorf("runtime transfer policy mismatch: donor=%s target=%s", source.Policy, target.GetType())
+	targetPolicy := target.GetType()
+
+	prior, err := BuildWeakMABPriorForTarget(source, targetPolicy, priorConfig)
+	if err != nil {
+		return RuntimeTransferResult{}, fmt.Errorf("build weak prior from donor %q for target policy %s: %w", donorFunctionName, targetPolicy, err)
 	}
 
 	result := RuntimeTransferResult{
 		TargetFunctionName: targetFunctionName,
 		DonorFunctionName:  donorFunctionName,
-		Policy:             source.Policy,
+		Policy:             targetPolicy,
 		Applied:            false,
 		Reason:             RuntimeTransferReasonNoTransferablePrior,
 		Prior:              prior,
@@ -112,6 +114,9 @@ func (bm *BanditManager) InitializeTargetFromDonor(targetFunctionName string, do
 func transferableKnowledgeFromPolicy(policy Policy) (TransferableMABKnowledge, bool) {
 	switch typed := policy.(type) {
 	case *UCB1Bandit:
+		return typed.TransferableKnowledge(), true
+
+	case *UCB1DecoupledBandit:
 		return typed.TransferableKnowledge(), true
 
 	case *LinUCBDisjointPolicy:

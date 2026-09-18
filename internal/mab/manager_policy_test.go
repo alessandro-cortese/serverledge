@@ -23,6 +23,16 @@ func TestBanditManagerCreatesConfiguredPolicy(
 			expectedType:     UCB1,
 		},
 		{
+			name:             "decoupled UCB1",
+			configuredPolicy: "UCB1Decoupled",
+			expectedType:     UCB1Decoupled,
+		},
+		{
+			name:             "decoupled UCB1 hyphenated alias",
+			configuredPolicy: "UCB1-Decoupled",
+			expectedType:     UCB1Decoupled,
+		},
+		{
 			name:             "LinUCB",
 			configuredPolicy: "LinUCB",
 			expectedType:     LinUCB,
@@ -77,6 +87,19 @@ func TestBanditManagerCreatesConfiguredPolicy(
 					policy.(type) {
 
 				case *UCB1Bandit:
+					assert.Contains(
+						t,
+						typedPolicy.Arms,
+						"arm-a",
+					)
+
+					assert.Contains(
+						t,
+						typedPolicy.Arms,
+						"arm-b",
+					)
+
+				case *UCB1DecoupledBandit:
 					assert.Contains(
 						t,
 						typedPolicy.Arms,

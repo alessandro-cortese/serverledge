@@ -57,8 +57,8 @@ func (bm *BanditManager) GetBandit(functionName string) Policy {
 // the target policy can be fully initialized with a donor prior before it is
 // published in bm.bandits and becomes visible to request handling.
 func (bm *BanditManager) newBanditLocked(functionName string) Policy {
-
 	var newBandit Policy
+
 	configuredPolicy := config.GetString(config.MAB_POLICY, string(UCB1))
 	log.Printf("BanditManager newBandit: policy type: %s\n", configuredPolicy)
 
@@ -69,8 +69,19 @@ func (bm *BanditManager) newBanditLocked(functionName string) Policy {
 		alpha := config.GetFloat(config.MAB_LINUCB_ALPHA, 0.1)
 		newBandit = NewLinUCBDisjointPolicy(functionName, alpha)
 
+	case "ucb1decoupled", "ucb1-decoupled":
+		newBandit = NewUCB1DecoupledBandit(
+			functionName,
+			config.GetFloat(config.MAB_UCB1_C, 0.8),
+		)
+
 	default:
-		newBandit = NewUCB1Bandit(functionName, config.GetFloat(config.MAB_UCB1_C, 0.8))
+		// Historical behavior is intentionally preserved:
+		// UCB1 and unknown values both resolve to classic/coupled UCB1.
+		newBandit = NewUCB1Bandit(
+			functionName,
+			config.GetFloat(config.MAB_UCB1_C, 0.8),
+		)
 	}
 
 	for _, arm := range bm.knownArms {

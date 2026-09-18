@@ -5,8 +5,9 @@ import "sort"
 type BanditType string
 
 const (
-	UCB1   BanditType = "UCB1"
-	LinUCB BanditType = "LinUCB"
+	UCB1          BanditType = "UCB1"
+	UCB1Decoupled BanditType = "UCB1Decoupled"
+	LinUCB        BanditType = "LinUCB"
 )
 
 // Context carries the system-state snapshot captured at decision time.

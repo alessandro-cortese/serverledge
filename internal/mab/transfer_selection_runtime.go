@@ -246,7 +246,11 @@ func validateDonorSelectionArtifact(artifact DonorSelectionArtifact) error {
 		return fmt.Errorf("selection query function name cannot be empty")
 	}
 
-	if artifact.SelectionPolicy.Distance != "euclidean" {
+	switch artifact.SelectionPolicy.Distance {
+	case "euclidean", "manhattan":
+		// Supported. Clustering remains unchanged; this field only records the
+		// distance used to rank donor candidates inside the assigned cluster.
+	default:
 		return fmt.Errorf("unsupported donor selection distance %q", artifact.SelectionPolicy.Distance)
 	}
 

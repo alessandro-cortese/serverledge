@@ -71,7 +71,7 @@ const LB_MODE = "lb.mode"
 // Select if the load balancer is architecture aware (useful for experiments)
 const Arch_AWARENESS = "lb.arch_awareness"
 
-// Policy for the Multi Armed Bandit (MAB) (i.e.: "LinUcb" or "UCB1")
+// Policy for the Multi Armed Bandit (MAB) (i.e.: "LinUCB", "UCB1" or "UCB1Decoupled")
 const MAB_POLICY = "mab.policy"
 
 // C value for the UCB1 policy

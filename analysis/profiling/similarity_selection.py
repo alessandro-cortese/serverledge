@@ -253,6 +253,26 @@ def euclidean_distance(left: list[float], right: list[float]) -> float:
     )
 
 
+def manhattan_distance(left: list[float], right: list[float]) -> float:
+    if len(left) != len(right):
+        raise ValueError("feature vectors have " "different dimensions")
+
+    return sum(
+        abs(left_value - right_value)
+        for (left_value, right_value) in zip(left, right)
+    )
+
+
+def feature_distance(left: list[float], right: list[float], metric: str) -> float:
+    if metric == "euclidean":
+        return euclidean_distance(left, right)
+
+    if metric == "manhattan":
+        return manhattan_distance(left, right)
+
+    raise ValueError(f"unsupported distance metric {metric!r}")
+
+
 def distance_within_threshold(distance: float, max_distance: float) -> bool:
     return distance < max_distance or math.isclose(
         distance, max_distance, rel_tol=1e-12, abs_tol=1e-12
@@ -277,13 +297,26 @@ def validate_feature_space(query: dict, catalog_meta: dict):
         raise ValueError("query scaler does not " "match donor catalog")
 
 
-def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, max_distance: float, require_same_cluster: bool):
+def select_donor(
+    catalog_path: Path,
+    query_path: Path,
+    selection_run_id: str,
+    max_distance: float,
+    require_same_cluster: bool,
+    distance_metric: str = "euclidean",
+):
     selection_run_id = selection_run_id.strip()
 
     if not selection_run_id:
         raise ValueError("selection run ID " "cannot be empty")
 
     max_distance = parse_finite(max_distance, "max_distance")
+    distance_metric = str(distance_metric).strip().lower()
+
+    if distance_metric not in ("euclidean", "manhattan"):
+        raise ValueError(
+            "distance metric must be euclidean or manhattan"
+        )
 
     if max_distance < 0:
         raise ValueError("max_distance cannot " "be negative")
@@ -301,6 +334,7 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
             query_meta,
             max_distance,
             require_same_cluster,
+            distance_metric,
             "no_eligible_donors",
             [],
         )
@@ -315,6 +349,7 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
             query_meta,
             max_distance,
             require_same_cluster,
+            distance_metric,
             "no_matching_configuration",
             [],
         )
@@ -337,6 +372,7 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
                 query_meta,
                 max_distance,
                 require_same_cluster,
+                distance_metric,
                 "no_same_cluster_candidates",
                 [],
             )
@@ -344,7 +380,11 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
     ranking = []
 
     for donor in candidates:
-        distance = euclidean_distance(query["feature_vector"], donor["feature_vector"])
+        distance = feature_distance(
+            query["feature_vector"],
+            donor["feature_vector"],
+            distance_metric,
+        )
 
         ranking.append(
             {
@@ -384,6 +424,7 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
             query_meta,
             max_distance,
             require_same_cluster,
+            distance_metric,
             "distance_threshold_exceeded",
             ranking,
         )
@@ -397,7 +438,7 @@ def select_donor(catalog_path: Path, query_path: Path, selection_run_id: str, ma
         "reason": "",
         "query": query,
         "selection_policy": {
-            "distance": "euclidean",
+            "distance": distance_metric,
             "max_distance": max_distance,
             "configuration_match_required": True,
             "require_same_cluster": require_same_cluster,
@@ -438,6 +479,7 @@ def build_no_transfer(
     query_meta: dict,
     max_distance: float,
     require_same_cluster: bool,
+    distance_metric: str,
     reason: str,
     ranking: list[dict],
 ):
@@ -448,7 +490,7 @@ def build_no_transfer(
         "reason": reason,
         "query": query,
         "selection_policy": {
-            "distance": "euclidean",
+            "distance": distance_metric,
             "max_distance": max_distance,
             "configuration_match_required": True,
             "require_same_cluster": require_same_cluster,
@@ -534,6 +576,7 @@ def run(args: argparse.Namespace):
         args.run_id,
         args.max_distance,
         args.require_same_cluster,
+        args.distance,
     )
 
     output_json = Path(args.output_json)
@@ -576,6 +619,15 @@ def parser():
     root.add_argument("--query", required=True)
     root.add_argument("--run-id", required=True)
     root.add_argument("--max-distance", required=True, type=float)
+    root.add_argument(
+        "--distance",
+        choices=("euclidean", "manhattan"),
+        default="euclidean",
+        help=(
+            "Distance used only to rank donor candidates inside the "
+            "already-assigned cluster. Default: euclidean."
+        ),
+    )
     root.add_argument("--require-same-cluster", action="store_true")
     root.add_argument("--output-json", required=True)
     root.add_argument("--output-csv", required=True)
