@@ -60,8 +60,8 @@ N_ARM="${N_ARM:-3}"
 # parte dalle immagini pubbliche Ubuntu. Le prime evitano di rifare
 # l'installazione su nove macchine a ogni sessione.
 
-IMAGE_X86="${IMAGE_X86:-sl-x86}"
-IMAGE_ARM="${IMAGE_ARM:-sl-arm}"
+IMAGE_X86="${IMAGE_X86:-sl-x86-20260919}"
+IMAGE_ARM="${IMAGE_ARM:-sl-arm-20260919}"
 
 BASE_IMAGE_X86_FAMILY="ubuntu-2404-lts-amd64"
 BASE_IMAGE_ARM_FAMILY="ubuntu-2404-lts-arm64"
