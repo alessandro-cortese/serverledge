@@ -574,3 +574,358 @@ func transferControlRequestBody(
 
 	return body
 }
+
+func TestMaterializedTransferControlReplaysFrozenUCB1Prior(
+	t *testing.T,
+) {
+	oldManager :=
+		mab.GlobalBanditManager
+
+	viper.Reset()
+
+	t.Cleanup(
+		func() {
+			viper.Reset()
+
+			mab.GlobalBanditManager =
+				oldManager
+		},
+	)
+
+	viper.Set(
+		config.MAB_TRANSFER_CONTROL_ENABLED,
+		true,
+	)
+
+	viper.Set(
+		config.LB_MODE,
+		MAB,
+	)
+
+	viper.Set(
+		config.MAB_POLICY,
+		"UCB1",
+	)
+
+	// ------------------------------------------------------------
+	// Phase A:
+	// build a real materialized prior from donor observations.
+	// ------------------------------------------------------------
+
+	viper.Set(
+		config.MAB_UCB1_C,
+		0.8,
+	)
+
+	mab.InitBanditManager()
+
+	mab.GlobalBanditManager.
+		AddArmToAll(
+			"x86-local",
+		)
+
+	donor :=
+		mab.GlobalBanditManager.
+			GetBandit(
+				"materialized-control-donor",
+			).(*mab.UCB1Bandit)
+
+	for i := 0; i < 4; i++ {
+		donor.UpdateReward(
+			"x86-local",
+			nil,
+			mab.ExecutionFeedback{
+				DurationMs:  10.0,
+				IsWarmStart: true,
+			},
+		)
+	}
+
+	firstBody :=
+		transferControlRequestBody(
+			t,
+			"temporary-source-target",
+			"materialized-control-donor",
+			mab.DonorSelectionStatusSelected,
+			"",
+		)
+
+	firstEcho :=
+		echo.New()
+
+	RegisterTransferControlRoutes(
+		firstEcho,
+	)
+
+	firstReq :=
+		httptest.NewRequest(
+			http.MethodPost,
+			TransferControlInitializePath,
+			bytes.NewReader(
+				firstBody,
+			),
+		)
+
+	firstReq.Header.Set(
+		echo.HeaderContentType,
+		echo.MIMEApplicationJSON,
+	)
+
+	firstRec :=
+		httptest.NewRecorder()
+
+	firstEcho.ServeHTTP(
+		firstRec,
+		firstReq,
+	)
+
+	require.Equal(
+		t,
+		http.StatusOK,
+		firstRec.Code,
+		firstRec.Body.String(),
+	)
+
+	var originalResult mab.SelectionRuntimeTransferResult
+
+	require.NoError(
+		t,
+		json.Unmarshal(
+			firstRec.Body.Bytes(),
+			&originalResult,
+		),
+	)
+
+	require.True(
+		t,
+		originalResult.TransferApplied,
+	)
+
+	require.True(
+		t,
+		originalResult.Prior.HasPrior,
+	)
+
+	frozenPrior :=
+		originalResult.Prior
+
+	// ------------------------------------------------------------
+	// Phase B:
+	// completely fresh BanditManager with c=0.
+	//
+	// The original donor no longer exists in this runtime.
+	// Only the materialized prior is transferred.
+	// ------------------------------------------------------------
+
+	mab.InitBanditManager()
+
+	mab.GlobalBanditManager.
+		AddArmToAll(
+			"x86-local",
+		)
+
+	viper.Set(
+		config.MAB_UCB1_C,
+		0.0,
+	)
+
+	requestBody, err :=
+		json.Marshal(
+			map[string]any{
+				"target_function_name": "materialized-control-target",
+
+				"prior": frozenPrior,
+			},
+		)
+
+	require.NoError(
+		t,
+		err,
+	)
+
+	secondEcho :=
+		echo.New()
+
+	RegisterTransferControlRoutes(
+		secondEcho,
+	)
+
+	secondReq :=
+		httptest.NewRequest(
+			http.MethodPost,
+			TransferControlInitializeMaterializedPath,
+			bytes.NewReader(
+				requestBody,
+			),
+		)
+
+	secondReq.Header.Set(
+		echo.HeaderContentType,
+		echo.MIMEApplicationJSON,
+	)
+
+	secondRec :=
+		httptest.NewRecorder()
+
+	secondEcho.ServeHTTP(
+		secondRec,
+		secondReq,
+	)
+
+	require.Equal(
+		t,
+		http.StatusOK,
+		secondRec.Code,
+		secondRec.Body.String(),
+	)
+
+	var result transferControlInitializeMaterializedResponse
+
+	require.NoError(
+		t,
+		json.Unmarshal(
+			secondRec.Body.Bytes(),
+			&result,
+		),
+	)
+
+	assert.True(
+		t,
+		result.TransferAttempted,
+	)
+
+	assert.True(
+		t,
+		result.TransferApplied,
+	)
+
+	assert.Equal(
+		t,
+		"materialized_prior",
+		result.InitializationSource,
+	)
+
+	assert.Equal(
+		t,
+		frozenPrior.DonorFunctionName,
+		result.DonorFunctionName,
+	)
+
+	assert.Equal(
+		t,
+		frozenPrior,
+		result.Prior,
+	)
+
+	target :=
+		mab.GlobalBanditManager.
+			GetBandit(
+				"materialized-control-target",
+			).(*mab.UCB1Bandit)
+
+	assert.Equal(
+		t,
+		frozenPrior.DonorFunctionName,
+		target.PriorDonorFunctionName,
+	)
+
+	assert.Zero(
+		t,
+		target.TotalCounts,
+	)
+
+	assert.Zero(
+		t,
+		target.Arms["x86-local"].
+			RealCount,
+	)
+
+	assert.InDelta(
+		t,
+		frozenPrior.
+			Arms["x86-local"].
+			UCB1.
+			ObservationWeight,
+		target.
+			Arms["x86-local"].
+			PriorObservationWeight,
+		1e-12,
+	)
+
+	assert.InDelta(
+		t,
+		frozenPrior.
+			Arms["x86-local"].
+			UCB1.
+			RewardSum,
+		target.
+			Arms["x86-local"].
+			PriorRewardSum,
+		1e-12,
+	)
+}
+
+func TestMaterializedTransferControlRejectsInvalidRequest(
+	t *testing.T,
+) {
+	oldManager :=
+		mab.GlobalBanditManager
+
+	viper.Reset()
+
+	mab.InitBanditManager()
+
+	t.Cleanup(
+		func() {
+			viper.Reset()
+
+			mab.GlobalBanditManager =
+				oldManager
+		},
+	)
+
+	viper.Set(
+		config.MAB_TRANSFER_CONTROL_ENABLED,
+		true,
+	)
+
+	viper.Set(
+		config.LB_MODE,
+		MAB,
+	)
+
+	e :=
+		echo.New()
+
+	RegisterTransferControlRoutes(
+		e,
+	)
+
+	req :=
+		httptest.NewRequest(
+			http.MethodPost,
+			TransferControlInitializeMaterializedPath,
+			bytes.NewReader(
+				[]byte(`{not-json}`),
+			),
+		)
+
+	req.Header.Set(
+		echo.HeaderContentType,
+		echo.MIMEApplicationJSON,
+	)
+
+	rec :=
+		httptest.NewRecorder()
+
+	e.ServeHTTP(
+		rec,
+		req,
+	)
+
+	assert.Equal(
+		t,
+		http.StatusBadRequest,
+		rec.Code,
+	)
+}

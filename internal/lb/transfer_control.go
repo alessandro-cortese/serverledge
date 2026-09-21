@@ -48,6 +48,8 @@ func RegisterTransferControlRoutes(e *echo.Echo) {
 		initializeTargetFromSelection,
 	)
 
+	registerMaterializedTransferControlRoute(e)
+
 	log.Printf(
 		"[LB][MAB] transfer control API enabled: POST %s\n",
 		TransferControlInitializePath,
