@@ -139,6 +139,140 @@ func TestInitializeTargetFromMaterializedPriorAppliesToFreshUCB1(
 	)
 }
 
+func TestInitializeTargetFromMaterializedPriorAppliesToFreshUCB1Decoupled(
+	t *testing.T,
+) {
+	resetExecutionFeedbackConfig(t)
+
+	viper.Set(
+		config.MAB_POLICY,
+		"UCB1Decoupled",
+	)
+
+	// Start from the same coupled reward prior used by the existing
+	// materialized UCB1 test.
+	prior := buildUCB1ApplicationPrior(
+		t,
+		0.25,
+		map[string]TransferableUCB1ArmKnowledge{
+			"amd64": {
+				RealSumRewards: -16.0,
+				RealAvgReward:  -4.0,
+			},
+			"arm64": {
+				RealSumRewards: -12.0,
+				RealAvgReward:  -3.0,
+			},
+		},
+	)
+
+	// Derive the decoupled twin:
+	// reward knowledge stays at w_R=0.25,
+	// exploration pseudo-count becomes w_E=1.0.
+	prior.Policy = UCB1Decoupled
+
+	prior.Config.EquivalentObservationWeight = 0.0
+	prior.Config.RewardObservationWeight = 0.25
+	prior.Config.ExplorationObservationWeight = 1.0
+
+	for armName, armPrior := range prior.Arms {
+		if !armPrior.Transferred {
+			continue
+		}
+
+		require.NotNil(t, armPrior.UCB1)
+
+		armPrior.AppliedExplorationObservationWeight = 1.0
+		armPrior.UCB1.ExplorationObservationWeight = 1.0
+
+		prior.Arms[armName] = armPrior
+	}
+
+	manager := newMaterializedPriorTestManager(
+		"amd64",
+		"arm64",
+	)
+
+	result, err := manager.InitializeTargetFromMaterializedPrior(
+		"target-materialized-decoupled",
+		prior,
+	)
+
+	require.NoError(t, err)
+
+	assert.True(t, result.Applied)
+	assert.Equal(
+		t,
+		RuntimeTransferReasonApplied,
+		result.Reason,
+	)
+	assert.Equal(
+		t,
+		UCB1Decoupled,
+		result.Policy,
+	)
+	assert.Equal(
+		t,
+		prior.DonorFunctionName,
+		result.DonorFunctionName,
+	)
+
+	target := manager.GetBandit(
+		"target-materialized-decoupled",
+	).(*UCB1DecoupledBandit)
+
+	assert.Equal(
+		t,
+		prior.DonorFunctionName,
+		target.PriorDonorFunctionName,
+	)
+
+	// A materialized prior must not create fake target executions.
+	assert.Zero(t, target.TotalCounts)
+
+	for _, arm := range []string{"amd64", "arm64"} {
+		stats := target.Arms[arm]
+
+		assert.Zero(t, stats.Count)
+		assert.Zero(t, stats.RealCount)
+
+		assert.InDelta(
+			t,
+			0.25,
+			stats.PriorObservationWeight,
+			1e-12,
+		)
+
+		assert.InDelta(
+			t,
+			1.0,
+			stats.PriorExplorationObservationWeight,
+			1e-12,
+		)
+
+		assert.InDelta(
+			t,
+			prior.Arms[arm].UCB1.RewardSum,
+			stats.PriorRewardSum,
+			1e-12,
+		)
+	}
+
+	assert.InDelta(
+		t,
+		-1.0,
+		target.Arms["amd64"].PriorRewardSum,
+		1e-12,
+	)
+
+	assert.InDelta(
+		t,
+		-0.75,
+		target.Arms["arm64"].PriorRewardSum,
+		1e-12,
+	)
+}
+
 func TestInitializeTargetFromMaterializedPriorRejectsExistingTarget(
 	t *testing.T,
 ) {

@@ -865,6 +865,269 @@ func TestMaterializedTransferControlReplaysFrozenUCB1Prior(
 	)
 }
 
+func TestMaterializedTransferControlReplaysFrozenUCB1DecoupledPrior(
+	t *testing.T,
+) {
+	oldManager := mab.GlobalBanditManager
+
+	viper.Reset()
+
+	t.Cleanup(
+		func() {
+			viper.Reset()
+			mab.GlobalBanditManager = oldManager
+		},
+	)
+
+	viper.Set(
+		config.MAB_TRANSFER_CONTROL_ENABLED,
+		true,
+	)
+
+	viper.Set(
+		config.LB_MODE,
+		MAB,
+	)
+
+	viper.Set(
+		config.MAB_POLICY,
+		"UCB1Decoupled",
+	)
+
+	viper.Set(
+		config.MAB_UCB1_C,
+		0.8,
+	)
+
+	mab.InitBanditManager()
+
+	mab.GlobalBanditManager.AddArmToAll("amd64")
+	mab.GlobalBanditManager.AddArmToAll("arm64")
+
+	/*
+		This prior mirrors the structure used by the R02 decoupled
+		materialized bundle:
+
+		    reward weight      = 0.25
+		    exploration weight = 1.0
+
+		The reward-side values are those of the frozen coupled R02
+		prior. Only the exploration pseudo-count differs.
+	*/
+	requestBody, err := json.Marshal(
+		map[string]any{
+			"target_function_name": "materialized-decoupled-target",
+			"prior": map[string]any{
+				"schema_version":      1,
+				"donor_function_name": "compression",
+				"policy":              "UCB1Decoupled",
+				"config": map[string]any{
+					"reward_observation_weight":      0.25,
+					"exploration_observation_weight": 1.0,
+					"min_real_observations_per_arm":  10,
+					"ucb1_reference_anchor": map[string]any{
+						"enabled":                      true,
+						"reference_arm":                "amd64",
+						"target_reference_mean_reward": -7.364532382702029,
+					},
+				},
+				"has_prior":                                   true,
+				"source_real_observation_count":               30,
+				"source_excluded_synthetic_observation_count": 0,
+				"arm_count":                                   2,
+				"transferred_arm_count":                       2,
+				"skipped_arm_count":                           0,
+				"arms": map[string]any{
+					"amd64": map[string]any{
+						"source_real_observation_count":               16,
+						"source_excluded_synthetic_observation_count": 0,
+						"transferred":                            true,
+						"applied_equivalent_observation_weight":  0.25,
+						"applied_exploration_observation_weight": 1.0,
+						"attenuation_scale":                      0.015625,
+						"ucb1": map[string]any{
+							"observation_weight":             0.25,
+							"exploration_observation_weight": 1.0,
+							"mean_reward":                    -7.364532382702029,
+							"reward_sum":                     -1.8411330956755072,
+						},
+					},
+					"arm64": map[string]any{
+						"source_real_observation_count":               14,
+						"source_excluded_synthetic_observation_count": 0,
+						"transferred":                            true,
+						"applied_equivalent_observation_weight":  0.25,
+						"applied_exploration_observation_weight": 1.0,
+						"attenuation_scale":                      0.017857142857142856,
+						"ucb1": map[string]any{
+							"observation_weight":             0.25,
+							"exploration_observation_weight": 1.0,
+							"mean_reward":                    -7.401677954614536,
+							"reward_sum":                     -1.850419488653634,
+						},
+					},
+				},
+			},
+		},
+	)
+
+	require.NoError(t, err)
+
+	e := echo.New()
+
+	RegisterTransferControlRoutes(e)
+
+	req := httptest.NewRequest(
+		http.MethodPost,
+		TransferControlInitializeMaterializedPath,
+		bytes.NewReader(requestBody),
+	)
+
+	req.Header.Set(
+		echo.HeaderContentType,
+		echo.MIMEApplicationJSON,
+	)
+
+	rec := httptest.NewRecorder()
+
+	e.ServeHTTP(
+		rec,
+		req,
+	)
+
+	require.Equal(
+		t,
+		http.StatusOK,
+		rec.Code,
+		rec.Body.String(),
+	)
+
+	var result transferControlInitializeMaterializedResponse
+
+	require.NoError(
+		t,
+		json.Unmarshal(
+			rec.Body.Bytes(),
+			&result,
+		),
+	)
+
+	assert.True(
+		t,
+		result.TransferAttempted,
+	)
+
+	assert.True(
+		t,
+		result.TransferApplied,
+	)
+
+	assert.Equal(
+		t,
+		"materialized_prior",
+		result.InitializationSource,
+	)
+
+	assert.Equal(
+		t,
+		mab.UCB1Decoupled,
+		result.Policy,
+	)
+
+	assert.Equal(
+		t,
+		"compression",
+		result.DonorFunctionName,
+	)
+
+	assert.Equal(
+		t,
+		mab.UCB1Decoupled,
+		result.Prior.Policy,
+	)
+
+	assert.InDelta(
+		t,
+		0.25,
+		result.Prior.Config.RewardObservationWeight,
+		1e-12,
+	)
+
+	assert.InDelta(
+		t,
+		1.0,
+		result.Prior.Config.ExplorationObservationWeight,
+		1e-12,
+	)
+
+	target := mab.GlobalBanditManager.
+		GetBandit(
+			"materialized-decoupled-target",
+		).(*mab.UCB1DecoupledBandit)
+
+	assert.Equal(
+		t,
+		"compression",
+		target.PriorDonorFunctionName,
+	)
+
+	// The frozen prior must not become fake real target experience.
+	assert.Zero(
+		t,
+		target.TotalCounts,
+	)
+
+	for _, arm := range []string{"amd64", "arm64"} {
+		stats := target.Arms[arm]
+		frozen := result.Prior.Arms[arm].UCB1
+
+		assert.Zero(
+			t,
+			stats.Count,
+		)
+
+		assert.Zero(
+			t,
+			stats.RealCount,
+		)
+
+		assert.InDelta(
+			t,
+			0.25,
+			stats.PriorObservationWeight,
+			1e-12,
+		)
+
+		assert.InDelta(
+			t,
+			1.0,
+			stats.PriorExplorationObservationWeight,
+			1e-12,
+		)
+
+		assert.InDelta(
+			t,
+			frozen.RewardSum,
+			stats.PriorRewardSum,
+			1e-12,
+		)
+	}
+
+	assert.InDelta(
+		t,
+		-1.8411330956755072,
+		target.Arms["amd64"].PriorRewardSum,
+		1e-12,
+	)
+
+	assert.InDelta(
+		t,
+		-1.850419488653634,
+		target.Arms["arm64"].PriorRewardSum,
+		1e-12,
+	)
+}
+
 func TestMaterializedTransferControlRejectsInvalidRequest(
 	t *testing.T,
 ) {
