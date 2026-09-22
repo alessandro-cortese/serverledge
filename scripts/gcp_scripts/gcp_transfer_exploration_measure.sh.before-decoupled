@@ -4,32 +4,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_SCRIPT="${SCRIPT_DIR}/gcp_transfer_final.sh"
 
-ABLATION_RUNTIME_COMMIT="${ABLATION_RUNTIME_COMMIT:-b8217e8b01b097a431274a83888c7a00474274f0}"
+ABLATION_RUNTIME_COMMIT="${ABLATION_RUNTIME_COMMIT:-fc8bef0d95129c7bd2728b33f2892609bcc60974}"
 
 TARGET_FUNCTION="${TARGET_FUNCTION:-}"
 MATERIALIZED_DIR="${MATERIALIZED_DIR:-}"
 TARGET_C="${TARGET_C:-}"
-TRANSFER_MODE="${TRANSFER_MODE:-coupled}"
 PATCH_ONLY="${PATCH_ONLY:-0}"
-
-case "$TRANSFER_MODE" in
-    coupled)
-        EXPECTED_POLICY="UCB1"
-        EXPECTED_REWARD_WEIGHT="0.25"
-        EXPECTED_EXPLORATION_WEIGHT="0.25"
-        ;;
-
-    decoupled)
-        EXPECTED_POLICY="UCB1Decoupled"
-        EXPECTED_REWARD_WEIGHT="0.25"
-        EXPECTED_EXPLORATION_WEIGHT="1.0"
-        ;;
-
-    *)
-        echo "FATAL: TRANSFER_MODE=$TRANSFER_MODE non valido (coupled|decoupled)" >&2
-        exit 1
-        ;;
-esac
 
 # ==============================================================================
 # c ammessi
@@ -111,15 +91,13 @@ cp \
 python3 - \
     "$TMP_SCRIPT" \
     "$ABLATION_RUNTIME_COMMIT" \
-    "$C_TAG" \
-    "$TRANSFER_MODE" <<'PY'
+    "$C_TAG" <<'PY'
 from pathlib import Path
 import sys
 
 path = Path(sys.argv[1])
 commit = sys.argv[2]
 c_tag = sys.argv[3]
-transfer_mode = sys.argv[4]
 
 text = path.read_text(
     encoding="utf-8",
@@ -186,8 +164,6 @@ old_run_id = (
 
 new_run_id = (
     'RUN_ID="gcp-transfer-materialized-${TARGET_FUNCTION}-'
-    + transfer_mode
-    + '-'
     + c_tag
     + '-$(date +%Y%m%d_%H%M%S)"'
 )
@@ -245,27 +221,9 @@ replacement = r'''# ============================================================
 # Transfer conditions — REPLAY EXACT MATERIALIZED PRIOR
 # ==============================================================================
 
-case "$MODE" in
-    coupled)
-        EXPECTED_MATERIALIZED_POLICY="UCB1"
-        EXPECTED_MATERIALIZED_REWARD_WEIGHT="0.25"
-        EXPECTED_MATERIALIZED_EXPLORATION_WEIGHT="0.25"
-        ;;
-
-    decoupled)
-        EXPECTED_MATERIALIZED_POLICY="UCB1Decoupled"
-        EXPECTED_MATERIALIZED_REWARD_WEIGHT="0.25"
-        EXPECTED_MATERIALIZED_EXPLORATION_WEIGHT="1.0"
-        ;;
-
-    *)
-        fail "materialized measurement richiede MODE=coupled|decoupled"
-        ;;
-esac
-
-export EXPECTED_MATERIALIZED_POLICY
-export EXPECTED_MATERIALIZED_REWARD_WEIGHT
-export EXPECTED_MATERIALIZED_EXPLORATION_WEIGHT
+[[ "$MODE" == "coupled" ]] \
+    || fail \
+        "materialized measurement richiede MODE=coupled"
 
 DONOR_AMD64_UPDATES=0
 DONOR_ARM64_UPDATES=0
@@ -399,16 +357,13 @@ if prior.get(
         "materialized prior has_prior != true"
     )
 
-expected_policy = __import__("os").environ[
-    "EXPECTED_MATERIALIZED_POLICY"
-]
-
-if prior.get("policy") != expected_policy:
+if prior.get(
+    "policy"
+) != "UCB1":
     raise SystemExit(
         "materialized prior policy="
         + str(prior.get("policy"))
-        + ", atteso "
-        + expected_policy
+        + ", atteso UCB1"
     )
 
 donor = str(
@@ -429,60 +384,22 @@ config = (
     or {}
 )
 
-expected_reward_weight = float(
-    __import__("os").environ[
-        "EXPECTED_MATERIALIZED_REWARD_WEIGHT"
-    ]
+weight = float(
+    config.get(
+        "equivalent_observation_weight",
+        0.0,
+    )
 )
-
-expected_exploration_weight = float(
-    __import__("os").environ[
-        "EXPECTED_MATERIALIZED_EXPLORATION_WEIGHT"
-    ]
-)
-
-if expected_policy == "UCB1":
-    reward_weight = float(
-        config.get(
-            "equivalent_observation_weight",
-            0.0,
-        )
-    )
-    exploration_weight = reward_weight
-else:
-    reward_weight = float(
-        config.get(
-            "reward_observation_weight",
-            0.0,
-        )
-    )
-    exploration_weight = float(
-        config.get(
-            "exploration_observation_weight",
-            0.0,
-        )
-    )
 
 if not math.isclose(
-    reward_weight,
-    expected_reward_weight,
+    weight,
+    0.25,
     rel_tol=0.0,
     abs_tol=1e-12,
 ):
     raise SystemExit(
-        f"materialized reward weight={reward_weight}, "
-        f"atteso {expected_reward_weight}"
-    )
-
-if not math.isclose(
-    exploration_weight,
-    expected_exploration_weight,
-    rel_tol=0.0,
-    abs_tol=1e-12,
-):
-    raise SystemExit(
-        f"materialized exploration weight={exploration_weight}, "
-        f"atteso {expected_exploration_weight}"
+        f"materialized prior weight={weight}, "
+        "atteso 0.25"
     )
 
 arms = (
@@ -519,46 +436,6 @@ for arm in (
         raise SystemExit(
             f"materialized prior arm {arm} "
             "manca payload UCB1"
-        )
-
-    ucb1 = payload["ucb1"]
-
-    arm_reward_weight = float(
-        ucb1.get(
-            "observation_weight",
-            0.0,
-        )
-    )
-
-    arm_exploration_weight = float(
-        ucb1.get(
-            "exploration_observation_weight",
-            0.0,
-        )
-    )
-
-    if not math.isclose(
-        arm_reward_weight,
-        expected_reward_weight,
-        rel_tol=0.0,
-        abs_tol=1e-12,
-    ):
-        raise SystemExit(
-            f"arm {arm} observation_weight="
-            f"{arm_reward_weight}, "
-            f"atteso {expected_reward_weight}"
-        )
-
-    if not math.isclose(
-        arm_exploration_weight,
-        expected_exploration_weight,
-        rel_tol=0.0,
-        abs_tol=1e-12,
-    ):
-        raise SystemExit(
-            f"arm {arm} exploration_observation_weight="
-            f"{arm_exploration_weight}, "
-            f"atteso {expected_exploration_weight}"
         )
 
 request = {
@@ -722,16 +599,12 @@ if response.get(
         "donor mismatch"
     )
 
-expected_policy = __import__("os").environ[
-    "EXPECTED_MATERIALIZED_POLICY"
-]
-
-if response.get("policy") != expected_policy:
+if response.get(
+    "policy"
+) != "UCB1":
     raise SystemExit(
-        "materialized response policy="
-        + str(response.get("policy"))
-        + ", atteso "
-        + expected_policy
+        "materialized response "
+        "policy != UCB1"
     )
 
 returned = response.get(
@@ -905,9 +778,7 @@ python3 - \
     "$MATERIALIZED_MANIFEST_FILE" \
     "$MATERIALIZED_PRIOR_FILE" \
     "$MATERIALIZED_PRIOR_SHA_FILE" \
-    "$TARGET_FUNCTION" \
-    "$TRANSFER_MODE" \
-    "$EXPECTED_POLICY" <<'PY'
+    "$TARGET_FUNCTION" <<'PY'
 import hashlib
 import json
 import math
@@ -919,8 +790,6 @@ import sys
     prior_path,
     sha_path,
     target,
-    transfer_mode,
-    expected_policy,
 ) = sys.argv[1:]
 
 with open(
@@ -959,52 +828,12 @@ if manifest.get(
         + f", atteso {target}"
     )
 
-if manifest.get("policy") != expected_policy:
+if manifest.get(
+    "policy"
+) != "UCB1":
     raise SystemExit(
-        "manifest policy="
-        + str(manifest.get("policy"))
-        + ", atteso "
-        + expected_policy
+        "manifest policy != UCB1"
     )
-
-if prior.get("policy") != expected_policy:
-    raise SystemExit(
-        "prior policy="
-        + str(prior.get("policy"))
-        + ", atteso "
-        + expected_policy
-    )
-
-if transfer_mode == "decoupled":
-    if not math.isclose(
-        float(
-            manifest.get(
-                "reward_observation_weight",
-                0.0,
-            )
-        ),
-        0.25,
-        rel_tol=0.0,
-        abs_tol=1e-12,
-    ):
-        raise SystemExit(
-            "manifest reward_observation_weight != 0.25"
-        )
-
-    if not math.isclose(
-        float(
-            manifest.get(
-                "exploration_observation_weight",
-                0.0,
-            )
-        ),
-        1.0,
-        rel_tol=0.0,
-        abs_tol=1e-12,
-    ):
-        raise SystemExit(
-            "manifest exploration_observation_weight != 1.0"
-        )
 
 if not math.isclose(
     float(
@@ -1097,15 +926,15 @@ cp -a \
 
 python3 - \
     "${TMP_BOOTSTRAP}/bootstrap.json" \
-    "$TARGET_C" \
-    "$TRANSFER_MODE" <<'PY'
+    "$TARGET_C" <<'PY'
 import json
 import math
 import sys
 
 path = sys.argv[1]
-target_c = float(sys.argv[2])
-transfer_mode = sys.argv[3]
+target_c = float(
+    sys.argv[2]
+)
 
 with open(
     path,
@@ -1114,22 +943,22 @@ with open(
     doc = json.load(f)
 
 try:
-    policy_block = (
+    coupled = (
         doc[
             "experimental_block"
         ][
             "policies"
         ][
-            transfer_mode
+            "coupled"
         ]
     )
 except KeyError as exc:
     raise SystemExit(
-        f"bootstrap {transfer_mode} block mancante: {exc}"
+        f"bootstrap coupled block mancante: {exc}"
     )
 
 original_c = float(
-    policy_block["c"]
+    coupled["c"]
 )
 
 if not math.isclose(
@@ -1139,11 +968,11 @@ if not math.isclose(
     abs_tol=1e-12,
 ):
     raise SystemExit(
-        f"bootstrap snapshot {transfer_mode}.c={original_c}, "
+        f"bootstrap snapshot coupled.c={original_c}, "
         "atteso 0.8"
     )
 
-policy_block["c"] = target_c
+coupled["c"] = target_c
 
 with open(
     path,
@@ -1159,7 +988,7 @@ with open(
     f.write("\n")
 
 print(
-    f"PASS — bootstrap measurement {transfer_mode}.c={target_c}"
+    f"PASS — bootstrap measurement coupled.c={target_c}"
 )
 PY
 
@@ -1175,7 +1004,5 @@ MATERIALIZED_PRIOR_SHA_FILE="$MATERIALIZED_PRIOR_SHA_FILE" \
 TARGET_C="$TARGET_C" \
 MAB_UCB1_C="$TARGET_C" \
 EQUIVALENT_PRIOR_WEIGHT=0.25 \
-REWARD_PRIOR_WEIGHT=0.25 \
-EXPLORATION_PRIOR_WEIGHT=1.0 \
 MIN_DONOR_OBSERVATIONS=10 \
-"$TMP_SCRIPT" "$TRANSFER_MODE"
+"$TMP_SCRIPT" coupled

@@ -365,6 +365,13 @@ def derive_bundle(
     donor_readiness_path = source_bundle / "donor-readiness.json"
 
     if donor_readiness_path.is_file():
+        # Keep the canonical materialized-bundle contract.
+        shutil.copy2(
+            donor_readiness_path,
+            output_bundle / "donor-readiness.json",
+            )
+
+        # Keep an explicit provenance copy as well.
         shutil.copy2(
             donor_readiness_path,
             output_bundle / "source-coupled-donor-readiness.json",
@@ -382,7 +389,7 @@ def derive_bundle(
 
     manifest = {
         "schema_version": 1,
-        "status": "materialized-decoupled-derived",
+        "status": "materialized",
         "target_function": source_manifest["target_function"],
         "donor_function": source_manifest["donor_function"],
         "policy": "UCB1Decoupled",
