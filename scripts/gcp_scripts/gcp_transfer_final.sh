@@ -408,7 +408,7 @@ target_update_count() {
     remote "$NAME_LB" "
         sudo grep 'event=update_reward' \
             /var/log/serverledge-lb.log 2>/dev/null \
-        | grep -c 'function=${TARGET_FUNCTION}' \
+        | grep -F -c 'function=${TARGET_FUNCTION} ' \
         || true
     " | tr -d '[:space:]'
 }
