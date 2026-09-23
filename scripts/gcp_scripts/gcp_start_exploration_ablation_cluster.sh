@@ -152,7 +152,7 @@ echo "workers:         ${WORKERS[*]}"
 # Verifica commit congelato
 # ---------------------------------------------------------------------------
 
-EXPECTED_COMMIT="08600a177ce1d88c048251a4b6d52d31fe65a536"
+EXPECTED_COMMIT="${EXPECTED_COMMIT:-b8217e8b01b097a431274a83888c7a00474274f0}"
 
 banner "VERIFY FROZEN COMMIT"
 

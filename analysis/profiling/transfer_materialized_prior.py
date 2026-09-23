@@ -87,6 +87,22 @@ def floats_equal(left: float, right: float) -> bool:
     )
 
 
+
+def json_number(value: float) -> int | float:
+    """
+    Return a JSON number using the same representation produced by Go.
+
+    Integral floating-point values such as 1.0 are emitted as 1.
+    This keeps materialized-prior SHA checks stable across the
+    Python -> Go -> Python round trip.
+    """
+    number = float(value)
+
+    if number.is_integer():
+        return int(number)
+
+    return number
+
 def derive_decoupled_prior(
         coupled_prior: dict[str, Any],
         *,
@@ -168,7 +184,7 @@ def derive_decoupled_prior(
     ] = float(reward_weight)
     decoupled_config[
         "exploration_observation_weight"
-    ] = float(exploration_weight)
+    ] = json_number(exploration_weight)
 
     decoupled_prior["config"] = decoupled_config
 
@@ -241,7 +257,7 @@ def derive_decoupled_prior(
         # Only the exploration contribution changes.
         ucb1[
             "exploration_observation_weight"
-        ] = float(exploration_weight)
+        ] = json_number(exploration_weight)
 
         # Runtime audit fields.
         arm_prior[
@@ -250,7 +266,7 @@ def derive_decoupled_prior(
 
         arm_prior[
             "applied_exploration_observation_weight"
-        ] = float(exploration_weight)
+        ] = json_number(exploration_weight)
 
     if transferred_arms == 0:
         raise ValueError(
@@ -589,9 +605,7 @@ def derive_bundle(
         "reward_observation_weight": float(
             reward_weight
         ),
-        "exploration_observation_weight": float(
-            exploration_weight
-        ),
+        "exploration_observation_weight": json_number(exploration_weight),
         "source_c": source_manifest.get(
             "source_c"
         ),
