@@ -20,8 +20,7 @@ const (
 // architecture effect instead of copying the donor's absolute reward scale:
 //
 //	priorMean(reference) = TargetReferenceMeanReward
-//	priorMean(arm) = TargetReferenceMeanReward
-//	                 + (donorMean(arm) - donorMean(reference))
+//	priorMean(arm) = TargetReferenceMeanReward + (donorMean(arm) - donorMean(reference))
 //
 // With the latency reward r=-ln(duration_ms), the transferred difference is
 // the logarithm of the donor's relative speedup/slowdown between architectures.
@@ -230,8 +229,7 @@ func BuildWeakMABPriorForTarget(source TransferableMABKnowledge, targetPolicy Ba
 			meanReward := sourceUCB.RealAvgReward
 
 			if anchor != nil {
-				meanReward = anchor.targetReferenceMeanReward +
-					(sourceUCB.RealAvgReward - anchor.donorReferenceMeanReward)
+				meanReward = anchor.targetReferenceMeanReward + (sourceUCB.RealAvgReward - anchor.donorReferenceMeanReward)
 			}
 
 			rewardSum := meanReward * appliedRewardWeight
