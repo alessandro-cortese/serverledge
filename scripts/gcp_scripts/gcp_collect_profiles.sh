@@ -117,9 +117,6 @@ FUNCTIONS=(
     "syscallstorm|go125|functions/bundles/syscallstorm.tar|1024|"
     "tempfileio|go125|functions/bundles/tempfileio.tar|1024|"
     "thumbnailer|go125|functions/bundles/thumbnailer.tar|1024|"
-    "twin-chacha20|go125|functions/bundles/twin-chacha20.tar|1024|"
-    "twin-primenumber|go125|functions/bundles/twin-primenumber.tar|1024|"
-    "twin-readmemory|go125|functions/bundles/twin-readmemory.tar|1024|"
     "primenumber|go125|primenum.tar|1024|"
     "chacha20|go125|chacha20.tar|1024|"
     "readdisk|go125|readdisk.tar|1024|"
@@ -132,9 +129,20 @@ FUNCTIONS=(
 
     # Benchmark suite esterne adattate a Serverledge.
     "vswarm-aes|go125|functions/bundles/vswarm-aes.tar|1024|"
-    "vswarm-auth|go125|functions/bundles/vswarm-auth.tar|1024|"
     "vswarm-fibonacci|go125|functions/bundles/vswarm-fibonacci.tar|1024|"
     "serverlessbench-alu|python314|multilang/python/serverlessbench_alu.py|1024|serverlessbench_alu.handler"
+
+    "functionbench-float-operation|python312ml|multilang/python/functionbench_float_operation.py|1024|functionbench_float_operation.handler"
+    "functionbench-linpack|python312ml|multilang/python/functionbench_linpack.py|1024|functionbench_linpack.handler"
+    "functionbench-matmul|python312ml|multilang/python/functionbench_matmul.py|1024|functionbench_matmul.handler"
+    "functionbench-dd|python312ml|multilang/python/functionbench_dd.py|1024|functionbench_dd.handler"
+    "functionbench-gzip|python312ml|multilang/python/functionbench_gzip.py|1024|functionbench_gzip.handler"
+    "functionbench-random-disk-io|python312ml|multilang/python/functionbench_random_disk_io.py|1024|functionbench_random_disk_io.handler"
+    "functionbench-sequential-disk-io|python312ml|multilang/python/functionbench_sequential_disk_io.py|1024|functionbench_sequential_disk_io.handler"
+    "billibench-knn|python312ml|multilang/python/billibench_knn.py|1024|billibench_knn.handler"
+    "billibench-linear-regression|python312ml|multilang/python/billibench_linear_regression.py|1024|billibench_linear_regression.handler"
+    "billibench-logistic-regression|python312ml|multilang/python/billibench_logistic_regression.py|1024|billibench_logistic_regression.handler"
+    "billibench-kmeans|python312ml|multilang/python/billibench_kmeans.py|1024|billibench_kmeans.handler"
 
     "base64stream-py|python314|multilang/python/base64stream.py|1024|base64stream.handler"
     "compression-py|python314|multilang/python/compression_bench.py|1024|compression_bench.handler"

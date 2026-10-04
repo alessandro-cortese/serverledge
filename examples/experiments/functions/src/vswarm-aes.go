@@ -1,14 +1,22 @@
 package main
 
-// Adaptation of the vSwarm AES standalone benchmark.
-// Original benchmark: vSwarm/benchmarks/aes/go/server.go
-// Copyright (c) 2022 EASE lab — MIT License.
+// vswarm-aes — adattamento del benchmark AES di vSwarm.
 //
-// Adaptation policy:
-// - AES-128 CTR kernel preserved;
-// - original default key and plaintext preserved;
-// - gRPC, AWS Lambda glue and distributed tracing removed;
-// - Serverledge handler added.
+// Il kernel resta AES-128 in modalità CTR come nell'implementazione originale.
+// Il benchmark originale cifra un singolo plaintext; quel plaintext predefinito
+// è troppo piccolo per produrre un profilo stabile in Serverledge.
+//
+// Per la campagna di profiling viene quindi cifrato un plaintext logico più
+// grande, processato a chunk per evitare un enorme buffer e un enorme output.
+// Lo stream CTR rimane continuo tra i chunk: il lavoro equivale quindi alla
+// cifratura sequenziale di un unico plaintext di dimensione
+// chunk_mb * chunks.
+//
+// Default calibrato:
+//   16 MiB * 64 chunk = 1024 MiB cifrati per invocazione.
+//
+// L'output resta compatto per evitare che serializzazione e rete dominino
+// il profilo della funzione.
 
 import (
 	"crypto/aes"
@@ -16,63 +24,115 @@ import (
 	"encoding/hex"
 	"fmt"
 	"runtime"
-	"strings"
 
 	"github.com/serverledge-faas/serverledge/serverledge"
 )
 
 const (
-	defaultAESKeyHex    = "6368616e676520746869732070617373"
-	defaultAESPlaintext = "defaultplaintext"
+	defaultAESKeyHex = "6368616e676520746869732070617373"
+	defaultPlaintext = "defaultplaintext"
+
+	defaultChunkMB = 16
+	defaultChunks  = 64
 )
 
-func aesModeCTR(plaintext []byte, keyHex string) ([]byte, error) {
+func aesCTRWorkload(
+	chunkMB int,
+	chunks int,
+	keyHex string,
+	pattern []byte,
+) (uint64, error) {
+
+	if chunkMB <= 0 {
+		return 0, fmt.Errorf("chunk_mb must be > 0")
+	}
+
+	if chunks <= 0 {
+		return 0, fmt.Errorf("chunks must be > 0")
+	}
+
+	if len(pattern) == 0 {
+		return 0, fmt.Errorf("plaintext must not be empty")
+	}
+
 	key, err := hex.DecodeString(keyHex)
 	if err != nil {
-		return nil, fmt.Errorf("invalid hexadecimal AES key: %w", err)
+		return 0, fmt.Errorf("invalid hexadecimal AES key: %w", err)
 	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, fmt.Errorf("invalid AES key: %w", err)
+		return 0, fmt.Errorf("invalid AES key: %w", err)
 	}
 
+	size := chunkMB * 1024 * 1024
+
+	plaintext := make([]byte, size)
+	ciphertext := make([]byte, size)
+
+	for i := range plaintext {
+		plaintext[i] = pattern[i%len(pattern)]
+	}
+
+	// vSwarm usa un IV nullo per rendere il risultato riproducibile.
 	iv := make([]byte, aes.BlockSize)
-	ciphertext := make([]byte, len(plaintext))
 
+	// Un solo stream continuo: i chunk rappresentano parti successive
+	// dello stesso plaintext logico.
 	stream := cipher.NewCTR(block, iv)
-	stream.XORKeyStream(ciphertext, plaintext)
 
-	return ciphertext, nil
+	var checksum uint64
+
+	for i := 0; i < chunks; i++ {
+		stream.XORKeyStream(ciphertext, plaintext)
+
+		// Consuma una piccola parte del risultato senza serializzare
+		// l'intero ciphertext.
+		checksum += uint64(ciphertext[0])
+		checksum += uint64(ciphertext[len(ciphertext)-1])
+	}
+
+	return checksum, nil
 }
 
 func myHandler(params map[string]interface{}) (interface{}, error) {
-	plaintext := defaultAESPlaintext
-	if value, ok := params["plaintext"].(string); ok {
-		value = strings.TrimSpace(value)
-		if value != "" && value != "world" {
-			plaintext = value
-		}
+	chunkMB := defaultChunkMB
+	if val, ok := params["chunk_mb"].(float64); ok {
+		chunkMB = int(val)
+	}
+
+	chunks := defaultChunks
+	if val, ok := params["chunks"].(float64); ok {
+		chunks = int(val)
 	}
 
 	keyHex := defaultAESKeyHex
-	if value, ok := params["key"].(string); ok {
-		value = strings.TrimSpace(value)
-		if value != "" {
-			keyHex = value
-		}
+	if val, ok := params["key"].(string); ok && val != "" {
+		keyHex = val
 	}
 
-	ciphertext, err := aesModeCTR([]byte(plaintext), keyHex)
+	plaintext := defaultPlaintext
+	if val, ok := params["plaintext"].(string); ok && val != "" && val != "world" {
+		plaintext = val
+	}
+
+	checksum, err := aesCTRWorkload(
+		chunkMB,
+		chunks,
+		keyHex,
+		[]byte(plaintext),
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	return map[string]interface{}{
-		"benchmark":      "vswarm-aes",
-		"plaintext":      plaintext,
-		"ciphertext_hex": hex.EncodeToString(ciphertext),
-		"arch":           runtime.GOARCH,
+		"message":      "vSwarm AES-CTR completed",
+		"chunk_mb":     chunkMB,
+		"chunks":       chunks,
+		"processed_mb": chunkMB * chunks,
+		"checksum":     checksum,
+		"arch":         runtime.GOARCH,
 	}, nil
 }
 
