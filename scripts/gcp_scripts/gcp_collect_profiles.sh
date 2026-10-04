@@ -16,7 +16,7 @@
 #   1. verifica che sia attiva una sola architettura;
 #   2. prepara Locust sul generatore di workload;
 #   3. azzera i vecchi JSONL di profiling una sola volta;
-#   4. divide le 53 implementazioni in batch;
+#   4. divide le implementazioni del catalogo in batch;
 #   5. prima di ogni batch elimina i container warm e riavvia il cluster;
 #   6. registra solo le funzioni del batch;
 #   7. esegue un numero finito di invocazioni per funzione con Locust;
@@ -97,7 +97,7 @@ fi
 #   nome|runtime|sorgente|memoria_MB|handler
 #
 # I primi 30 elementi sono il corpus gia' usato negli esperimenti precedenti.
-# Seguono 15 implementazioni Python e 8 Node.js del corpus multilinguaggio.
+# Seguono benchmark esterni adattati e le implementazioni Python/Node.js del corpus multilinguaggio.
 FUNCTIONS=(
     "base64stream|go125|functions/bundles/base64stream.tar|1024|"
     "compression|go125|functions/bundles/compression.tar|1024|"
@@ -129,6 +129,12 @@ FUNCTIONS=(
     "arm_faster|go125|arm_fasterV2.tar|1024|"
     "linpack|python312ml|linpack.py|2048|linpack.handler"
     "filehandle|python314|filehandle.py|1024|filehandle.handler"
+
+    # Benchmark suite esterne adattate a Serverledge.
+    "vswarm-aes|go125|functions/bundles/vswarm-aes.tar|1024|"
+    "vswarm-auth|go125|functions/bundles/vswarm-auth.tar|1024|"
+    "vswarm-fibonacci|go125|functions/bundles/vswarm-fibonacci.tar|1024|"
+    "serverlessbench-alu|python314|multilang/python/serverlessbench_alu.py|1024|serverlessbench_alu.handler"
 
     "base64stream-py|python314|multilang/python/base64stream.py|1024|base64stream.handler"
     "compression-py|python314|multilang/python/compression_bench.py|1024|compression_bench.handler"
