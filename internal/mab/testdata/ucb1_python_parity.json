@@ -1,0 +1,1140 @@
+{
+  "cases": [
+    {
+      "anchor_mean_reward": -6.962830596301518,
+      "c": 0.2,
+      "donor_mean_reward": {
+        "amd64": -7.090104852674635,
+        "arm64": -6.773029186288459
+      },
+      "donor_n_per_arm": 12,
+      "mode": "difference",
+      "prior_mean_reward": {
+        "amd64": -6.962830596301518,
+        "arm64": -6.645754929915341
+      },
+      "steps": [
+        {
+          "counts_after": {
+            "amd64": 0,
+            "arm64": 1
+          },
+          "duration_ms": 1255.0,
+          "reward": -7.134890851565884,
+          "scores_after": {
+            "amd64": -6.907718140788031,
+            "arm64": -7.056911794483221
+          },
+          "scores_before": {
+            "amd64": -6.907762284951434,
+            "arm64": -6.5906866185652575
+          },
+          "selected_arm": "arm64",
+          "t": 1
+        },
+        {
+          "counts_after": {
+            "amd64": 1,
+            "arm64": 1
+          },
+          "duration_ms": 1035.0,
+          "reward": -6.942156705699469,
+          "scores_after": {
+            "amd64": -6.888410875971816,
+            "arm64": -7.056868364111917
+          },
+          "scores_before": {
+            "amd64": -6.907718140788031,
+            "arm64": -7.056911794483221
+          },
+          "selected_arm": "amd64",
+          "t": 2
+        },
+        {
+          "counts_after": {
+            "amd64": 2,
+            "arm64": 1
+          },
+          "duration_ms": 1100.0,
+          "reward": -7.003065458786462,
+          "scores_after": {
+            "amd64": -6.918015703099703,
+            "arm64": -7.056825300585234
+          },
+          "scores_before": {
+            "amd64": -6.888410875971816,
+            "arm64": -7.056868364111917
+          },
+          "selected_arm": "amd64",
+          "t": 3
+        },
+        {
+          "counts_after": {
+            "amd64": 3,
+            "arm64": 1
+          },
+          "duration_ms": 1040.0,
+          "reward": -6.946975992135418,
+          "scores_after": {
+            "amd64": -6.91005408071277,
+            "arm64": -7.056782597986797
+          },
+          "scores_before": {
+            "amd64": -6.918015703099703,
+            "arm64": -7.056825300585234
+          },
+          "selected_arm": "amd64",
+          "t": 4
+        },
+        {
+          "counts_after": {
+            "amd64": 4,
+            "arm64": 1
+          },
+          "duration_ms": 1125.0,
+          "reward": -7.025538314638521,
+          "scores_after": {
+            "amd64": -6.925594483484157,
+            "arm64": -7.0567402505401535
+          },
+          "scores_before": {
+            "amd64": -6.91005408071277,
+            "arm64": -7.056782597986797
+          },
+          "selected_arm": "amd64",
+          "t": 5
+        },
+        {
+          "counts_after": {
+            "amd64": 5,
+            "arm64": 1
+          },
+          "duration_ms": 1070.0,
+          "reward": -6.975413927455952,
+          "scores_after": {
+            "amd64": -6.925188309576748,
+            "arm64": -7.0566982526044235
+          },
+          "scores_before": {
+            "amd64": -6.925594483484157,
+            "arm64": -7.0567402505401535
+          },
+          "selected_arm": "amd64",
+          "t": 6
+        },
+        {
+          "counts_after": {
+            "amd64": 6,
+            "arm64": 1
+          },
+          "duration_ms": 1160.0,
+          "reward": -7.05617528410041,
+          "scores_after": {
+            "amd64": -6.9383733949628,
+            "arm64": -7.056656598670126
+          },
+          "scores_before": {
+            "amd64": -6.925188309576748,
+            "arm64": -7.0566982526044235
+          },
+          "selected_arm": "amd64",
+          "t": 7
+        },
+        {
+          "counts_after": {
+            "amd64": 7,
+            "arm64": 1
+          },
+          "duration_ms": 1050.0,
+          "reward": -6.956545443151569,
+          "scores_after": {
+            "amd64": -6.933775906809572,
+            "arm64": -7.056615283355162
+          },
+          "scores_before": {
+            "amd64": -6.9383733949628,
+            "arm64": -7.056656598670126
+          },
+          "selected_arm": "amd64",
+          "t": 8
+        },
+        {
+          "counts_after": {
+            "amd64": 8,
+            "arm64": 1
+          },
+          "duration_ms": 1080.0,
+          "reward": -6.984716320118266,
+          "scores_after": {
+            "amd64": -6.933896323406939,
+            "arm64": -7.056574301400945
+          },
+          "scores_before": {
+            "amd64": -6.933775906809572,
+            "arm64": -7.056615283355162
+          },
+          "selected_arm": "amd64",
+          "t": 9
+        },
+        {
+          "counts_after": {
+            "amd64": 9,
+            "arm64": 1
+          },
+          "duration_ms": 1200.0,
+          "reward": -7.090076835776092,
+          "scores_after": {
+            "amd64": -6.945697875247901,
+            "arm64": -7.056533647668685
+          },
+          "scores_before": {
+            "amd64": -6.933896323406939,
+            "arm64": -7.056574301400945
+          },
+          "selected_arm": "amd64",
+          "t": 10
+        },
+        {
+          "counts_after": {
+            "amd64": 10,
+            "arm64": 1
+          },
+          "duration_ms": 1060.0,
+          "reward": -6.966024187106113,
+          "scores_after": {
+            "amd64": -6.942864700408657,
+            "arm64": -7.056493317135798
+          },
+          "scores_before": {
+            "amd64": -6.945697875247901,
+            "arm64": -7.056533647668685
+          },
+          "selected_arm": "amd64",
+          "t": 11
+        },
+        {
+          "counts_after": {
+            "amd64": 11,
+            "arm64": 1
+          },
+          "duration_ms": 1115.0,
+          "reward": -7.016609683894219,
+          "scores_after": {
+            "amd64": -6.945172842300405,
+            "arm64": -7.056453304892465
+          },
+          "scores_before": {
+            "amd64": -6.942864700408657,
+            "arm64": -7.056493317135798
+          },
+          "selected_arm": "amd64",
+          "t": 12
+        },
+        {
+          "counts_after": {
+            "amd64": 12,
+            "arm64": 1
+          },
+          "duration_ms": 1045.0,
+          "reward": -6.951772164398911,
+          "scores_after": {
+            "amd64": -6.941762279181731,
+            "arm64": -7.056413606138299
+          },
+          "scores_before": {
+            "amd64": -6.945172842300405,
+            "arm64": -7.056453304892465
+          },
+          "selected_arm": "amd64",
+          "t": 13
+        },
+        {
+          "counts_after": {
+            "amd64": 13,
+            "arm64": 1
+          },
+          "duration_ms": 1090.0,
+          "reward": -6.993932975223189,
+          "scores_after": {
+            "amd64": -6.942145567162002,
+            "arm64": -7.056374216179147
+          },
+          "scores_before": {
+            "amd64": -6.941762279181731,
+            "arm64": -7.056413606138299
+          },
+          "selected_arm": "amd64",
+          "t": 14
+        },
+        {
+          "counts_after": {
+            "amd64": 14,
+            "arm64": 1
+          },
+          "duration_ms": 1130.0,
+          "reward": -7.029972911706386,
+          "scores_after": {
+            "amd64": -6.9450759198852845,
+            "arm64": -7.056335130424003
+          },
+          "scores_before": {
+            "amd64": -6.942145567162002,
+            "arm64": -7.056374216179147
+          },
+          "selected_arm": "amd64",
+          "t": 15
+        },
+        {
+          "counts_after": {
+            "amd64": 15,
+            "arm64": 1
+          },
+          "duration_ms": 1075.0,
+          "reward": -6.980075940561763,
+          "scores_after": {
+            "amd64": -6.94433457374784,
+            "arm64": -7.056296344382026
+          },
+          "scores_before": {
+            "amd64": -6.9450759198852845,
+            "arm64": -7.056335130424003
+          },
+          "selected_arm": "amd64",
+          "t": 16
+        },
+        {
+          "counts_after": {
+            "amd64": 16,
+            "arm64": 1
+          },
+          "duration_ms": 1020.0,
+          "reward": -6.927557906278317,
+          "scores_after": {
+            "amd64": -6.940443668232188,
+            "arm64": -7.056257853659677
+          },
+          "scores_before": {
+            "amd64": -6.94433457374784,
+            "arm64": -7.056296344382026
+          },
+          "selected_arm": "amd64",
+          "t": 17
+        },
+        {
+          "counts_after": {
+            "amd64": 17,
+            "arm64": 1
+          },
+          "duration_ms": 1180.0,
+          "reward": -7.07326971745971,
+          "scores_after": {
+            "amd64": -6.945582991734308,
+            "arm64": -7.056219653957945
+          },
+          "scores_before": {
+            "amd64": -6.940443668232188,
+            "arm64": -7.056257853659677
+          },
+          "selected_arm": "amd64",
+          "t": 18
+        },
+        {
+          "counts_after": {
+            "amd64": 18,
+            "arm64": 1
+          },
+          "duration_ms": 1055.0,
+          "reward": -6.961296045910167,
+          "scores_after": {
+            "amd64": -6.943974773167213,
+            "arm64": -7.056181741069678
+          },
+          "scores_before": {
+            "amd64": -6.945582991734308,
+            "arm64": -7.056219653957945
+          },
+          "selected_arm": "amd64",
+          "t": 19
+        },
+        {
+          "counts_after": {
+            "amd64": 19,
+            "arm64": 1
+          },
+          "duration_ms": 1105.0,
+          "reward": -7.007600613951853,
+          "scores_after": {
+            "amd64": -6.944989551762416,
+            "arm64": -7.056144110877002
+          },
+          "scores_before": {
+            "amd64": -6.943974773167213,
+            "arm64": -7.056181741069678
+          },
+          "selected_arm": "amd64",
+          "t": 20
+        }
+      ],
+      "w_e": 64.0,
+      "w_r": 0.05
+    },
+    {
+      "anchor_mean_reward": -6.962830596301518,
+      "c": 0.4,
+      "donor_mean_reward": {
+        "amd64": -7.090104852674635,
+        "arm64": -6.773029186288459
+      },
+      "donor_n_per_arm": 12,
+      "mode": "ratio",
+      "prior_mean_reward": {
+        "amd64": -6.962830596301518,
+        "arm64": -6.65144674555021
+      },
+      "steps": [
+        {
+          "counts_after": {
+            "amd64": 0,
+            "arm64": 1
+          },
+          "duration_ms": 1255.0,
+          "reward": -7.134890851565884,
+          "scores_after": {
+            "amd64": -6.852605685274544,
+            "arm64": -7.020730535584001
+          },
+          "scores_before": {
+            "amd64": -6.85269397360135,
+            "arm64": -6.541310122850042
+          },
+          "selected_arm": "arm64",
+          "t": 1
+        },
+        {
+          "counts_after": {
+            "amd64": 1,
+            "arm64": 1
+          },
+          "duration_ms": 1035.0,
+          "reward": -6.942156705699469,
+          "scores_after": {
+            "amd64": -6.832900796268224,
+            "arm64": -7.020643674841394
+          },
+          "scores_before": {
+            "amd64": -6.852605685274544,
+            "arm64": -7.020730535584001
+          },
+          "selected_arm": "amd64",
+          "t": 2
+        },
+        {
+          "counts_after": {
+            "amd64": 2,
+            "arm64": 1
+          },
+          "duration_ms": 1100.0,
+          "reward": -7.003065458786462,
+          "scores_after": {
+            "amd64": -6.863848761697598,
+            "arm64": -7.020557547788027
+          },
+          "scores_before": {
+            "amd64": -6.832900796268224,
+            "arm64": -7.020643674841394
+          },
+          "selected_arm": "amd64",
+          "t": 3
+        },
+        {
+          "counts_after": {
+            "amd64": 3,
+            "arm64": 1
+          },
+          "duration_ms": 1040.0,
+          "reward": -6.946975992135418,
+          "scores_after": {
+            "amd64": -6.856078511464759,
+            "arm64": -7.020472142591154
+          },
+          "scores_before": {
+            "amd64": -6.863848761697598,
+            "arm64": -7.020557547788027
+          },
+          "selected_arm": "amd64",
+          "t": 4
+        },
+        {
+          "counts_after": {
+            "amd64": 4,
+            "arm64": 1
+          },
+          "duration_ms": 1125.0,
+          "reward": -7.025538314638521,
+          "scores_after": {
+            "amd64": -6.872123407356948,
+            "arm64": -7.020387447697867
+          },
+          "scores_before": {
+            "amd64": -6.856078511464759,
+            "arm64": -7.020472142591154
+          },
+          "selected_arm": "amd64",
+          "t": 5
+        },
+        {
+          "counts_after": {
+            "amd64": 5,
+            "arm64": 1
+          },
+          "duration_ms": 1070.0,
+          "reward": -6.975413927455952,
+          "scores_after": {
+            "amd64": -6.872027864573489,
+            "arm64": -7.020303451826406
+          },
+          "scores_before": {
+            "amd64": -6.872123407356948,
+            "arm64": -7.020387447697867
+          },
+          "selected_arm": "amd64",
+          "t": 6
+        },
+        {
+          "counts_after": {
+            "amd64": 6,
+            "arm64": 1
+          },
+          "duration_ms": 1160.0,
+          "reward": -7.05617528410041,
+          "scores_after": {
+            "amd64": -6.885619487943672,
+            "arm64": -7.020220143957811
+          },
+          "scores_before": {
+            "amd64": -6.872027864573489,
+            "arm64": -7.020303451826406
+          },
+          "selected_arm": "amd64",
+          "t": 7
+        },
+        {
+          "counts_after": {
+            "amd64": 7,
+            "arm64": 1
+          },
+          "duration_ms": 1050.0,
+          "reward": -6.956545443151569,
+          "scores_after": {
+            "amd64": -6.881301443044917,
+            "arm64": -7.020137513327883
+          },
+          "scores_before": {
+            "amd64": -6.885619487943672,
+            "arm64": -7.020220143957811
+          },
+          "selected_arm": "amd64",
+          "t": 8
+        },
+        {
+          "counts_after": {
+            "amd64": 8,
+            "arm64": 1
+          },
+          "duration_ms": 1080.0,
+          "reward": -6.984716320118266,
+          "scores_after": {
+            "amd64": -6.881731723124683,
+            "arm64": -7.02005554941945
+          },
+          "scores_before": {
+            "amd64": -6.881301443044917,
+            "arm64": -7.020137513327883
+          },
+          "selected_arm": "amd64",
+          "t": 9
+        },
+        {
+          "counts_after": {
+            "amd64": 9,
+            "arm64": 1
+          },
+          "duration_ms": 1200.0,
+          "reward": -7.090076835776092,
+          "scores_after": {
+            "amd64": -6.8938922668698,
+            "arm64": -7.0199742419549285
+          },
+          "scores_before": {
+            "amd64": -6.881731723124683,
+            "arm64": -7.02005554941945
+          },
+          "selected_arm": "amd64",
+          "t": 10
+        },
+        {
+          "counts_after": {
+            "amd64": 10,
+            "arm64": 1
+          },
+          "duration_ms": 1060.0,
+          "reward": -6.966024187106113,
+          "scores_after": {
+            "amd64": -6.891345545989722,
+            "arm64": -7.019893580889156
+          },
+          "scores_before": {
+            "amd64": -6.8938922668698,
+            "arm64": -7.0199742419549285
+          },
+          "selected_arm": "amd64",
+          "t": 11
+        },
+        {
+          "counts_after": {
+            "amd64": 11,
+            "arm64": 1
+          },
+          "duration_ms": 1115.0,
+          "reward": -7.016609683894219,
+          "scores_after": {
+            "amd64": -6.893957666776305,
+            "arm64": -7.019813556402489
+          },
+          "scores_before": {
+            "amd64": -6.891345545989722,
+            "arm64": -7.019893580889156
+          },
+          "selected_arm": "amd64",
+          "t": 12
+        },
+        {
+          "counts_after": {
+            "amd64": 12,
+            "arm64": 1
+          },
+          "duration_ms": 1045.0,
+          "reward": -6.951772164398911,
+          "scores_after": {
+            "amd64": -6.890826701757642,
+            "arm64": -7.019734158894157
+          },
+          "scores_before": {
+            "amd64": -6.893957666776305,
+            "arm64": -7.019813556402489
+          },
+          "selected_arm": "amd64",
+          "t": 13
+        },
+        {
+          "counts_after": {
+            "amd64": 13,
+            "arm64": 1
+          },
+          "duration_ms": 1090.0,
+          "reward": -6.993932975223189,
+          "scores_after": {
+            "amd64": -6.891498876576522,
+            "arm64": -7.019655378975854
+          },
+          "scores_before": {
+            "amd64": -6.890826701757642,
+            "arm64": -7.019734158894157
+          },
+          "selected_arm": "amd64",
+          "t": 14
+        },
+        {
+          "counts_after": {
+            "amd64": 14,
+            "arm64": 1
+          },
+          "duration_ms": 1130.0,
+          "reward": -7.029972911706386,
+          "scores_after": {
+            "amd64": -6.8947207900669465,
+            "arm64": -7.019577207465564
+          },
+          "scores_before": {
+            "amd64": -6.891498876576522,
+            "arm64": -7.019655378975854
+          },
+          "selected_arm": "amd64",
+          "t": 15
+        },
+        {
+          "counts_after": {
+            "amd64": 15,
+            "arm64": 1
+          },
+          "duration_ms": 1075.0,
+          "reward": -6.980075940561763,
+          "scores_after": {
+            "amd64": -6.894255618852523,
+            "arm64": -7.01949963538161
+          },
+          "scores_before": {
+            "amd64": -6.8947207900669465,
+            "arm64": -7.019577207465564
+          },
+          "selected_arm": "amd64",
+          "t": 16
+        },
+        {
+          "counts_after": {
+            "amd64": 16,
+            "arm64": 1
+          },
+          "duration_ms": 1020.0,
+          "reward": -6.927557906278317,
+          "scores_after": {
+            "amd64": -6.890628833741433,
+            "arm64": -7.019422653936913
+          },
+          "scores_before": {
+            "amd64": -6.894255618852523,
+            "arm64": -7.01949963538161
+          },
+          "selected_arm": "amd64",
+          "t": 17
+        },
+        {
+          "counts_after": {
+            "amd64": 17,
+            "arm64": 1
+          },
+          "duration_ms": 1180.0,
+          "reward": -7.07326971745971,
+          "scores_after": {
+            "amd64": -6.896050217862641,
+            "arm64": -7.019346254533449
+          },
+          "scores_before": {
+            "amd64": -6.890628833741433,
+            "arm64": -7.019422653936913
+          },
+          "selected_arm": "amd64",
+          "t": 18
+        },
+        {
+          "counts_after": {
+            "amd64": 18,
+            "arm64": 1
+          },
+          "duration_ms": 1055.0,
+          "reward": -6.961296045910167,
+          "scores_after": {
+            "amd64": -6.894703269285842,
+            "arm64": -7.019270428756915
+          },
+          "scores_before": {
+            "amd64": -6.896050217862641,
+            "arm64": -7.019346254533449
+          },
+          "selected_arm": "amd64",
+          "t": 19
+        },
+        {
+          "counts_after": {
+            "amd64": 19,
+            "arm64": 1
+          },
+          "duration_ms": 1105.0,
+          "reward": -7.007600613951853,
+          "scores_after": {
+            "amd64": -6.895980888520362,
+            "arm64": -7.019195168371563
+          },
+          "scores_before": {
+            "amd64": -6.894703269285842,
+            "arm64": -7.019270428756915
+          },
+          "selected_arm": "amd64",
+          "t": 20
+        }
+      ],
+      "w_e": 64.0,
+      "w_r": 0.01
+    },
+    {
+      "anchor_mean_reward": -6.962830596301518,
+      "c": 0.8,
+      "donor_mean_reward": {
+        "amd64": -7.090104852674635,
+        "arm64": -6.773029186288459
+      },
+      "donor_n_per_arm": 12,
+      "mode": "difference",
+      "prior_mean_reward": {
+        "amd64": -6.962830596301518,
+        "arm64": -6.645754929915341
+      },
+      "steps": [
+        {
+          "counts_after": {
+            "amd64": 0,
+            "arm64": 1
+          },
+          "duration_ms": 1255.0,
+          "reward": -7.134890851565884,
+          "scores_after": {
+            "amd64": -6.124312937126954,
+            "arm64": -6.444142144288771
+          },
+          "scores_before": {
+            "amd64": -6.29678690737536,
+            "arm64": -5.979711240989183
+          },
+          "selected_arm": "arm64",
+          "t": 1
+        },
+        {
+          "counts_after": {
+            "amd64": 1,
+            "arm64": 1
+          },
+          "duration_ms": 1035.0,
+          "reward": -6.942156705699469,
+          "scores_after": {
+            "amd64": -6.280247794893721,
+            "arm64": -6.371019978309618
+          },
+          "scores_before": {
+            "amd64": -6.124312937126954,
+            "arm64": -6.444142144288771
+          },
+          "selected_arm": "amd64",
+          "t": 2
+        },
+        {
+          "counts_after": {
+            "amd64": 2,
+            "arm64": 1
+          },
+          "duration_ms": 1100.0,
+          "reward": -7.003065458786462,
+          "scores_after": {
+            "amd64": -6.3855663813038355,
+            "arm64": -6.319414636038135
+          },
+          "scores_before": {
+            "amd64": -6.280247794893721,
+            "arm64": -6.371019978309618
+          },
+          "selected_arm": "amd64",
+          "t": 3
+        },
+        {
+          "counts_after": {
+            "amd64": 2,
+            "arm64": 2
+          },
+          "duration_ms": 1205.0,
+          "reward": -7.094234845924755,
+          "scores_after": {
+            "amd64": -6.353267117304999,
+            "arm64": -6.444215835708628
+          },
+          "scores_before": {
+            "amd64": -6.3855663813038355,
+            "arm64": -6.319414636038135
+          },
+          "selected_arm": "arm64",
+          "t": 4
+        },
+        {
+          "counts_after": {
+            "amd64": 3,
+            "arm64": 2
+          },
+          "duration_ms": 1040.0,
+          "reward": -6.946975992135418,
+          "scores_after": {
+            "amd64": -6.405987483465671,
+            "arm64": -6.418169193248868
+          },
+          "scores_before": {
+            "amd64": -6.353267117304999,
+            "arm64": -6.444215835708628
+          },
+          "selected_arm": "amd64",
+          "t": 5
+        },
+        {
+          "counts_after": {
+            "amd64": 4,
+            "arm64": 2
+          },
+          "duration_ms": 1125.0,
+          "reward": -7.025538314638521,
+          "scores_after": {
+            "amd64": -6.4625422170673685,
+            "arm64": -6.396429391060275
+          },
+          "scores_before": {
+            "amd64": -6.405987483465671,
+            "arm64": -6.418169193248868
+          },
+          "selected_arm": "amd64",
+          "t": 6
+        },
+        {
+          "counts_after": {
+            "amd64": 4,
+            "arm64": 3
+          },
+          "duration_ms": 1290.0,
+          "reward": -7.162397497355718,
+          "scores_after": {
+            "amd64": -6.448132307826,
+            "arm64": -6.500297531614593
+          },
+          "scores_before": {
+            "amd64": -6.4625422170673685,
+            "arm64": -6.396429391060275
+          },
+          "selected_arm": "arm64",
+          "t": 7
+        },
+        {
+          "counts_after": {
+            "amd64": 5,
+            "arm64": 3
+          },
+          "duration_ms": 1070.0,
+          "reward": -6.975413927455952,
+          "scores_after": {
+            "amd64": -6.482288098208821,
+            "arm64": -6.4862482028075386
+          },
+          "scores_before": {
+            "amd64": -6.448132307826,
+            "arm64": -6.500297531614593
+          },
+          "selected_arm": "amd64",
+          "t": 8
+        },
+        {
+          "counts_after": {
+            "amd64": 6,
+            "arm64": 3
+          },
+          "duration_ms": 1160.0,
+          "reward": -7.05617528410041,
+          "scores_after": {
+            "amd64": -6.522178743482548,
+            "arm64": -6.473813497880243
+          },
+          "scores_before": {
+            "amd64": -6.482288098208821,
+            "arm64": -6.4862482028075386
+          },
+          "selected_arm": "amd64",
+          "t": 9
+        },
+        {
+          "counts_after": {
+            "amd64": 6,
+            "arm64": 4
+          },
+          "duration_ms": 1190.0,
+          "reward": -7.081708586105575,
+          "scores_after": {
+            "amd64": -6.513759274560815,
+            "arm64": -6.52653548691583
+          },
+          "scores_before": {
+            "amd64": -6.522178743482548,
+            "arm64": -6.473813497880243
+          },
+          "selected_arm": "arm64",
+          "t": 10
+        },
+        {
+          "counts_after": {
+            "amd64": 7,
+            "arm64": 4
+          },
+          "duration_ms": 1050.0,
+          "reward": -6.956545443151569,
+          "scores_after": {
+            "amd64": -6.532749409205449,
+            "arm64": -6.517524219014124
+          },
+          "scores_before": {
+            "amd64": -6.513759274560815,
+            "arm64": -6.52653548691583
+          },
+          "selected_arm": "amd64",
+          "t": 11
+        },
+        {
+          "counts_after": {
+            "amd64": 7,
+            "arm64": 5
+          },
+          "duration_ms": 1335.0,
+          "reward": -7.19668657083435,
+          "scores_after": {
+            "amd64": -6.5262520479823,
+            "arm64": -6.580169466657636
+          },
+          "scores_before": {
+            "amd64": -6.532749409205449,
+            "arm64": -6.517524219014124
+          },
+          "selected_arm": "arm64",
+          "t": 12
+        },
+        {
+          "counts_after": {
+            "amd64": 8,
+            "arm64": 5
+          },
+          "duration_ms": 1080.0,
+          "reward": -6.984716320118266,
+          "scores_after": {
+            "amd64": -6.546780740682057,
+            "arm64": -6.573278928149806
+          },
+          "scores_before": {
+            "amd64": -6.5262520479823,
+            "arm64": -6.580169466657636
+          },
+          "selected_arm": "amd64",
+          "t": 13
+        },
+        {
+          "counts_after": {
+            "amd64": 9,
+            "arm64": 5
+          },
+          "duration_ms": 1200.0,
+          "reward": -7.090076835776092,
+          "scores_after": {
+            "amd64": -6.575662057977404,
+            "arm64": -6.566912287960466
+          },
+          "scores_before": {
+            "amd64": -6.546780740682057,
+            "arm64": -6.573278928149806
+          },
+          "selected_arm": "amd64",
+          "t": 14
+        },
+        {
+          "counts_after": {
+            "amd64": 9,
+            "arm64": 6
+          },
+          "duration_ms": 1220.0,
+          "reward": -7.106606137727303,
+          "scores_after": {
+            "amd64": -6.571081572596433,
+            "arm64": -6.60111768457462
+          },
+          "scores_before": {
+            "amd64": -6.575662057977404,
+            "arm64": -6.566912287960466
+          },
+          "selected_arm": "arm64",
+          "t": 15
+        },
+        {
+          "counts_after": {
+            "amd64": 10,
+            "arm64": 6
+          },
+          "duration_ms": 1060.0,
+          "reward": -6.966024187106113,
+          "scores_after": {
+            "amd64": -6.583810502486873,
+            "arm64": -6.59600937181238
+          },
+          "scores_before": {
+            "amd64": -6.571081572596433,
+            "arm64": -6.60111768457462
+          },
+          "selected_arm": "amd64",
+          "t": 16
+        },
+        {
+          "counts_after": {
+            "amd64": 11,
+            "arm64": 6
+          },
+          "duration_ms": 1115.0,
+          "reward": -7.016609683894219,
+          "scores_after": {
+            "amd64": -6.5996330057204675,
+            "arm64": -6.5912236076422035
+          },
+          "scores_before": {
+            "amd64": -6.583810502486873,
+            "arm64": -6.59600937181238
+          },
+          "selected_arm": "amd64",
+          "t": 17
+        },
+        {
+          "counts_after": {
+            "amd64": 11,
+            "arm64": 7
+          },
+          "duration_ms": 1275.0,
+          "reward": -7.150701457592526,
+          "scores_after": {
+            "amd64": -6.5961962431934085,
+            "arm64": -6.626128520703139
+          },
+          "scores_before": {
+            "amd64": -6.5996330057204675,
+            "arm64": -6.5912236076422035
+          },
+          "selected_arm": "arm64",
+          "t": 18
+        },
+        {
+          "counts_after": {
+            "amd64": 12,
+            "arm64": 7
+          },
+          "duration_ms": 1045.0,
+          "reward": -6.951772164398911,
+          "scores_after": {
+            "amd64": -6.605159620644508,
+            "arm64": -6.622158084786868
+          },
+          "scores_before": {
+            "amd64": -6.5961962431934085,
+            "arm64": -6.626128520703139
+          },
+          "selected_arm": "amd64",
+          "t": 19
+        },
+        {
+          "counts_after": {
+            "amd64": 13,
+            "arm64": 7
+          },
+          "duration_ms": 1090.0,
+          "reward": -6.993932975223189,
+          "scores_after": {
+            "amd64": -6.616525710068328,
+            "arm64": -6.618401910877598
+          },
+          "scores_before": {
+            "amd64": -6.605159620644508,
+            "arm64": -6.622158084786868
+          },
+          "selected_arm": "amd64",
+          "t": 20
+        }
+      ],
+      "w_e": 1.0,
+      "w_r": 0.25
+    }
+  ],
+  "schema_version": 1,
+  "source": "Python build_prior + NumericTLPolicy"
+}

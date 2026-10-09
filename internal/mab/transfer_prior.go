@@ -12,23 +12,33 @@ const (
 	WeakPriorSkipInsufficientRealObservations = "insufficient_real_observations"
 )
 
+// UCB1ReferenceAnchorMode selects how donor architecture effects are
+// transferred into target reward space. The zero value preserves the
+// historical additive/difference behavior of existing materialized priors.
+type UCB1ReferenceAnchorMode string
+
+const (
+	UCB1AnchorDifference UCB1ReferenceAnchorMode = "difference"
+	UCB1AnchorRatio      UCB1ReferenceAnchorMode = "ratio"
+)
+
 // UCB1ReferenceAnchorConfig describes the reference-architecture measurement
 // already collected for a new target during profiling.
 //
-// The target is profiled on ReferenceArm before transfer. For UCB1-family
-// policies, Serverledge can then transfer only the donor's relative
-// architecture effect instead of copying the donor's absolute reward scale:
+// Both modes use only the target's reference-arm reward and donor observations:
 //
-//	priorMean(reference) = TargetReferenceMeanReward
-//	priorMean(arm) = TargetReferenceMeanReward + (donorMean(arm) - donorMean(reference))
+//	difference: mu_prior(a) = mu_T,ref + (mu_D,a - mu_D,ref)
+//	ratio:      mu_prior(a) = mu_T,ref * (mu_D,a / mu_D,ref)
 //
-// With the latency reward r=-ln(duration_ms), the transferred difference is
-// the logarithm of the donor's relative speedup/slowdown between architectures.
-// No target observation from any non-reference architecture is required.
+// Reward is r = -ln(duration_ms); ratio is deliberately a ratio of mean
+// rewards, NOT of durations or speedups. Mode omitted means difference for
+// backwards compatibility. The ratio mode requires a non-zero donor reference
+// mean; unlike difference, its result depends on the reward origin.
 type UCB1ReferenceAnchorConfig struct {
-	Enabled                   bool    `json:"enabled"`
-	ReferenceArm              string  `json:"reference_arm,omitempty"`
-	TargetReferenceMeanReward float64 `json:"target_reference_mean_reward,omitempty"`
+	Enabled                   bool                    `json:"enabled"`
+	ReferenceArm              string                  `json:"reference_arm,omitempty"`
+	TargetReferenceMeanReward float64                 `json:"target_reference_mean_reward,omitempty"`
+	Mode                      UCB1ReferenceAnchorMode `json:"mode,omitempty"`
 }
 
 // WeakMABPriorConfig defines how much donor knowledge can be represented by
@@ -42,11 +52,10 @@ type UCB1ReferenceAnchorConfig struct {
 //   - ExplorationObservationWeight (w_E): pseudo-count used only by the UCB1
 //     exploration term.
 //
-// All weights are expressed as equivalent observations and are deliberately
-// constrained to (0, 1]. A value of 1 therefore means at most one equivalent
-// prior observation per transferred arm. For UCB1Decoupled the legacy
-// EquivalentObservationWeight must be left at zero to make the experiment
-// unambiguous and reproducible.
+// The reward-prior weight (and coupled UCB1/LinUCB weight) is in (0, 1].
+// The decoupled exploration-only weight is a positive, finite pseudo-count;
+// unlike reward evidence, it may exceed both one and the donor sample count.
+// The legacy EquivalentObservationWeight must be zero for UCB1Decoupled.
 //
 // UCB1ReferenceAnchor is optional and applies only to UCB1-family policies.
 // When enabled, the prior reward means are anchored to the target's measured
@@ -133,6 +142,7 @@ type resolvedUCB1ReferenceAnchor struct {
 	referenceArm              string
 	targetReferenceMeanReward float64
 	donorReferenceMeanReward  float64
+	mode                      UCB1ReferenceAnchorMode
 }
 
 // BuildWeakMABPrior transforms transferable real-feedback knowledge into a
@@ -213,8 +223,13 @@ func BuildWeakMABPriorForTarget(source TransferableMABKnowledge, targetPolicy Ba
 
 		appliedRewardWeight := math.Min(weights.reward, float64(sourceArm.RealObservationCount))
 		appliedExplorationWeight := 0.0
-		if isUCB1FamilyPolicy(targetPolicy) {
-			appliedExplorationWeight = math.Min(weights.exploration, float64(sourceArm.RealObservationCount))
+		if targetPolicy == UCB1Decoupled {
+			// Exploration-only pseudo-counts are not donor observations.
+			// Preserve w_E=64 even if there are only 12 donor samples.
+			appliedExplorationWeight = weights.exploration
+		} else if targetPolicy == UCB1 {
+			// Historical coupled UCB1 keeps the old donor-evidence cap.
+			appliedExplorationWeight = appliedRewardWeight
 		}
 
 		scale := appliedRewardWeight / float64(sourceArm.RealObservationCount)
@@ -229,10 +244,23 @@ func BuildWeakMABPriorForTarget(source TransferableMABKnowledge, targetPolicy Ba
 			meanReward := sourceUCB.RealAvgReward
 
 			if anchor != nil {
-				meanReward = anchor.targetReferenceMeanReward + (sourceUCB.RealAvgReward - anchor.donorReferenceMeanReward)
+				switch anchor.mode {
+				case UCB1AnchorDifference:
+					meanReward = anchor.targetReferenceMeanReward +
+						(sourceUCB.RealAvgReward - anchor.donorReferenceMeanReward)
+				case UCB1AnchorRatio:
+					meanReward = anchor.targetReferenceMeanReward *
+						(sourceUCB.RealAvgReward / anchor.donorReferenceMeanReward)
+				}
+			}
+			if !isFiniteNumber(meanReward) {
+				return WeakMABPrior{}, fmt.Errorf("non-finite transferred mean reward for arm %q", arm)
 			}
 
 			rewardSum := meanReward * appliedRewardWeight
+			if !isFiniteNumber(rewardSum) {
+				return WeakMABPrior{}, fmt.Errorf("non-finite transferred reward sum for arm %q", arm)
+			}
 			priorArm.UCB1 = &WeakUCB1ArmPrior{
 				ObservationWeight:            appliedRewardWeight,
 				ExplorationObservationWeight: appliedExplorationWeight,
@@ -281,12 +309,30 @@ func validateObservationWeight(name string, weight float64) error {
 	if !isFiniteNumber(weight) {
 		return fmt.Errorf("%s must be finite", name)
 	}
-
 	if weight <= 0.0 || weight > 1.0 {
 		return fmt.Errorf("%s must be in (0, 1]", name)
 	}
-
 	return nil
+}
+
+// Unlike reward evidence, the decoupled UCB1 exploration term is only a
+// pseudo-count. It may be larger than the donor's real observation count.
+func validateDecoupledExplorationWeight(weight float64) error {
+	if !isFiniteNumber(weight) || weight <= 0.0 {
+		return fmt.Errorf("exploration observation weight must be positive and finite")
+	}
+	return nil
+}
+
+func resolvedUCB1AnchorMode(mode UCB1ReferenceAnchorMode) (UCB1ReferenceAnchorMode, error) {
+	switch mode {
+	case "", UCB1AnchorDifference:
+		return UCB1AnchorDifference, nil
+	case UCB1AnchorRatio:
+		return UCB1AnchorRatio, nil
+	default:
+		return "", fmt.Errorf("unsupported UCB1 reference anchor mode %q", mode)
+	}
 }
 
 func validateWeakMABPriorConfig(config WeakMABPriorConfig) error {
@@ -299,7 +345,7 @@ func validateWeakMABPriorConfig(config WeakMABPriorConfig) error {
 			return err
 		}
 
-		if err := validateObservationWeight("exploration observation weight", config.ExplorationObservationWeight); err != nil {
+		if err := validateDecoupledExplorationWeight(config.ExplorationObservationWeight); err != nil {
 			return err
 		}
 	} else {
@@ -312,13 +358,20 @@ func validateWeakMABPriorConfig(config WeakMABPriorConfig) error {
 		return fmt.Errorf("minimum real observations per arm must be at least 1")
 	}
 
-	if anchor := config.UCB1ReferenceAnchor; anchor != nil && anchor.Enabled {
-		if anchor.ReferenceArm == "" {
-			return fmt.Errorf("UCB1 reference anchor arm cannot be empty")
+	if anchor := config.UCB1ReferenceAnchor; anchor != nil {
+		if _, err := resolvedUCB1AnchorMode(anchor.Mode); err != nil {
+			return err
 		}
-
-		if !isFiniteNumber(anchor.TargetReferenceMeanReward) {
-			return fmt.Errorf("UCB1 target reference mean reward must be finite")
+		if !anchor.Enabled && anchor.Mode != "" {
+			return fmt.Errorf("UCB1 anchor mode requires an enabled reference anchor")
+		}
+		if anchor.Enabled {
+			if anchor.ReferenceArm == "" {
+				return fmt.Errorf("UCB1 reference anchor arm cannot be empty")
+			}
+			if !isFiniteNumber(anchor.TargetReferenceMeanReward) {
+				return fmt.Errorf("UCB1 target reference mean reward must be finite")
+			}
 		}
 	}
 
@@ -430,10 +483,19 @@ func resolveUCB1ReferenceAnchor(source TransferableMABKnowledge, config WeakMABP
 		return nil, fmt.Errorf("UCB1 reference anchor arm %q has no UCB1 reward statistics", anchorConfig.ReferenceArm)
 	}
 
+	mode, err := resolvedUCB1AnchorMode(anchorConfig.Mode)
+	if err != nil {
+		return nil, err
+	}
+	if mode == UCB1AnchorRatio && math.Abs(referenceArm.UCB1.RealAvgReward) <= 1e-12 {
+		return nil, fmt.Errorf("ratio UCB1 reference anchor requires non-zero donor reference mean reward")
+	}
+
 	return &resolvedUCB1ReferenceAnchor{
 		referenceArm:              anchorConfig.ReferenceArm,
 		targetReferenceMeanReward: anchorConfig.TargetReferenceMeanReward,
 		donorReferenceMeanReward:  referenceArm.UCB1.RealAvgReward,
+		mode:                      mode,
 	}, nil
 }
 

@@ -420,7 +420,8 @@ func validateTransferredWeakPriorArm(arm string, policy BanditType, config WeakM
 		}
 
 		explorationWeight := priorArm.AppliedExplorationObservationWeight
-		if !isFiniteNumber(explorationWeight) || explorationWeight <= 0.0 || explorationWeight > weights.exploration || explorationWeight > float64(priorArm.SourceRealObservationCount) {
+		if !isFiniteNumber(explorationWeight) || explorationWeight <= 0.0 || explorationWeight > weights.exploration ||
+			(policy == UCB1 && explorationWeight > float64(priorArm.SourceRealObservationCount)) {
 			return fmt.Errorf("weak prior arm %q has invalid applied exploration observation weight", arm)
 		}
 
