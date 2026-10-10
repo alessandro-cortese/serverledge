@@ -795,6 +795,11 @@ wait_for_target_warm \
     arm64 \
     "$ARM_WORKER"
 
+echo \
+    "  warm containers visibili; attendo 5s di stabilizzazione"
+
+sleep 5
+
 wait_for_target_warm \
     amd64 \
     "$X86_WORKER"
@@ -802,7 +807,6 @@ wait_for_target_warm \
 wait_for_target_warm \
     arm64 \
     "$ARM_WORKER"
-
 
 TARGET_UPDATES_PRE="$(
     remote "$NAME_LB" "
