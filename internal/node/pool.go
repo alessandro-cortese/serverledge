@@ -223,6 +223,8 @@ func NewContainerWithAcquiredResources(fun *function.Function, startAsIdle bool,
 
 	fp := GetContainerPool(fun)
 	if startAsIdle {
+		d := time.Duration(config.GetInt(config.CONTAINER_EXPIRATION_TIME, 600)) * time.Second
+		cont.ExpirationTime = time.Now().Add(d).UnixNano()
 		fp.idle = append(fp.idle, cont)
 	} else {
 		cont.RequestsCount = 1
