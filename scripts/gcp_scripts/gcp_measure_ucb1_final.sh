@@ -226,8 +226,9 @@ direct_prewarm() {
 
         cd /opt/serverledge/examples/experiments
 
-        /opt/serverledge/bin/serverledge-cli invoke \
+        /opt/serverledge/bin/serverledge-cli prewarm \
             -f '${TARGET_FUNCTION}' \
+            -c 1 \
             -H '${ip}' \
             -P 1323 \
             > '${remote_json}'
@@ -240,7 +241,12 @@ doc = json.load(
     open(sys.argv[1], encoding='utf-8')
 )
 
-if doc.get('Success') is not True:
+prewarmed = doc.get('Prewarmed')
+
+if (
+    not isinstance(prewarmed, int)
+    or prewarmed < 1
+):
     raise SystemExit(
         f'prewarm failed: {doc}'
     )
