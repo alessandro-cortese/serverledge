@@ -259,6 +259,71 @@ PY
         "${PREWARM_DIR}/${arm}.json"
 }
 
+wait_for_target_warm() {
+    local arm="$1"
+    local worker="$2"
+
+    local max_attempts=60
+    local sleep_seconds=1
+    local attempt
+    local status_json
+    local warm_count
+
+    echo \
+        "  attendo warm readiness ${arm} target=${TARGET_FUNCTION}"
+
+    for attempt in $(seq 1 "$max_attempts"); do
+
+        status_json="$(
+            remote "$worker" \
+                "curl -fsS \
+                    --max-time 5 \
+                    http://127.0.0.1:1323/status" \
+                2>/dev/null \
+                || true
+        )"
+
+        warm_count="$(
+            printf '%s' "$status_json" \
+            | "$PY" -c '
+import json
+import sys
+
+raw = sys.stdin.read().strip()
+
+try:
+    doc = json.loads(raw)
+except Exception:
+    print(-1)
+    raise SystemExit(0)
+
+warm = doc.get("AvailableWarmContainers") or {}
+
+value = warm.get(sys.argv[1], 0)
+
+try:
+    print(int(value))
+except Exception:
+    print(-1)
+' "$TARGET_FUNCTION"
+        )"
+
+        if [[ "$warm_count" =~ ^[0-9]+$ ]] \
+            && (( warm_count >= 1 )); then
+
+            echo \
+                "  ${arm}: PASS target warm containers=${warm_count}"
+
+            return 0
+        fi
+
+        sleep "$sleep_seconds"
+    done
+
+    fail \
+        "target warm readiness timeout: arm=${arm} function=${TARGET_FUNCTION}"
+}
+
 
 # ==============================================================================
 # Local preflight
@@ -719,6 +784,24 @@ direct_prewarm \
 direct_prewarm \
     arm64 \
     "$ARM_IP"
+
+banner "WAIT TARGET WARM READINESS"
+
+wait_for_target_warm \
+    amd64 \
+    "$X86_WORKER"
+
+wait_for_target_warm \
+    arm64 \
+    "$ARM_WORKER"
+
+wait_for_target_warm \
+    amd64 \
+    "$X86_WORKER"
+
+wait_for_target_warm \
+    arm64 \
+    "$ARM_WORKER"
 
 
 TARGET_UPDATES_PRE="$(
