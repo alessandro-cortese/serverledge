@@ -459,11 +459,17 @@ def choose_donor(
         x_plain - target_plain[0]
     ).sum(axis=1)
 
+    excluded_donors = np.isin(
+        names[same_cluster],
+        ["amd_faster", "arm_faster"],
+    )
+
     directional = same_cluster[
         np.isin(
             prefs[same_cluster],
             DIRECTIONS,
         )
+        & ~excluded_donors
     ]
 
     if len(directional) == 0:
@@ -894,6 +900,10 @@ def main() -> None:
                     "manhattan_plain_minmax",
                 "directional_vote":
                     "1/(d+1e-9)^2",
+                "excluded_functions": [
+                    "amd_faster",
+                    "arm_faster",
+                ],
                 "nearest_within_predicted_class":
                     True,
             },
