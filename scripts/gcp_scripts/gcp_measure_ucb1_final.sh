@@ -426,8 +426,35 @@ PY
 
 EXPECTED_COMMIT="${EXPECTED_COMMIT:-$BOOT_COMMIT}"
 
-[[ "$EXPECTED_COMMIT" == "$BOOT_COMMIT" ]] \
-    || fail "commit runtime diverso dal bootstrap"
+# graph-bfs-r01 was prepared/evidenced on the original frozen runtime.
+# A technical prewarm lifecycle bug was discovered before any accepted
+# measurement. Permit only this exact frozen runtime transition.
+TECHNICAL_FIX_BASE_COMMIT="4a7359156af6ad3d83841c2935efebd67905cb21"
+TECHNICAL_FIX_RUNTIME_COMMIT="4c9f427a76e188c9cb026d0b65ccf44b4d116d6f"
+
+TECHNICAL_RUNTIME_FIX="false"
+TECHNICAL_FIX_PATH=""
+TECHNICAL_FIX_REASON=""
+
+if [[ "$EXPECTED_COMMIT" != "$BOOT_COMMIT" ]]; then
+    [[ "$BOOT_COMMIT" == "$TECHNICAL_FIX_BASE_COMMIT" ]] \
+        || fail "bootstrap commit non ammesso per technical runtime fix"
+
+    [[ "$EXPECTED_COMMIT" == "$TECHNICAL_FIX_RUNTIME_COMMIT" ]] \
+        || fail "measurement runtime non ammesso per technical runtime fix"
+
+    TECHNICAL_RUNTIME_FIX="true"
+    TECHNICAL_FIX_PATH="internal/node/pool.go"
+    TECHNICAL_FIX_REASON="initialize_expiration_for_prewarmed_containers"
+fi
+
+cat >"${RESULT_DIR}/runtime-provenance.txt" <<EOF_RUNTIME_PROVENANCE
+bootstrap_serverledge_commit=${BOOT_COMMIT}
+measurement_serverledge_commit=${EXPECTED_COMMIT}
+technical_runtime_fix=${TECHNICAL_RUNTIME_FIX}
+technical_fix_path=${TECHNICAL_FIX_PATH}
+technical_fix_reason=${TECHNICAL_FIX_REASON}
+EOF_RUNTIME_PROVENANCE
 
 
 PRIOR_SHA=""
