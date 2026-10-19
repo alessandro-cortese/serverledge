@@ -301,6 +301,12 @@ func ResolveDecisionWithFeedback(
 		),
 	)
 
+	logLinUCBRequestObservation(
+		bandit.GetType(),
+		decision,
+		feedback,
+	)
+
 	stats :=
 		GlobalDecisionStats.
 			RecordResolved(

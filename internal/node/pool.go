@@ -231,6 +231,7 @@ func NewContainerWithAcquiredResources(fun *function.Function, startAsIdle bool,
 		fp.busy = append(fp.busy, cont) // We immediately mark it as busy
 	}
 
+	logContainerCreated(cont, fun, startAsIdle)
 	return cont, nil
 }
 
@@ -254,6 +255,7 @@ func NewContainerWithAcquiredResourcesAsync(fun *function.Function, okCallback f
 		fp := GetContainerPool(fun)
 		cont.RequestsCount = 1
 		fp.busy = append(fp.busy, cont) // We immediately mark it as busy
+		logContainerCreated(cont, fun, false)
 		okCallback(cont)
 	}()
 }
@@ -314,7 +316,7 @@ cleanup: // Phase 2: Cleanup
 		for _, item := range containerToDismiss {
 			if item.pool.removeContainerFromIdle(item.cont) {
 				// Destroy the actual container resources (Docker/Containerd)
-				err := container.Destroy(item.cont.ID)
+				err := destroyContainerWithLifecycle(item.cont.ID, containerPoolFunctionName(item.pool), "memory_pressure")
 				if err != nil {
 					return false, err
 				}
@@ -356,7 +358,7 @@ func DeleteExpiredContainer() {
 				LocalResources.warmPoolUsedMem -= memory
 
 				// Destroy the actual container
-				err := container.Destroy(warm.ID)
+				err := destroyContainerWithLifecycle(warm.ID, containerPoolFunctionName(pool), "expired")
 				if err != nil {
 					log.Printf("Error while destroying container %s: %s\n", warm.ID, err)
 				}
@@ -409,7 +411,7 @@ func ShutdownWarmContainersFor(f *function.Function) {
 	go func(contIDs []container.ContainerID) {
 		for _, contID := range contIDs {
 			// No need to update available resources here
-			if err := container.Destroy(contID); err != nil {
+			if err := destroyContainerWithLifecycle(contID, f.Name, "function_shutdown"); err != nil {
 				log.Printf("An error occurred while deleting %s: %v\n", contID, err)
 			} else {
 				log.Printf("Deleted %s\n", contID)
@@ -428,7 +430,7 @@ func ShutdownAllContainers() {
 		for i, warmed := range pool.idle {
 			log.Printf("Removing container with ID %s\n", warmed.ID)
 
-			err := container.Destroy(warmed.ID)
+			err := destroyContainerWithLifecycle(warmed.ID, containerPoolFunctionName(pool), "node_shutdown")
 			if err != nil {
 				log.Printf("Error while destroying container %s: %s", warmed.ID, err)
 			}
@@ -443,7 +445,7 @@ func ShutdownAllContainers() {
 		for i, busyCont := range pool.busy {
 			log.Printf("Removing container with ID %s\n", busyCont.ID)
 
-			err := container.Destroy(busyCont.ID)
+			err := destroyContainerWithLifecycle(busyCont.ID, containerPoolFunctionName(pool), "node_shutdown")
 			if err != nil {
 				log.Printf("failed to destroy container %s: %v\n", busyCont.ID, err)
 				continue
