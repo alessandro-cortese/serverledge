@@ -13,7 +13,7 @@ scripts/profiling-nodes.local.conf
 .venv-analysis/
 data/
 logs/
-examples/kepler_cpu_smoke.py
+# examples/kepler_cpu_smoke.py
 logs/kepler-serverledge-smoke
 
 scripts/gcp_scripts/risultati/
