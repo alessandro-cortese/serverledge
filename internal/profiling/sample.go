@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const InvocationSampleSchemaVersion = 4
+const InvocationSampleSchemaVersion = 6
 
 // InvocationTiming contains the timing dimensions associated with one
 // invocation. Values are expressed in milliseconds to make the exported

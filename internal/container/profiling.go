@@ -163,6 +163,7 @@ func ExecuteProfiled(cont *Container, req *executor.InvocationRequest, collectRe
 
 	var containerAfter profiling.ResourceSnapshot
 	var containerAfterErr error
+	var containerEndOverhead time.Duration
 
 	var nodeAfter profiling.NodeResourceSnapshot
 	var nodeAfterErr error
@@ -170,12 +171,22 @@ func ExecuteProfiled(cont *Container, req *executor.InvocationRequest, collectRe
 
 	if resourceProfilingEnabled {
 		if containerBeforeErr == nil {
-			containerAfter, containerAfterErr = cf.GetResourceSnapshot(contID)
+			containerEndSnapshotStartedAt := time.Now()
+
+			containerAfter, containerAfterErr =
+				cf.GetResourceSnapshot(contID)
+
+			containerEndOverhead =
+				time.Since(containerEndSnapshotStartedAt)
 		}
 
 		nodeEndSnapshotStartedAt := time.Now()
-		nodeAfter, nodeAfterErr = profiling.ReadNodeResourceSnapshot()
-		nodeEndOverhead = time.Since(nodeEndSnapshotStartedAt)
+
+		nodeAfter, nodeAfterErr =
+			profiling.ReadNodeResourceSnapshot()
+
+		nodeEndOverhead =
+			time.Since(nodeEndSnapshotStartedAt)
 	}
 
 	// Kepler is deliberately read only after the execution and after the
@@ -206,30 +217,41 @@ func ExecuteProfiled(cont *Container, req *executor.InvocationRequest, collectRe
 	if resourceProfilingEnabled {
 		switch {
 		case containerBeforeErr != nil:
-			resourceProfile = profiling.NewInvalidInvocationResourceProfile(
-				contID,
-				true,
-				fmt.Sprintf("snapshot_before_failed: %v", containerBeforeErr),
-				containerStartOverhead,
-			)
+			resourceProfile =
+				profiling.NewInvalidInvocationResourceProfileWithOverheads(
+					contID,
+					true,
+					fmt.Sprintf(
+						"snapshot_before_failed: %v",
+						containerBeforeErr,
+					),
+					containerStartOverhead,
+					containerEndOverhead,
+				)
 
 		case containerAfterErr != nil:
-			resourceProfile = profiling.NewInvalidInvocationResourceProfile(
-				contID,
-				true,
-				fmt.Sprintf("snapshot_after_failed: %v", containerAfterErr),
-				containerStartOverhead,
-			)
+			resourceProfile =
+				profiling.NewInvalidInvocationResourceProfileWithOverheads(
+					contID,
+					true,
+					fmt.Sprintf(
+						"snapshot_after_failed: %v",
+						containerAfterErr,
+					),
+					containerStartOverhead,
+					containerEndOverhead,
+				)
 
 		default:
 			resourceProfile =
-				profiling.BuildInvocationResourceProfile(
+				profiling.BuildInvocationResourceProfileWithOverheads(
 					contID,
 					true,
 					containerBefore,
 					containerAfter,
 					executionWallTime,
 					containerStartOverhead,
+					containerEndOverhead,
 				)
 		}
 	}

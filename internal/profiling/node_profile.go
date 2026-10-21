@@ -6,13 +6,21 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
 const defaultProcRoot = "/proc"
+
+var (
+	cpuClockTicksOnce      sync.Once
+	cpuClockTicksPerSecond uint64
+	cpuClockTicksErr       error
+)
 
 // NodeCPUStatSnapshot contains cumulative host/VM CPU counters read from
 // /proc/stat. Values are expressed in Linux clock ticks.
@@ -66,34 +74,122 @@ type NodeResourceSnapshot struct {
 // These values describe the node or VM environment. They must not be
 // interpreted as exclusive consumption by the function.
 type NodeResourceProfile struct {
-	Collected               bool     `json:"collected"`
-	Complete                bool     `json:"complete"`
-	Errors                  []string `json:"errors,omitempty"`
-	CPUAvailable            bool     `json:"cpu_available"`
-	MemoryAvailable         bool     `json:"memory_available"`
-	VMStatAvailable         bool     `json:"vm_stat_available"`
-	AvailableCPUs           int      `json:"available_cpus"`
-	ExecutionWallTimeMs     float64  `json:"execution_wall_time_ms"`
-	CPUUserDeltaMs          float64  `json:"cpu_user_delta_ms"`
-	CPUNiceDeltaMs          float64  `json:"cpu_nice_delta_ms"`
-	CPUKernelDeltaMs        float64  `json:"cpu_kernel_delta_ms"`
-	CPUIdleDeltaMs          float64  `json:"cpu_idle_delta_ms"`
-	CPUIOWaitDeltaMs        float64  `json:"cpu_iowait_delta_ms"`
-	CPUIRQDeltaMs           float64  `json:"cpu_irq_delta_ms"`
-	CPUSoftIRQDeltaMs       float64  `json:"cpu_soft_irq_delta_ms"`
-	CPUStealDeltaMs         float64  `json:"cpu_steal_delta_ms"`
-	CPUGuestDeltaMs         float64  `json:"cpu_guest_delta_ms"`
-	CPUGuestNiceDeltaMs     float64  `json:"cpu_guest_nice_delta_ms"`
-	TotalMemoryBeforeBytes  uint64   `json:"total_memory_before_bytes"`
-	TotalMemoryAfterBytes   uint64   `json:"total_memory_after_bytes"`
-	FreeMemoryBeforeBytes   uint64   `json:"free_memory_before_bytes"`
-	FreeMemoryAfterBytes    uint64   `json:"free_memory_after_bytes"`
-	PageFaultsBefore        uint64   `json:"page_faults_before"`
-	PageFaultsAfter         uint64   `json:"page_faults_after"`
-	PageFaultsDelta         uint64   `json:"page_faults_delta"`
-	SnapshotStartOverheadMs float64  `json:"snapshot_start_overhead_ms"`
-	SnapshotEndOverheadMs   float64  `json:"snapshot_end_overhead_ms"`
-	SnapshotTotalOverheadMs float64  `json:"snapshot_total_overhead_ms"`
+	Collected           bool     `json:"collected"`
+	Complete            bool     `json:"complete"`
+	Errors              []string `json:"errors,omitempty"`
+	CPUAvailable        bool     `json:"cpu_available"`
+	MemoryAvailable     bool     `json:"memory_available"`
+	VMStatAvailable     bool     `json:"vm_stat_available"`
+	AvailableCPUs       int      `json:"available_cpus"`
+	ExecutionWallTimeMs float64  `json:"execution_wall_time_ms"`
+
+	// CPUClockTicks* and the raw tick deltas preserve the native /proc/stat
+	// representation. They allow downstream consumers to reproduce SAAF's
+	// direct jiffy-to-millisecond conversion without changing the historical
+	// normalized CPU millisecond fields below.
+	CPUClockTicksAvailable bool   `json:"cpu_clock_ticks_available"`
+	CPUClockTicksPerSecond uint64 `json:"cpu_clock_ticks_per_second"`
+	CPUUserDeltaTicks      uint64 `json:"cpu_user_delta_ticks"`
+	CPUNiceDeltaTicks      uint64 `json:"cpu_nice_delta_ticks"`
+	CPUKernelDeltaTicks    uint64 `json:"cpu_kernel_delta_ticks"`
+	CPUIdleDeltaTicks      uint64 `json:"cpu_idle_delta_ticks"`
+	CPUIOWaitDeltaTicks    uint64 `json:"cpu_iowait_delta_ticks"`
+	CPUIRQDeltaTicks       uint64 `json:"cpu_irq_delta_ticks"`
+	CPUSoftIRQDeltaTicks   uint64 `json:"cpu_soft_irq_delta_ticks"`
+	CPUStealDeltaTicks     uint64 `json:"cpu_steal_delta_ticks"`
+	CPUGuestDeltaTicks     uint64 `json:"cpu_guest_delta_ticks"`
+	CPUGuestNiceDeltaTicks uint64 `json:"cpu_guest_nice_delta_ticks"`
+
+	// Historical Serverledge CPU millisecond fields. These remain unchanged:
+	// they are normalized over ExecutionWallTimeMs * AvailableCPUs and user/nice
+	// exclude guest/guest_nice so the modes are mutually exclusive.
+	CPUUserDeltaMs          float64 `json:"cpu_user_delta_ms"`
+	CPUNiceDeltaMs          float64 `json:"cpu_nice_delta_ms"`
+	CPUKernelDeltaMs        float64 `json:"cpu_kernel_delta_ms"`
+	CPUIdleDeltaMs          float64 `json:"cpu_idle_delta_ms"`
+	CPUIOWaitDeltaMs        float64 `json:"cpu_iowait_delta_ms"`
+	CPUIRQDeltaMs           float64 `json:"cpu_irq_delta_ms"`
+	CPUSoftIRQDeltaMs       float64 `json:"cpu_soft_irq_delta_ms"`
+	CPUStealDeltaMs         float64 `json:"cpu_steal_delta_ms"`
+	CPUGuestDeltaMs         float64 `json:"cpu_guest_delta_ms"`
+	CPUGuestNiceDeltaMs     float64 `json:"cpu_guest_nice_delta_ms"`
+	TotalMemoryBeforeBytes  uint64  `json:"total_memory_before_bytes"`
+	TotalMemoryAfterBytes   uint64  `json:"total_memory_after_bytes"`
+	FreeMemoryBeforeBytes   uint64  `json:"free_memory_before_bytes"`
+	FreeMemoryAfterBytes    uint64  `json:"free_memory_after_bytes"`
+	PageFaultsBefore        uint64  `json:"page_faults_before"`
+	PageFaultsAfter         uint64  `json:"page_faults_after"`
+	PageFaultsDelta         uint64  `json:"page_faults_delta"`
+	SnapshotStartOverheadMs float64 `json:"snapshot_start_overhead_ms"`
+	SnapshotEndOverheadMs   float64 `json:"snapshot_end_overhead_ms"`
+	SnapshotTotalOverheadMs float64 `json:"snapshot_total_overhead_ms"`
+}
+
+// getCPUClockTicksPerSecond returns the Linux USER_HZ value used by
+// /proc/stat. SAAF 0.7 obtains the same value through `getconf CLK_TCK`.
+//
+// The command is executed at most once per Serverledge process so collecting
+// per-invocation profiles does not repeatedly spawn a subprocess.
+func getCPUClockTicksPerSecond() (uint64, error) {
+	cpuClockTicksOnce.Do(
+		func() {
+			output, err :=
+				exec.Command(
+					"getconf",
+					"CLK_TCK",
+				).Output()
+
+			if err != nil {
+				cpuClockTicksErr =
+					fmt.Errorf(
+						"getconf CLK_TCK failed: %w",
+						err,
+					)
+
+				return
+			}
+
+			value :=
+				strings.TrimSpace(
+					string(
+						output,
+					),
+				)
+
+			parsed, err :=
+				strconv.ParseUint(
+					value,
+					10,
+					64,
+				)
+
+			if err != nil {
+				cpuClockTicksErr =
+					fmt.Errorf(
+						"invalid getconf CLK_TCK value %q: %w",
+						value,
+						err,
+					)
+
+				return
+			}
+
+			if parsed == 0 {
+				cpuClockTicksErr =
+					errors.New(
+						"getconf CLK_TCK returned zero",
+					)
+
+				return
+			}
+
+			cpuClockTicksPerSecond =
+				parsed
+		},
+	)
+
+	return cpuClockTicksPerSecond,
+		cpuClockTicksErr
 }
 
 // ReadNodeResourceSnapshot reads all supported node-scoped procfs sources.
@@ -409,9 +505,9 @@ func populateNodeCPUProfile(profile *NodeResourceProfile, before NodeCPUStatSnap
 		target *uint64
 	}
 
-	// CPU counters are read in clock ticks. Ticks are an implementation
-	// detail of /proc/stat: only the normalized millisecond values are
-	// exported, so the raw deltas stay local to this function.
+	// CPU counters are read in Linux clock ticks. Schema 6 retains those raw
+	// deltas because SAAF converts them directly with 1000/CLK_TCK. The
+	// historical normalized millisecond fields are still calculated below.
 	var (
 		rawUserDelta   uint64
 		rawNiceDelta   uint64
@@ -497,6 +593,38 @@ func populateNodeCPUProfile(profile *NodeResourceProfile, before NodeCPUStatSnap
 			return fmt.Errorf("node_%s_counter_regressed", pair.name)
 		}
 		*pair.target = delta
+	}
+
+	// Preserve the raw /proc/stat deltas exactly as exposed by Linux. In
+	// particular CPUUserDeltaTicks and CPUNiceDeltaTicks intentionally still
+	// include guest and guest_nice, matching SAAF's direct reading semantics.
+	profile.CPUUserDeltaTicks = rawUserDelta
+	profile.CPUNiceDeltaTicks = rawNiceDelta
+	profile.CPUKernelDeltaTicks = kernelTicks
+	profile.CPUIdleDeltaTicks = idleTicks
+	profile.CPUIOWaitDeltaTicks = ioWaitTicks
+	profile.CPUIRQDeltaTicks = irqTicks
+	profile.CPUSoftIRQDeltaTicks = softIRQTicks
+	profile.CPUStealDeltaTicks = stealTicks
+	profile.CPUGuestDeltaTicks = guestTicks
+	profile.CPUGuestNiceDeltaTicks = guestNiceTicks
+
+	clockTicksPerSecond, clockErr :=
+		getCPUClockTicksPerSecond()
+
+	if clockErr != nil {
+		profile.CPUClockTicksAvailable = false
+		profile.Errors =
+			append(
+				profile.Errors,
+				fmt.Sprintf(
+					"cpu_clock_ticks_unavailable: %v",
+					clockErr,
+				),
+			)
+	} else {
+		profile.CPUClockTicksAvailable = true
+		profile.CPUClockTicksPerSecond = clockTicksPerSecond
 	}
 
 	// Linux includes guest time in user time and guest_nice time in nice

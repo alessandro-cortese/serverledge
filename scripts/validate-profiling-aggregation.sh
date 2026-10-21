@@ -330,6 +330,8 @@ function_name = sys.argv[3]
 warm_expected = int(sys.argv[4])
 memory_expected = int(sys.argv[5])
 
+raw_schema_expected = 6
+
 features = (
     "page_faults_delta",
     "utilized_cpus",
@@ -534,8 +536,12 @@ for index, sample in enumerate(
     check(
         sample.get(
             "schema_version"
-        ) == 4,
-        f"raw {index}: schema_version non valido",
+        ) == raw_schema_expected,
+        (
+            f"raw {index}: schema_version non valido: "
+            f"{sample.get('schema_version')} "
+            f"(atteso {raw_schema_expected})"
+        ),
     )
 
     check(
@@ -651,6 +657,151 @@ eligible = [
         "resource_clustering"
     ) is True
 ]
+
+# ============================================================
+# Schema 6: overhead container iniziale/finale
+# ============================================================
+
+for index, sample in enumerate(
+    warm,
+    start=1,
+):
+    profile = sample.get(
+        "profile"
+    ) or {}
+
+    start_overhead = profile.get(
+        "profiling_start_overhead_ms"
+    )
+
+    end_overhead = profile.get(
+        "profiling_end_overhead_ms"
+    )
+
+    total_overhead = profile.get(
+        "profiling_total_overhead_ms"
+    )
+
+    check(
+        finite(start_overhead)
+        and start_overhead >= 0,
+        (
+            f"warm {index}: "
+            "profiling_start_overhead_ms non valido"
+        ),
+    )
+
+    check(
+        finite(end_overhead)
+        and end_overhead >= 0,
+        (
+            f"warm {index}: "
+            "profiling_end_overhead_ms non valido"
+        ),
+    )
+
+    check(
+        finite(total_overhead)
+        and total_overhead >= 0,
+        (
+            f"warm {index}: "
+            "profiling_total_overhead_ms non valido"
+        ),
+    )
+
+    if (
+        finite(start_overhead)
+        and finite(end_overhead)
+        and finite(total_overhead)
+    ):
+        check(
+            math.isclose(
+                total_overhead,
+                start_overhead + end_overhead,
+                rel_tol=1e-12,
+                abs_tol=1e-9,
+            ),
+            (
+                f"warm {index}: profiling_total_overhead_ms "
+                "non coincide con start + end"
+            ),
+        )
+
+
+# ============================================================
+# Schema 6: raw /proc/stat tick deltas + CLK_TCK
+# ============================================================
+
+for index, sample in enumerate(
+    warm,
+    start=1,
+):
+    node = sample.get(
+        "node_environment"
+    ) or {}
+
+    check(
+        node.get(
+            "cpu_clock_ticks_available"
+        ) is True,
+        (
+            f"warm {index}: "
+            "cpu_clock_ticks_available non valido"
+        ),
+    )
+
+    clock_ticks = node.get(
+        "cpu_clock_ticks_per_second"
+    )
+
+    check(
+        isinstance(
+            clock_ticks,
+            int,
+        )
+        and not isinstance(
+            clock_ticks,
+            bool,
+        )
+        and clock_ticks > 0,
+        (
+            f"warm {index}: "
+            "cpu_clock_ticks_per_second non valido"
+        ),
+    )
+
+    for field_name in (
+        "cpu_user_delta_ticks",
+        "cpu_nice_delta_ticks",
+        "cpu_kernel_delta_ticks",
+        "cpu_idle_delta_ticks",
+        "cpu_iowait_delta_ticks",
+        "cpu_irq_delta_ticks",
+        "cpu_soft_irq_delta_ticks",
+        "cpu_steal_delta_ticks",
+        "cpu_guest_delta_ticks",
+        "cpu_guest_nice_delta_ticks",
+    ):
+        value = node.get(
+            field_name
+        )
+
+        check(
+            isinstance(
+                value,
+                int,
+            )
+            and not isinstance(
+                value,
+                bool,
+            )
+            and value >= 0,
+            (
+                f"warm {index}: "
+                f"{field_name} non valido"
+            ),
+        )
+
 
 check(
     len(cold) == 1,
@@ -1053,6 +1204,22 @@ print(
 print(
     "[PASS] FunctionName, MachineTag e "
     "configurazione sono preservati."
+)
+
+print(
+    f"[PASS] Tutti i raw sample usano "
+    f"InvocationSample schema {raw_schema_expected}."
+)
+
+print(
+    "[PASS] Gli overhead container start/end/total "
+    "sono presenti e total = start + end "
+    "su tutti i warm riusciti."
+)
+
+print(
+    "[PASS] I warm schema 6 conservano CLK_TCK e "
+    "i dieci delta raw di /proc/stat."
 )
 
 print()

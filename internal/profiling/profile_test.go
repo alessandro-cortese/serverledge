@@ -101,6 +101,97 @@ func TestBuildInvocationResourceProfileCalculatesDeltas(
 	)
 }
 
+func TestBuildInvocationResourceProfileWithOverheadsRecordsBothSnapshotCosts(
+	t *testing.T,
+) {
+	before :=
+		ResourceSnapshot{
+			OSType: "linux",
+
+			CPUUsageUserNs: 700_000_000,
+
+			CPUUsageKernelNs: 300_000_000,
+
+			PageFaults: 100,
+
+			PageFaultsAvailable: true,
+		}
+
+	after :=
+		ResourceSnapshot{
+			OSType: "linux",
+
+			CPUUsageUserNs: 900_000_000,
+
+			CPUUsageKernelNs: 350_000_000,
+
+			PageFaults: 140,
+
+			PageFaultsAvailable: true,
+		}
+
+	profile :=
+		BuildInvocationResourceProfileWithOverheads(
+			"container-a",
+			true,
+			before,
+			after,
+			2*time.Second,
+			3*time.Millisecond,
+			4*time.Millisecond,
+		)
+
+	require.NotNil(
+		t,
+		profile,
+	)
+
+	require.True(
+		t,
+		profile.Valid,
+		profile.InvalidReason,
+	)
+
+	assert.Equal(
+		t,
+		uint64(200_000_000),
+		profile.CPUUsageUserDeltaNs,
+	)
+
+	assert.Equal(
+		t,
+		uint64(50_000_000),
+		profile.CPUUsageKernelDeltaNs,
+	)
+
+	assert.Equal(
+		t,
+		uint64(40),
+		profile.PageFaultsDelta,
+	)
+
+	assert.InDelta(
+		t,
+		3.0,
+		profile.ProfilingStartOverheadMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		4.0,
+		profile.ProfilingEndOverheadMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		7.0,
+		profile.ProfilingTotalOverheadMs,
+		1e-9,
+	)
+}
+
 // TestBuildInvocationResourceProfileWithoutPageFaultCounters documents that a
 // missing page-fault counter does not invalidate the profile: it only makes the
 // sample ineligible for the feature vector, which checks PageFaultsAvailable.
@@ -351,6 +442,66 @@ func TestNewInvalidInvocationResourceProfileRecordsReason(
 	)
 }
 
+func TestNewInvalidInvocationResourceProfileWithOverheadsRecordsBothSnapshotCosts(
+	t *testing.T,
+) {
+	profile :=
+		NewInvalidInvocationResourceProfileWithOverheads(
+			"container-a",
+			true,
+			"snapshot_after_failed: boom",
+			2*time.Millisecond,
+			5*time.Millisecond,
+		)
+
+	require.NotNil(
+		t,
+		profile,
+	)
+
+	assert.True(
+		t,
+		profile.Enabled,
+	)
+
+	assert.False(
+		t,
+		profile.Collected,
+	)
+
+	assert.False(
+		t,
+		profile.Valid,
+	)
+
+	assert.Equal(
+		t,
+		"snapshot_after_failed: boom",
+		profile.InvalidReason,
+	)
+
+	assert.InDelta(
+		t,
+		2.0,
+		profile.ProfilingStartOverheadMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		5.0,
+		profile.ProfilingEndOverheadMs,
+		1e-9,
+	)
+
+	assert.InDelta(
+		t,
+		7.0,
+		profile.ProfilingTotalOverheadMs,
+		1e-9,
+	)
+}
+
 // TestInvocationResourceProfileUsesStableJSONKeys pins the exported schema.
 //
 // The JSONL dataset is consumed by the offline Python pipeline and by the
@@ -404,6 +555,8 @@ func TestInvocationResourceProfileUsesStableJSONKeys(
 			"page_faults_delta",
 			"page_faults_available",
 			"profiling_start_overhead_ms",
+			"profiling_end_overhead_ms",
+			"profiling_total_overhead_ms",
 		}
 
 	for _, key := range expectedKeys {
