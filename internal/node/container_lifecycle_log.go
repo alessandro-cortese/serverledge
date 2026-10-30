@@ -46,11 +46,13 @@ func logContainerCreated(
 	fun *function.Function,
 	startAsIdle bool,
 ) {
-	if !containerLifecycleLoggingEnabled() {
+	if cont == nil || fun == nil {
 		return
 	}
 
-	if cont == nil || fun == nil {
+	if !containerLifecycleLoggingEnabled() {
+		// RAM monitoring is independent of lifecycle logging
+		startContainerMemoryMonitor(cont.ID, fun.Name)
 		return
 	}
 
@@ -84,6 +86,8 @@ func logContainerCreated(
 		creationKind,
 		initialState,
 	)
+
+	startContainerMemoryMonitor(cont.ID, fun.Name)
 }
 
 // destroyContainerWithLifecycle wraps the legacy container.Destroy call.
@@ -101,7 +105,17 @@ func destroyContainerWithLifecycle(
 	reason string,
 ) error {
 	if !containerLifecycleLoggingEnabled() {
-		return container.Destroy(id)
+		stopContainerMemoryMonitor(id)
+
+		err := container.Destroy(id)
+
+		if err != nil {
+			resumeContainerMemoryMonitor(id)
+		} else {
+			forgetStoppedContainerMemoryMonitor(id)
+		}
+
+		return err
 	}
 
 	memoryMB, memoryErr := container.GetMemoryMB(id)
@@ -111,9 +125,14 @@ func destroyContainerWithLifecycle(
 		memoryMB = -1
 	}
 
+	// Let’s complete the final read whilst the container still exists
+	stopContainerMemoryMonitor(id)
+
 	err := container.Destroy(id)
 
 	if err != nil {
+		// The deletion failed: let’s resume monitoring the container
+		resumeContainerMemoryMonitor(id)
 		log.Printf(
 			"%s event=container_destroy_failed "+
 				"ts=%d "+
@@ -141,6 +160,8 @@ func destroyContainerWithLifecycle(
 
 		return err
 	}
+
+	forgetStoppedContainerMemoryMonitor(id)
 
 	log.Printf(
 		"%s event=container_destroyed "+

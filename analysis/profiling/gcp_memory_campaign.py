@@ -50,6 +50,16 @@ JANITOR_S = 2
 POOL_MB = 12000
 SAFE_NAME = re.compile(r'^[a-zA-Z0-9_.-]{1,120}$')
 VALID_CONDITIONS = {row[0] for row in CONFIGS}
+
+ACTUAL_MEMORY_CONFIG_IDS = (
+    "N02",
+    "R02",
+    "N04",
+    "R04",
+    "N08",
+    "R08",
+)
+
 STOP_SIGNALS = (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)
 
 
@@ -382,33 +392,49 @@ def fresh_runtime(doc: dict, target: str, cid: str, run_stamp: str):
     entry = next(r for r in CONFIGS if r[0] == cid)
     c = entry[-1]
     registry_ip = internal_ip('sl-registry')
+
     for host in ('sl-lb', *WORKERS):
-        remote(host, 'sudo pkill -x lb || true\nsudo pkill -x serverledge || true\nsleep 2')
-    # Do not reset while previous containers still run. Clean owned Docker
-    # function containers via natural expiry only, never kill and erase evidence.
+        remote(
+            host,
+            'sudo pkill -x lb || true\n'
+            'sudo pkill -x serverledge || true\n'
+            'sleep 2'
+        )
+
     for host in WORKERS:
-        count = remote(host, "sudo docker ps -q | wc -l").strip()
-        need(count == '0', f'{host}: Docker containers still active: {count}')
+        count = remote(host, 'sudo docker ps -q | wc -l').strip()
+        need(
+            count == '0',
+            f'{host}: Docker containers still active: {count}'
+        )
+
     remote('sl-registry', '''sudo docker rm -f Etcd-server >/dev/null 2>&1 || true
-sudo docker run -d -p 2379:2379 -p 2380:2380 --name Etcd-server \\
-  gcr.io/etcd-development/etcd:v3.5.13 /usr/local/bin/etcd \\
-  --name s1 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 \\
-  --advertise-client-urls http://0.0.0.0:2379 \\
-  --listen-peer-urls http://0.0.0.0:2380 \\
-  --initial-advertise-peer-urls http://0.0.0.0:2380 \\
-  --initial-cluster s1=http://0.0.0.0:2380 \\
-  --initial-cluster-token tkn --initial-cluster-state new \\
+sudo docker run -d -p 2379:2379 -p 2380:2380 --name Etcd-server \
+  gcr.io/etcd-development/etcd:v3.5.13 /usr/local/bin/etcd \
+  --name s1 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 \
+  --advertise-client-urls http://0.0.0.0:2379 \
+  --listen-peer-urls http://0.0.0.0:2380 \
+  --initial-advertise-peer-urls http://0.0.0.0:2380 \
+  --initial-cluster s1=http://0.0.0.0:2380 \
+  --initial-cluster-token tkn --initial-cluster-state new \
   --max-request-bytes 33554432 --quota-backend-bytes 8589934592 >/dev/null''')
+
     for _ in range(20):
         try:
-            remote('sl-registry', 'sudo docker exec Etcd-server etcdctl endpoint health',timeout=45)
+            remote(
+                'sl-registry',
+                'sudo docker exec Etcd-server etcdctl endpoint health',
+                timeout=45
+            )
             break
         except CampaignError:
             time.sleep(2)
     else:
         raise CampaignError('etcd not healthy')
+
     for host in WORKERS:
         arch = 'arm64' if 'arm' in host else 'amd64'
+
         yaml = f'''registry.area: "cloud-region"
 registry.node.id: "{host}"
 registry.udp.port: 9877
@@ -422,11 +448,21 @@ factory.images.refresh: false
 profiling.enabled: false
 profiling.export.enabled: false
 '''
-        script = ('sudo tee /opt/serverledge/worker-memory.yaml >/dev/null <<\'MEM_YAML\'\n'+yaml+'MEM_YAML\n'
-                  "sudo sh -c 'cd /opt/serverledge && SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1 "
-                  "nohup ./bin/serverledge worker-memory.yaml "
-                  "> /var/log/serverledge-node.log 2>&1 </dev/null &'")
+
+        script = (
+                "sudo tee /opt/serverledge/worker-memory.yaml >/dev/null <<'MEM_YAML'\n"
+                + yaml
+                + "MEM_YAML\n"
+                + "sudo sh -c 'cd /opt/serverledge && "
+                + "SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1 "
+                + "SERVERLEDGE_CONTAINER_MEMORY_SAMPLE_MS=1000 "
+                + "nohup ./bin/serverledge worker-memory.yaml "
+                + "> /var/log/serverledge-node.log 2>&1 </dev/null &'"
+        )
+
         remote(host, script)
+
+
     lb_yml = f'''registry.area: "cloud-region"
 registry.udp.port: 9877
 lb.replicas: 128
@@ -439,39 +475,84 @@ mab.reward.mode: "latency"
 mab.transfer.control.enabled: true
 etcd.address: "{registry_ip}:2379"
 '''
-    # Do not enable/disable transfer between no-TL vs TL, only apply prior selectively.
-    remote('sl-lb', 'sudo tee /opt/serverledge/lb-memory.yaml >/dev/null <<\'MEM_YAML\'\n'+lb_yml+
-           "MEM_YAML\nsudo sh -c 'cd /opt/serverledge && "
-           "nohup ./bin/lb lb-memory.yaml > /var/log/serverledge-lb.log 2>&1 </dev/null &'")
+
+    remote(
+        'sl-lb',
+        "sudo tee /opt/serverledge/lb-memory.yaml >/dev/null <<'MEM_YAML'\n"
+        + lb_yml
+        + "MEM_YAML\nsudo sh -c 'cd /opt/serverledge && "
+        + "nohup ./bin/lb lb-memory.yaml "
+        + "> /var/log/serverledge-lb.log 2>&1 </dev/null &'"
+    )
+
     for _ in range(25):
         try:
             for host in (*WORKERS, 'sl-lb'):
-                remote(host, 'curl -fsS --max-time 5 http://127.0.0.1:1323/status >/dev/null',timeout=45)
-            registered = remote('sl-registry',
-                "sudo docker exec Etcd-server etcdctl get registry/cloud-region/ --prefix --keys-only | grep -E '^registry/cloud-region/(amd64|arm64)/' | wc -l")
-            need(registered.strip() == '2', f'expected 2 registered workers: {registered}')
-            remote('sl-lb', '''grep -q 'Running ArchitectureAwareLB' /var/log/serverledge-lb.log
- grep -q 'LB mode set to MAB' /var/log/serverledge-lb.log
- grep -q 'event=new_machine_tag_discovered tag=amd64 arch=amd64' /var/log/serverledge-lb.log
- grep -q 'event=new_machine_tag_discovered tag=arm64 arch=arm64' /var/log/serverledge-lb.log''')
+                remote(
+                    host,
+                    'curl -fsS --max-time 5 '
+                    'http://127.0.0.1:1323/status >/dev/null',
+                    timeout=45
+                )
+
+            registered = remote(
+                'sl-registry',
+                "sudo docker exec Etcd-server etcdctl get "
+                "registry/cloud-region/ --prefix --keys-only "
+                "| grep -E '^registry/cloud-region/(amd64|arm64)/' "
+                "| wc -l"
+            )
+
+            need(
+                registered.strip() == '2',
+                f'expected 2 registered workers: {registered}'
+            )
+
+            remote(
+                'sl-lb',
+                '''grep -q 'Running ArchitectureAwareLB' /var/log/serverledge-lb.log
+grep -q 'LB mode set to MAB' /var/log/serverledge-lb.log
+grep -q 'event=new_machine_tag_discovered tag=amd64 arch=amd64' /var/log/serverledge-lb.log
+grep -q 'event=new_machine_tag_discovered tag=arm64 arch=arm64' /var/log/serverledge-lb.log'''
+            )
+
             break
+
         except CampaignError:
             time.sleep(2)
     else:
-        raise CampaignError('Runtime not healthy, 2 workers and LB must be active')
-    # Prove runtime config and logging enabled BEFORE the requests; actual
-    # lifecycle events are checked after the first cold invocation.
+        raise CampaignError(
+            'Runtime not healthy, 2 workers and LB must be active'
+        )
+
     for host in WORKERS:
-        # The name of the process is pinned; read /proc/PID/environ under sudo.
-        env = remote(host, "sudo python3 - <<'PY_ENV'\n"
-                           "import os, subprocess\n"
-                           "pid=subprocess.check_output(['pgrep','-x','serverledge'],text=True).splitlines()[0]\n"
-                           "value=open('/proc/'+pid+'/environ','rb').read().split(b'\\x00')\n"
-                           "assert b'SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1' in value\n"
-                           "print('SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1')\n"
-                           "PY_ENV")
-        need('SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1' in env, f'{host}: lifecycle logging env missing')
-    print(f'PASS fresh runtime {target}/{cid}: c={c}, policy UCB1Decoupled, no target prewarm')
+        env = remote(
+            host,
+            "sudo python3 - <<'PY_ENV'\n"
+            "import subprocess\n"
+            "pid = subprocess.check_output("
+            "['pgrep', '-x', 'serverledge'], "
+            "text=True).splitlines()[0]\n"
+            "value = open('/proc/' + pid + '/environ', "
+            "'rb').read().split(b'\\x00')\n"
+            "assert b'SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1' in value\n"
+            "assert b'SERVERLEDGE_CONTAINER_MEMORY_SAMPLE_MS=1000' in value\n"
+            "print('SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1 "
+            "SERVERLEDGE_CONTAINER_MEMORY_SAMPLE_MS=1000')\n"
+            "PY_ENV"
+        )
+
+        need(
+            'SERVERLEDGE_CONTAINER_LIFECYCLE_LOG=1' in env
+            and 'SERVERLEDGE_CONTAINER_MEMORY_SAMPLE_MS=1000' in env,
+            f'{host}: container memory telemetry not enabled'
+        )
+
+    print(
+        f'PASS fresh runtime {target}/{cid}: '
+        f'c={c}, policy UCB1Decoupled, '
+        'memory=1000ms, no target prewarm'
+    )
 
 
 def registration_catalog() -> dict:
@@ -620,6 +701,287 @@ def check_decisions(lb_text: str, target: str, count: int) -> dict:
         'raw_selected_execution_lines': [line for line, _ in resolved],
     }
 
+def validate_actual_memory(
+        worker_text: dict[str, str],
+        target: str,
+) -> tuple[dict, list[dict]]:
+
+    lifecycle = {}
+    samples = {}
+    stops = set()
+    errors = []
+
+    for host, content in worker_text.items():
+        for line in content.splitlines():
+
+            if (
+                    "[CONTAINER_LIFECYCLE]" not in line
+                    and "[CONTAINER_MEMORY]" not in line
+            ):
+                continue
+
+            is_memory = "[CONTAINER_MEMORY]" in line
+
+            marker = (
+                "[CONTAINER_MEMORY]"
+                if is_memory
+                else "[CONTAINER_LIFECYCLE]"
+            )
+
+            try:
+                fields = dict(
+                    piece.split("=", 1)
+                    for piece in shlex.split(
+                        line.split(marker, 1)[1]
+                    )
+                    if "=" in piece
+                )
+            except ValueError as exc:
+                raise CampaignError(
+                    f"Invalid container log on {host}: {line}"
+                ) from exc
+
+            if fields.get("function") != target:
+                continue
+
+            key = (host, fields.get("container_id"))
+
+            need(
+                bool(key[1]),
+                f"Missing container ID on {host}: {line}",
+            )
+
+            event = fields.get("event")
+
+            if not is_memory and event in (
+                    "container_created",
+                    "container_destroyed",
+            ):
+                need(
+                    key not in lifecycle
+                    or event not in lifecycle[key],
+                    f"Duplicate {event} for {key}",
+                    )
+
+                lifecycle.setdefault(key, {})[event] = fields
+
+            elif is_memory and event == "memory_sample":
+                samples.setdefault(key, []).append(fields)
+
+            elif is_memory and event == "monitor_stopped":
+                need(
+                    key not in stops,
+                    f"Duplicate monitor_stopped for {key}",
+                    )
+                stops.add(key)
+
+            elif is_memory and event in (
+                    "sample_error",
+                    "sample_invalid",
+            ):
+                errors.append(
+                    (key, event, fields.get("error"))
+                )
+
+    need(
+        not errors,
+        f"Memory reading errors for {target}: {errors[:3]}",
+    )
+
+    need(
+        bool(lifecycle),
+        f"No lifecycle events for {target}",
+    )
+
+    need(
+        set(samples) == set(lifecycle),
+        f"Memory container mismatch: "
+        f"missing={set(lifecycle) - set(samples)}, "
+        f"extra={set(samples) - set(lifecycle)}",
+        )
+
+    need(
+        stops == set(lifecycle),
+        f"Missing/extra monitor_stopped: "
+        f"{set(lifecycle) ^ stops}",
+        )
+
+    per_container = []
+
+    for (host, container_id), pair in sorted(
+            lifecycle.items()
+    ):
+        need(
+            set(pair) == {
+                "container_created",
+                "container_destroyed",
+            },
+            f"Incomplete lifecycle {host}/{container_id}",
+            )
+
+        start = int(
+            pair["container_created"]["ts"]
+        )
+
+        end = int(
+            pair["container_destroyed"]["ts"]
+        )
+
+        need(
+            end > start,
+            f"Invalid lifetime {host}/{container_id}",
+            )
+
+        container_samples = samples[
+            (host, container_id)
+        ]
+
+        need(
+            len(container_samples) >= 2,
+            f"Too few samples {host}/{container_id}",
+            )
+
+        container_samples.sort(
+            key=lambda row: int(row["ts"])
+        )
+
+        times = [
+            int(row["ts"])
+            for row in container_samples
+        ]
+
+        usage = [
+            int(row["usage_bytes"])
+            for row in container_samples
+        ]
+
+        limits = [
+            int(row["limit_bytes"])
+            for row in container_samples
+        ]
+
+        reasons = [
+            row.get("reason")
+            for row in container_samples
+        ]
+
+        need(
+            all(u > 0 for u in usage),
+            f"Invalid RAM usage {host}/{container_id}",
+        )
+
+        need(
+            all(limit > 0 for limit in limits),
+            f"Invalid RAM limit {host}/{container_id}",
+        )
+
+        need(
+            all(start <= t <= end for t in times),
+            f"Sample outside lifetime {host}/{container_id}",
+        )
+
+        need(
+            all(
+                b > a
+                for a, b in zip(times, times[1:])
+            ),
+            f"Non-increasing timestamps {host}/{container_id}",
+        )
+
+        need(
+            "start" in reasons
+            and "before_destroy" in reasons,
+            f"Missing boundary samples {host}/{container_id}",
+            )
+
+        lifetime_ms = end - start
+
+        if lifetime_ms >= 2000:
+            need(
+                "periodic" in reasons,
+                f"No periodic samples {host}/{container_id}",
+                )
+
+        gaps = [
+            b - a
+            for a, b in zip(times, times[1:])
+        ]
+
+        need(
+            max(gaps) <= 3500,
+            f"Sampling gap > 3.5 s {host}/{container_id}",
+            )
+
+        coverage = (
+                           times[-1] - times[0]
+                   ) / lifetime_ms
+
+        need(
+            coverage >= 0.90,
+            f"RAM coverage below 90% "
+            f"{host}/{container_id}: {coverage:.3f}",
+            )
+
+        # Integrale trapezoidale sulle sole osservazioni.
+        # byte_seconds = byte * secondi.
+        byte_seconds = sum(
+            (u0 + u1) / 2 * (t1 - t0) / 1000.0
+            for u0, u1, t0, t1 in zip(
+                usage,
+                usage[1:],
+                times,
+                times[1:],
+            )
+        )
+
+        per_container.append({
+            "worker": host,
+            "container_id": container_id,
+            "function_name": target,
+            "machine_tag":
+                pair["container_created"]["machine_tag"],
+            "lifetime_ms": lifetime_ms,
+            "sample_count": len(container_samples),
+            "periodic_sample_count": sum(
+                reason == "periodic"
+                for reason in reasons
+            ),
+            "coverage_ratio": coverage,
+            "max_sample_gap_ms": max(gaps),
+            "observed_usage_peak_bytes": max(usage),
+            "actual_memory_MB_s":
+                byte_seconds / 1_000_000,
+            "actual_memory_MiB_s":
+                byte_seconds / (1024 ** 2),
+            "unmeasured_start_ms": times[0] - start,
+            "unmeasured_end_ms": end - times[-1],
+        })
+
+    summary = {
+        "actual_memory_MB_s": sum(
+            row["actual_memory_MB_s"]
+            for row in per_container
+        ),
+        "actual_memory_MiB_s": sum(
+            row["actual_memory_MiB_s"]
+            for row in per_container
+        ),
+        "actual_memory_container_count":
+            len(per_container),
+        "actual_memory_sample_count": sum(
+            row["sample_count"]
+            for row in per_container
+        ),
+        "actual_memory_min_coverage": min(
+            row["coverage_ratio"]
+            for row in per_container
+        ),
+        "actual_memory_integration":
+            "trapezoid_observed_interval_no_boundary_imputation",
+    }
+
+    return summary, per_container
+
 
 def validate_local_measurement(folder: Path, target: str, cid: str,
                                concurrency: int, *, require_multi: bool = False
@@ -654,6 +1016,12 @@ def validate_local_measurement(folder: Path, target: str, cid: str,
         worker_text[host] = raw_path.read_text(encoding='utf-8')
     summary, rows = analyze(worker_text, target, allow_prewarm=False,
                             allowed_destroy_reasons=('expired',))
+    actual_memory_summary, _ = validate_actual_memory(
+        worker_text,
+        target,
+    )
+
+    summary.update(actual_memory_summary)
     decisions = check_decisions(lb_path.read_text(encoding='utf-8'), target, 50)
     actual_arch_counts = Counter(r['execution_header_arm'] for r in requests)
     # We can validate aggregate execution counts; there is no guaranteed
@@ -705,47 +1073,203 @@ def validate_local_measurement(folder: Path, target: str, cid: str,
     return summary, rows, decisions
 
 
-def finalize_local_measurement(folder: Path, target: str, cid: str, concurrency: int,
-                               *, require_multi: bool = False) -> dict:
-    """Audit first; then write derived outputs/checksums without overwriting files."""
+def finalize_local_measurement(
+        folder: Path,
+        target: str,
+        cid: str,
+        concurrency: int,
+        *,
+        require_multi: bool = False,
+) -> dict:
+
     summary, rows, decisions = validate_local_measurement(
-        folder, target, cid, concurrency, require_multi=require_multi)
-    output_names = ('memory-summary.json', 'container-residency.csv',
-                    'mab-decisions.log', 'verified.json')
-    need(not any((folder / name).exists() for name in output_names),
-         f'{folder.name}: some finalized outputs already exist; refuse overwrite')
-    with (folder / 'mab-decisions.log').open('x', encoding='utf-8') as out:
-        out.write('\n'.join(decisions['raw_selected_execution_lines']) + '\n')
-    write_new(folder / 'memory-summary.json', summary)
-    with (folder / 'container-residency.csv').open('x', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        folder,
+        target,
+        cid,
+        concurrency,
+        require_multi=require_multi,
+    )
+
+    output_names = (
+        "memory-summary.json",
+        "container-residency.csv",
+        "container-actual-memory.csv",
+        "mab-decisions.log",
+        "verified.json",
+    )
+
+    need(
+        not any(
+            (folder / name).exists()
+            for name in output_names
+        ),
+        f"{folder.name}: some finalized outputs already exist; "
+        "refuse overwrite",
+    )
+
+    worker_logs = {}
+
+    for host in WORKERS:
+
+        log_path = folder / "raw" / f"{host}.log"
+
+        need(
+            log_path.is_file(),
+            f"{folder.name}: missing worker log {host}",
+        )
+
+        worker_logs[host] = log_path.read_text(
+            encoding="utf-8"
+        )
+
+    actual_memory_summary, actual_memory_rows = (
+        validate_actual_memory(
+            worker_logs,
+            target,
+        )
+    )
+
+    need(
+        bool(actual_memory_rows),
+        f"{folder.name}: no actual memory measurements",
+    )
+
+    need(
+        summary["actual_memory_container_count"]
+        == len(actual_memory_rows),
+        f"{folder.name}: actual memory container count mismatch",
+        )
+
+    need(
+        math.isclose(
+            summary["actual_memory_MiB_s"],
+            actual_memory_summary["actual_memory_MiB_s"],
+            rel_tol=1e-10,
+            abs_tol=1e-6,
+        ),
+        f"{folder.name}: actual memory summary mismatch",
+    )
+
+    with (
+            folder / "mab-decisions.log"
+    ).open(
+        "x",
+        encoding="utf-8",
+    ) as handle:
+
+        handle.write(
+            "\n".join(
+                decisions["raw_selected_execution_lines"]
+            ) + "\n"
+        )
+
+    write_new(
+        folder / "memory-summary.json",
+        summary,
+        )
+
+    with (
+            folder / "container-residency.csv"
+    ).open(
+        "x",
+        newline="",
+        encoding="utf-8",
+    ) as handle:
+
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(rows[0]),
+        )
+
         writer.writeheader()
         writer.writerows(rows)
-    files = {str(path.relative_to(folder)): sha(path) for path in folder.rglob('*')
-             if path.is_file() and path.name not in ('status.json', 'verified.json')}
-    write_new(folder / 'verified.json', {
-        'state': 'PASS',
-        'validation_class': summary['validation_class'],
-        'fallbacks': decisions['fallbacks'],
-        'sha256': files,
-        'containers': summary['created_containers'],
-        'target': target,
-        'condition': cid,
-        'requests': 50,
-    })
-    status_path = folder / 'status.json'
+
+    with (
+            folder / "container-actual-memory.csv"
+    ).open(
+        "x",
+        newline="",
+        encoding="utf-8",
+    ) as handle:
+
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(actual_memory_rows[0]),
+        )
+
+        writer.writeheader()
+        writer.writerows(actual_memory_rows)
+
+    files = {
+        str(path.relative_to(folder)): sha(path)
+
+        for path in folder.rglob("*")
+
+        if path.is_file()
+           and path.name not in (
+               "status.json",
+               "verified.json",
+           )
+    }
+
+    write_new(
+        folder / "verified.json",
+        {
+            "state": "PASS",
+            "validation_class": summary["validation_class"],
+            "fallbacks": decisions["fallbacks"],
+            "sha256": files,
+            "containers": summary["created_containers"],
+            "actual_memory_containers":
+                summary["actual_memory_container_count"],
+            "target": target,
+            "condition": cid,
+            "requests": 50,
+        },
+        )
+
+    status_path = folder / "status.json"
+
     info = load(status_path)
-    need(info.get('status') == 'STARTED', f'{folder.name}: status is not STARTED')
-    info['status'] = 'VERIFIED_LOCAL'
-    info['validation_class'] = summary['validation_class']
-    info['fallbacks'] = decisions['fallbacks']
-    info['completed_utc'] = datetime.now(timezone.utc).isoformat()
-    replace_json(status_path, info)
-    need(verified(folder), f'{folder.name}: generated checkpoint verification failed')
-    print(f'PASS {folder.name}: {summary["created_containers"]} containers; '
-          f'{summary["total_memory_MB_s"]:.3f} MB.s; '
-          f'peak={summary["max_containers_one_worker"]}; '
-          f'fallbacks={decisions["fallbacks"]} ({summary["validation_class"]})', flush=True)
+
+    need(
+        info.get("status") == "STARTED",
+        f"{folder.name}: status is not STARTED",
+        )
+
+    info["status"] = "VERIFIED_LOCAL"
+
+    info["validation_class"] = (
+        summary["validation_class"]
+    )
+
+    info["fallbacks"] = decisions["fallbacks"]
+
+    info["completed_utc"] = (
+        datetime.now(timezone.utc).isoformat()
+    )
+
+    replace_json(
+        status_path,
+        info,
+    )
+
+    need(
+        verified(folder),
+        f"{folder.name}: generated checkpoint verification failed",
+    )
+
+
+    print(
+        f"PASS {folder.name}: "
+        f"{summary['created_containers']} containers; "
+        f"configured={summary['total_memory_MB_s']:.3f} MB.s; "
+        f"actual={summary['actual_memory_MiB_s']:.3f} MiB.s; "
+        f"fallbacks={decisions['fallbacks']} "
+        f"({summary['validation_class']})",
+        flush=True,
+    )
+
     return summary
 
 
@@ -858,31 +1382,90 @@ def inspect_existing_run(doc: dict, dest: Path, key: str, *, recover: bool = Fal
     return finalize_local_measurement(folder, target, cid, q)
 
 
-def audit_local_grid(doc: dict, dest: Path, concurrency: int) -> None:
-    """Deep offline audit of ALL expected checkpoints; never communicates with GCP."""
-    need(1 <= concurrency <= 50, 'Invalid audit grid concurrency')
+def audit_local_grid(
+        doc: dict,
+        dest: Path,
+        concurrency: int,
+) -> None:
+
+    need(
+        1 <= concurrency <= 50,
+        'Invalid audit grid concurrency'
+    )
+
     total_fallbacks = 0
+
     for key in expected_keys(doc, concurrency):
         folder = dest / 'runs' / key
-        need(verified(folder), f'Not locally verified: {key}')
-        state = load(folder / 'status.json')
-        summary, rows, decisions = validate_local_measurement(
-            folder, state['target'], state['condition'], concurrency)
-        earlier = load(folder / 'memory-summary.json')
-        need(math.isclose(summary['total_memory_MB_s'], earlier['total_memory_MB_s'],
-                          rel_tol=1e-10, abs_tol=1e-6),
-             f'{key}: memory summary changed vs raw log')
-        need(decisions['fallbacks'] == earlier['mab']['fallbacks'],
-             f'{key}: fallback count changed vs summary')
-        total_fallbacks += decisions['fallbacks']
-        print(f'PASS {key}: {len(rows)} containers, '
-              f'{summary["total_memory_MB_s"]:.3f} MB.s, '
-              f'fallbacks={decisions["fallbacks"]}', flush=True)
-    print(f'PASS OFFLINE GRID q={concurrency}: '
-          f'{len(expected_keys(doc, concurrency))} runs, '
-          f'{len(expected_keys(doc, concurrency)) * 50} requests, '
-          f'{total_fallbacks} fallback(s) recorded (not silently removed)', flush=True)
 
+        need(
+            verified(folder),
+            f'Not locally verified: {key}'
+        )
+
+        state = load(folder / 'status.json')
+
+        summary, rows, decisions = validate_local_measurement(
+            folder,
+            state['target'],
+            state['condition'],
+            concurrency,
+        )
+
+        earlier = load(folder / 'memory-summary.json')
+
+        need(
+            math.isclose(
+                summary['total_memory_MB_s'],
+                earlier['total_memory_MB_s'],
+                rel_tol=1e-10,
+                abs_tol=1e-6,
+            ),
+            f'{key}: configured memory changed vs raw logs'
+        )
+
+        need(
+            math.isclose(
+                summary['actual_memory_MiB_s'],
+                earlier['actual_memory_MiB_s'],
+                rel_tol=1e-10,
+                abs_tol=1e-6,
+            ),
+            f'{key}: actual memory changed vs raw logs'
+        )
+
+        need(
+            summary['actual_memory_container_count']
+            == summary['created_containers'],
+            f'{key}: missing monitored containers'
+        )
+
+        need(
+            decisions['fallbacks']
+            == earlier['mab']['fallbacks'],
+            f'{key}: fallback count changed vs summary'
+        )
+
+        total_fallbacks += decisions['fallbacks']
+
+        print(
+            f'PASS {key}: '
+            f'{len(rows)} containers, '
+            f'configured={summary["total_memory_MB_s"]:.3f} MB.s, '
+            f'actual={summary["actual_memory_MiB_s"]:.3f} MiB.s, '
+            f'fallbacks={decisions["fallbacks"]}',
+            flush=True
+        )
+
+    expected = len(expected_keys(doc, concurrency))
+
+    print(
+        f'PASS OFFLINE GRID q={concurrency}: '
+        f'{expected} runs, '
+        f'{expected * 50} requests, '
+        f'{total_fallbacks} fallback(s) recorded',
+        flush=True
+    )
 
 def verified(folder: Path) -> bool:
     v=folder/'verified.json'
@@ -1109,7 +1692,18 @@ def main():
         if a.action=='init-pilot':
             init_campaign(dest,'pilot',['N04'],['billibench-knn'],1)
         else:
-            init_campaign(dest,'full',[c[0] for c in CONFIGS],selected_targets(),2)
+            need(
+                set(ACTUAL_MEMORY_CONFIG_IDS) <= VALID_CONDITIONS,
+                "Missing No-TL/Ratio configurations",
+            )
+
+            init_campaign(
+                dest,
+                'full',
+                list(ACTUAL_MEMORY_CONFIG_IDS),
+                selected_targets(),
+                2,
+            )
         return
     doc=campaign(dest)
     if a.action == 'audit-grid':

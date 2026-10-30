@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 import csv
+import re
 import hashlib
 import json
 from pathlib import Path
@@ -56,6 +57,119 @@ def fake_corpus():
              patch.object(app,'PRIOR_ROOT',root/'data/profiling/gcp-memory/priors'):
             yield root,targets
 
+
+def with_memory_samples(log_text: str) -> str:
+    events = {}
+    pattern = re.compile(
+        r'event=(container_created|container_destroyed)\s+'
+        r'ts=(\d+)\s+'
+        r'container_id="([^"]+)"\s+'
+        r'function="([^"]+)"'
+    )
+
+    for line in log_text.splitlines():
+
+        match = pattern.search(line)
+
+        if not match:
+            continue
+
+        event, timestamp, container_id, function_name = (
+            match.groups()
+        )
+
+        record = events.setdefault(
+            container_id,
+            {},
+        )
+
+        assert event not in record, (
+            f"Duplicate lifecycle event: "
+            f"{event} / {container_id}"
+        )
+
+        record[event] = (
+            int(timestamp),
+            function_name,
+        )
+
+    assert events, (
+        "Nessun evento lifecycle presente nei log simulati"
+    )
+
+    extra_lines = []
+
+    for container_id, pair in events.items():
+
+        assert set(pair) == {
+            "container_created",
+            "container_destroyed",
+        }
+
+        start, function_name = pair[
+            "container_created"
+        ]
+
+        end, end_function = pair[
+            "container_destroyed"
+        ]
+
+        assert function_name == end_function
+        assert end - start >= 4
+
+        common = (
+            f'container_id="{container_id}" '
+            f'function="{function_name}"'
+        )
+
+        sample_times = [
+            (start + 1, "start"),
+        ]
+
+        periodic_timestamp = start + 1001
+
+        while periodic_timestamp < end - 1:
+
+            sample_times.append(
+                (
+                    periodic_timestamp,
+                    "periodic",
+                )
+            )
+
+            periodic_timestamp += 1000
+
+        sample_times.append(
+            (
+                end - 1,
+                "before_destroy",
+            )
+        )
+
+        for timestamp, reason in sample_times:
+
+            extra_lines.append(
+                "[CONTAINER_MEMORY] "
+                f"event=memory_sample "
+                f"ts={timestamp} "
+                f"{common} "
+                f'reason="{reason}" '
+                "usage_bytes=10485760 "
+                "limit_bytes=134217728"
+            )
+
+        extra_lines.append(
+            "[CONTAINER_MEMORY] "
+            f"event=monitor_stopped "
+            f"ts={end - 1} "
+            f"{common}"
+        )
+
+    return (
+            log_text
+            + "\n"
+            + "\n".join(extra_lines)
+    )
 
 class CampaignOffline(unittest.TestCase):
     def test_full_grid_preflight(self):
@@ -117,6 +231,12 @@ class CampaignOffline(unittest.TestCase):
                     '2026/10/24 [CONTAINER_LIFECYCLE] event=container_created ts=1000 container_id="c" function="test-fn" machine_tag="arm64" node="sl-arm-1" memory_mb=1024 creation_kind="cold_start"',
                     '2026/10/24 [CONTAINER_LIFECYCLE] event=container_destroyed ts=1900 container_id="c" function="test-fn" machine_tag="arm64" node="sl-arm-1" memory_mb=1024 memory_lookup_ok=true reason="expired"',
                 ])}
+
+            logs = {
+                host: with_memory_samples(content)
+                for host, content in logs.items()
+            }
+
             lb='\n'.join(f'event=decision_resolved request_id=fake-{i} function={target} selected_arm=amd64 execution_arm=amd64 fallback=false fallback_reason=' for i in range(50))
             def fake_remote(host, script, **kwargs):
                 return logs[host] if host in logs else ''
@@ -249,58 +369,270 @@ class CampaignOffline(unittest.TestCase):
             app.check_decisions(lb, 'target', 50)
 
     def test_complete_fallback_run_can_be_recovered_offline(self):
-        """Read saved raw artifacts; recover a run once without any GCP call."""
         with tempfile.TemporaryDirectory() as d:
+
             dest = Path(d)
+
             key = 'billibench-knn-R04-r01-q3'
+
             folder = dest / 'runs' / key
-            (folder/'raw').mkdir(parents=True)
-            target='billibench-knn'
-            (folder/'status.json').write_text(json.dumps({
-                'key':key,'target':target,'condition':'R04','replica':1,
-                'concurrency':3,'requests':50,'status':'STARTED','runtime_pin':app.PIN,
-            }))
-            worker_arch = {'sl-x86-1': 'amd64', 'sl-arm-1': 'arm64'}
+
+
+            raw_dir = folder / 'raw'
+            raw_dir.mkdir(parents=True)
+
+            target = 'billibench-knn'
+
+            (folder / 'status.json').write_text(
+                json.dumps({
+                    'key': key,
+                    'target': target,
+                    'condition': 'R04',
+                    'replica': 1,
+                    'concurrency': 3,
+                    'requests': 50,
+                    'status': 'STARTED',
+                    'runtime_pin': app.PIN,
+                })
+            )
+            worker_arch = {
+                'sl-x86-1': 'amd64',
+                'sl-arm-1': 'arm64',
+            }
+
             for worker, arch in worker_arch.items():
-                cid = 'x' if arch=='amd64' else 'a'
-                (folder/'raw'/f'{worker}.log').write_text('\n'.join([
-                    f'[CONTAINER_LIFECYCLE] event=container_created ts=1000 container_id="{cid}" function="{target}" machine_tag="{arch}" node="{worker}" memory_mb=1024 creation_kind="cold_start"',
-                    f'[CONTAINER_LIFECYCLE] event=container_destroyed ts=2000 container_id="{cid}" function="{target}" machine_tag="{arch}" node="{worker}" memory_mb=1024 memory_lookup_ok=true reason="expired"',
-                ]))
-            lines = [
-                f'event=decision_resolved request_id=id-{i} function={target} '
-                f'selected_arm=arm64 execution_arm={"amd64" if i==49 else "arm64"} '
-                f'fallback={str(i==49).lower()} '
-                f'fallback_reason={"selected_arm_no_candidate" if i==49 else ""}'
-                for i in range(50)
-            ]
-            (folder/'raw/sl-lb.log').write_text('\n'.join(lines))
-            (folder/'requests.jsonl').write_text('\n'.join(json.dumps({
-                'index':i+1,'success':True,'client_elapsed_ms':20.0,
-                'is_warm_start':True,'execution_header_arm': 'amd64' if i==49 else 'arm64'
-            }) for i in range(50)) + '\n')
-            src_prior = dest / 'priors'/f'{target}-r01'/'R04'/'materialized-request.json'
-            src_prior.parent.mkdir(parents=True)
-            src_prior.write_text(json.dumps({'target_function_name':target,'prior':{'x':1}}))
-            (folder/'transfer-response.json').write_text(json.dumps({
-                'transfer_attempted':True,'transfer_applied':True,
-                'initialization_source':'materialized_prior',
-                'target_function_name':target,'prior':{'x':1}
-            }))
-            doc = {'targets':[target], 'configs':['R04'], 'replicas':1}
-            with patch.object(app,'PRIOR_ROOT',dest/'priors'), \
-                 patch.object(app,'gc',side_effect=AssertionError('NO GCP')):
-                audit = app.inspect_existing_run(doc,dest,key,recover=False)
-                self.assertEqual(audit['mab']['fallbacks'],1)
-                self.assertFalse((folder/'verified.json').exists())
-                out = app.inspect_existing_run(doc,dest,key,recover=True)
-                self.assertEqual(out['validation_class'],'COMPLETE_WITH_FALLBACK')
-                self.assertTrue(app.verified(folder))
-                self.assertEqual(app.load(folder/'status.json')['status'],'VERIFIED_LOCAL')
-                with self.assertRaisesRegex(app.CampaignError, 'already finalized'):
-                    app.inspect_existing_run(doc,dest,key,recover=True)
-                self.assertTrue((folder/'local-recovery-provenance.json').exists())
-                self.assertEqual(app.load(folder/'verified.json')['fallbacks'],1)
+
+                cid = 'x' if arch == 'amd64' else 'a'
+
+                lifecycle_log = '\n'.join([
+                    (
+                        '[CONTAINER_LIFECYCLE] '
+                        'event=container_created '
+                        'ts=1000 '
+                        f'container_id="{cid}" '
+                        f'function="{target}" '
+                        f'machine_tag="{arch}" '
+                        f'node="{worker}" '
+                        'memory_mb=1024 '
+                        'creation_kind="cold_start"'
+                    ),
+                    (
+                        '[CONTAINER_LIFECYCLE] '
+                        'event=container_destroyed '
+                        'ts=2000 '
+                        f'container_id="{cid}" '
+                        f'function="{target}" '
+                        f'machine_tag="{arch}" '
+                        f'node="{worker}" '
+                        'memory_mb=1024 '
+                        'memory_lookup_ok=true '
+                        'reason="expired"'
+                    ),
+                ])
+
+                complete_log = with_memory_samples(
+                    lifecycle_log
+                )
+
+                log_path = raw_dir / f'{worker}.log'
+
+                log_path.write_text(
+                    complete_log,
+                    encoding='utf-8',
+                )
+
+                self.assertTrue(
+                    log_path.is_file(),
+                    f'Missing simulated worker log: {worker}',
+                )
+
+                self.assertIn(
+                    'event=memory_sample',
+                    complete_log,
+                )
+
+            for worker in app.WORKERS:
+                self.assertTrue(
+                    (raw_dir / f'{worker}.log').is_file()
+                )
+
+            lines = []
+
+            for i in range(50):
+
+                fallback = i == 49
+
+                execution_arm = (
+                    'amd64' if fallback else 'arm64'
+                )
+
+                fallback_reason = (
+                    'selected_arm_no_candidate'
+                    if fallback else ''
+                )
+
+                lines.append(
+                    'event=decision_resolved '
+                    f'request_id=id-{i} '
+                    f'function={target} '
+                    'selected_arm=arm64 '
+                    f'execution_arm={execution_arm} '
+                    f'fallback={str(fallback).lower()} '
+                    f'fallback_reason={fallback_reason}'
+                )
+
+            (raw_dir / 'sl-lb.log').write_text(
+                '\n'.join(lines),
+                encoding='utf-8',
+            )
+
+            requests = []
+
+            for i in range(50):
+
+                requests.append(
+                    json.dumps({
+                        'index': i + 1,
+                        'success': True,
+                        'client_elapsed_ms': 20.0,
+                        'is_warm_start': True,
+                        'execution_header_arm': (
+                            'amd64' if i == 49 else 'arm64'
+                        ),
+                    })
+                )
+
+            (folder / 'requests.jsonl').write_text(
+                '\n'.join(requests) + '\n',
+                encoding='utf-8',
+                )
+
+            src_prior = (
+                    dest
+                    / 'priors'
+                    / f'{target}-r01'
+                    / 'R04'
+                    / 'materialized-request.json'
+            )
+
+            src_prior.parent.mkdir(
+                parents=True
+            )
+
+            src_prior.write_text(
+                json.dumps({
+                    'target_function_name': target,
+                    'prior': {'x': 1},
+                }),
+                encoding='utf-8',
+            )
+
+            (folder / 'transfer-response.json').write_text(
+                json.dumps({
+                    'transfer_attempted': True,
+                    'transfer_applied': True,
+                    'initialization_source':
+                        'materialized_prior',
+                    'target_function_name': target,
+                    'prior': {'x': 1},
+                }),
+                encoding='utf-8',
+            )
+
+            doc = {
+                'targets': [target],
+                'configs': ['R04'],
+                'replicas': 1,
+            }
+
+            with (
+                patch.object(
+                    app,
+                    'PRIOR_ROOT',
+                    dest / 'priors',
+                ),
+                patch.object(
+                    app,
+                    'gc',
+                    side_effect=AssertionError('NO GCP'),
+                ),
+            ):
+
+                audit = app.inspect_existing_run(
+                    doc,
+                    dest,
+                    key,
+                    recover=False,
+                )
+
+                self.assertEqual(
+                    audit['mab']['fallbacks'],
+                    1,
+                )
+
+                self.assertEqual(
+                    audit['actual_memory_container_count'],
+                    2,
+                )
+
+                self.assertFalse(
+                    (folder / 'verified.json').exists()
+                )
+
+                result = app.inspect_existing_run(
+                    doc,
+                    dest,
+                    key,
+                    recover=True,
+                )
+
+                self.assertEqual(
+                    result['validation_class'],
+                    'COMPLETE_WITH_FALLBACK',
+                )
+
+                self.assertTrue(
+                    app.verified(folder)
+                )
+
+                self.assertEqual(
+                    app.load(
+                        folder / 'status.json'
+                    )['status'],
+                    'VERIFIED_LOCAL',
+                )
+
+                with self.assertRaisesRegex(
+                        app.CampaignError,
+                        'already finalized',
+                ):
+                    app.inspect_existing_run(
+                        doc,
+                        dest,
+                        key,
+                        recover=True,
+                    )
+
+                self.assertTrue(
+                    (
+                            folder
+                            / 'local-recovery-provenance.json'
+                    ).exists()
+                )
+
+                self.assertEqual(
+                    app.load(
+                        folder / 'verified.json'
+                    )['fallbacks'],
+                    1,
+                )
+
+                self.assertTrue(
+                    (
+                            folder
+                            / 'container-actual-memory.csv'
+                    ).is_file()
+                )
 
     def test_malformed_headers_block_offline_recovery(self):
         with tempfile.TemporaryDirectory() as d:
@@ -382,5 +714,30 @@ class CampaignOffline(unittest.TestCase):
             for limit in (0,21,-1):
                 with self.assertRaisesRegex(app.CampaignError,'between 1 and 20'):
                     app.run_grid(doc,dest,concurrency=3,max_new_runs=limit)
+
+    def test_actual_memory_missing_must_fail(self):
+
+        logs = {
+            "sl-x86-1": (
+                '[CONTAINER_LIFECYCLE] '
+                'event=container_created ts=1000 '
+                'container_id="abc" function="test-fn" '
+                'machine_tag="amd64"\n'
+                '[CONTAINER_LIFECYCLE] '
+                'event=container_destroyed ts=14000 '
+                'container_id="abc" function="test-fn" '
+                'machine_tag="amd64"'
+            ),
+            "sl-arm-1": "",
+        }
+
+        with self.assertRaisesRegex(
+                app.CampaignError,
+                "Memory container mismatch",
+        ):
+            app.validate_actual_memory(
+                logs,
+                "test-fn",
+            )
 
 if __name__=='__main__': unittest.main()

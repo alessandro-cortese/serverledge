@@ -5,23 +5,34 @@ import (
 	"time"
 )
 
-// ResourceSnapshot is a point-in-time view of the cumulative Docker counters
-// that are actually consumed by the profiling pipeline.
+// ResourceSnapshot contains the counters read by Docker.
 //
-// Counters are cumulative since container creation: per-invocation values are
-// obtained by subtracting a snapshot taken before the invocation from one taken
-// after it.
+// CPU and page fault counters are used for invocation profiling.
+// The memory counters are absolute readings used exclusively
+// for optional container lifecycle monitoring.
 //
-// Only the counters needed to build the Random Forest feature vector are kept.
-// Docker exposes many more (block I/O, network, PIDs, throttling, memory), but
-// none of them is an input of the clustering pipeline, so they are neither
-// stored nor exported.
+// Memory collection does not affect the MAB reward,
+// the classifier or the choice of architecture.
 type ResourceSnapshot struct {
 	OSType              string
 	CPUUsageUserNs      uint64
 	CPUUsageKernelNs    uint64
 	PageFaults          uint64
 	PageFaultsAvailable bool
+
+	// Absolute container memory counters.
+	MemoryUsageBytes        uint64
+	MemoryLimitBytes        uint64
+	MemoryPeakBytes         uint64
+	MemoryAnonBytes         uint64
+	MemoryFileBytes         uint64
+	MemoryKernelBytes       uint64
+	MemoryInactiveFileBytes uint64
+
+	MemoryAnonAvailable         bool
+	MemoryFileAvailable         bool
+	MemoryKernelAvailable       bool
+	MemoryInactiveFileAvailable bool
 }
 
 // InvocationResourceProfile contains the container-scoped deltas measured

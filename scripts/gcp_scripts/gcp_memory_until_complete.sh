@@ -11,7 +11,7 @@ cd -- "$ROOT_DIR"
 
 WRAPPER="${SCRIPT_DIR}/gcp_memory.sh"
 PYTHON="${PYTHON:-${ROOT_DIR}/.venv-analysis/bin/python}"
-DEST="data/profiling/gcp-memory/cloud-runs/full-01"
+DEST="data/profiling/gcp-memory/cloud-runs/actual-memory-01"
 CONCURRENCY=3
 BATCH_SIZE=9
 MAX_HOURS=48
@@ -86,7 +86,12 @@ read_state() {
 from pathlib import Path
 import sys
 from analysis.profiling.gcp_memory_campaign import (
-    VMS, campaign, vm_guard, expected_keys, verified,
+    VMS,
+    ACTUAL_MEMORY_CONFIG_IDS,
+    campaign,
+    vm_guard,
+    expected_keys,
+    verified,
 )
 root = Path(sys.argv[1])
 q = int(sys.argv[2])
@@ -107,7 +112,16 @@ if runs.exists():
             assert folder.name in known, f'Unexpected run folder: {folder.name}'
             assert verified(folder), f'Incomplete/tampered measurement: {folder.name}'
 completed = sum(verified(runs / key) for key in keys)
-assert len(keys) == 180, 'Expected exactly 180 full-campaign measurements'
+assert doc["replicas"] == 2
+assert len(doc["targets"]) == 10
+
+assert doc["configs"] == list(ACTUAL_MEMORY_CONFIG_IDS), (
+    "Unexpected experimental conditions"
+)
+
+assert len(keys) == 120, (
+    f"Expected 120 measurements, found {len(keys)}"
+)
 print(completed, len(keys))
 PY
 }
@@ -168,7 +182,7 @@ done
 
 echo '===== CAMPAGNA COMPLETA: audit rigoroso dei 180 risultati grezzi ====='
 "$WRAPPER" audit-grid --dest "$DEST" --concurrency "$CONCURRENCY"
-echo 'PASS AUDIT-GRID: 180/180; 9000 invocazioni dichiarate'
+echo 'PASS AUDIT-GRID: 120/120; 6000 invocazioni dichiarate'
 
 if (( FINISH_ON_SUCCESS )); then
   echo '===== FINISH SICURO: DELETE solo dopo AUDIT COMPLETO ====='

@@ -32,19 +32,76 @@ func (cf *DockerFactory) GetResourceSnapshot(contID ContainerID) (profiling.Reso
 	return resourceSnapshotFromDockerStats(statsReader.OSType, stats), nil
 }
 
+// resourceSnapshotFromDockerStats extracts Docker counters.
+//
+// It retains the CPU and page fault counters already used by profiling
+// and adds absolute information about the container’s memory.
+//
+// The new counters are not used to modify MAB decisions.
 func resourceSnapshotFromDockerStats(osType string, stats dockercontainer.StatsResponse) profiling.ResourceSnapshot {
 
-	pageFaults, pageFaultsAvailable := dockerMemoryStat(stats.MemoryStats.Stats, "total_pgfault", "pgfault")
+	pageFaults, pageFaultsAvailable := dockerMemoryStat(
+		stats.MemoryStats.Stats,
+		"total_pgfault",
+		"pgfault",
+	)
 
-	// Only the counters consumed by the profiling pipeline are mapped. Docker
-	// also reports block I/O, network, PIDs, throttling and memory usage, but
-	// none of them is an input of the Random Forest feature vector.
+	// Anonymous memory: compatibility with cgroup keys v1/v2
+	anon, hasAnon := dockerMemoryStat(
+		stats.MemoryStats.Stats,
+		"anon",
+		"total_rss",
+		"rss",
+	)
+
+	// Memory associated with files and the cache
+	file, hasFile := dockerMemoryStat(
+		stats.MemoryStats.Stats,
+		"file",
+		"total_cache",
+		"cache",
+	)
+
+	// Kernel memory, where available
+	kernel, hasKernel := dockerMemoryStat(
+		stats.MemoryStats.Stats,
+		"kernel",
+	)
+
+	// Cache inactive
+	inactiveFile, hasInactiveFile := dockerMemoryStat(
+		stats.MemoryStats.Stats,
+		"inactive_file",
+		"total_inactive_file",
+	)
+
 	return profiling.ResourceSnapshot{
-		OSType:              osType,
-		CPUUsageUserNs:      stats.CPUStats.CPUUsage.UsageInUsermode,
-		CPUUsageKernelNs:    stats.CPUStats.CPUUsage.UsageInKernelmode,
+		OSType: osType,
+
+		CPUUsageUserNs:   stats.CPUStats.CPUUsage.UsageInUsermode,
+		CPUUsageKernelNs: stats.CPUStats.CPUUsage.UsageInKernelmode,
+
 		PageFaults:          pageFaults,
 		PageFaultsAvailable: pageFaultsAvailable,
+
+		// Memory currently accounted for by the cgroup
+		MemoryUsageBytes: stats.MemoryStats.Usage,
+
+		// Configured limit
+		MemoryLimitBytes: stats.MemoryStats.Limit,
+
+		// This may not be available in some versions of cgroup
+		MemoryPeakBytes: stats.MemoryStats.MaxUsage,
+
+		MemoryAnonBytes:         anon,
+		MemoryFileBytes:         file,
+		MemoryKernelBytes:       kernel,
+		MemoryInactiveFileBytes: inactiveFile,
+
+		MemoryAnonAvailable:         hasAnon,
+		MemoryFileAvailable:         hasFile,
+		MemoryKernelAvailable:       hasKernel,
+		MemoryInactiveFileAvailable: hasInactiveFile,
 	}
 }
 
